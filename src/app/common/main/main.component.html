@@ -1,0 +1,14 @@
+
+<main *showItDevice="['desktop','tablet']" role="main" class="main" id="content" tabindex="-1">
+  <app-breadcrumb></app-breadcrumb>
+  <!-- main-content -->
+    <!-- route content goes here -->
+    <router-outlet></router-outlet>
+</main>
+
+<main *isMobile style="padding-top: 4.8125rem;" id="content" tabindex="-1">
+  <app-breadcrumb></app-breadcrumb>
+  <!-- main-content -->
+  <!-- route content goes here -->
+  <router-outlet></router-outlet>
+</main>

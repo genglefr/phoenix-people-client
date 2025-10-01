@@ -1,0 +1,388 @@
+<!-- main-header -->
+<header class="main-header mb-0">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between">
+      <div class="col-auto mb-3">
+        <h1 class="main-title">{{candidate.fullName}} - {{requestTitle}}</h1>
+      </div>
+      <div class="col col-auto">
+        <a class="btn btn-basic" routerLink=".."> Cancel </a>
+        <button (click)="openOfferMailModal()" class="btn btn-primary ml-3" type="submit" [disabled]="!proposalForm.valid">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="main-content">
+  <div class="main-nav-tabs">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="true" class="nav-link active"
+                              data-toggle="tab" href="#proposal-information" id="proposal-information-tab"
+                              role="tab">Proposal information</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#hardware" id="hardware-tab"
+                              [ngClass]="{ 'disabled-link': !isLaptopNecessary.value }"
+                              role="tab">Hardware</a></li>
+    </ul>
+    <div class="tab-content bg-white" id="myTabContent">
+      <section aria-labelledby="proposal-information-tab" class="tab-pane fade show active"
+               id="proposal-information"
+               role="tabpanel">
+
+        <div class="box mx-0 pt-4">
+          <div class="row border-bottom">
+            <!-- Candidates informations -->
+            <div class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Candidate information</h2>
+              </header>
+              <div class="p-3">
+                <form [formGroup]="proposalForm">
+                  <div class="form-group row">
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label for="firstName">First name
+                        <small class="text-muted">(required)</small>
+                      </label>
+                      <input class="form-control" formControlName="firstName" id="firstName" placeholder="First name"
+                             maxlength="101" type="text">
+                      <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
+                           class="invalid-feedback">
+                        <div *ngIf="firstName.errors?.required">
+                          First name is required
+                        </div>
+                        <div *ngIf="firstName.errors?.maxlength">
+                          First name size must not exceed 100 characters
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label for="lastName">Last name
+                        <small class="text-muted">(required)</small>
+                      </label>
+                      <input class="form-control" formControlName="lastName" id="lastName" placeholder="Last name"
+                             maxlength="101" type="text">
+                      <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="invalid-feedback">
+                        <div *ngIf="lastName.errors?.required">
+                          Last name is required
+                        </div>
+                        <div *ngIf="lastName.errors?.maxlength">
+                          Last name size must not exceed 100 characters
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label class="label-ro">Gender <small class="text-muted">(required)</small></label>
+
+                      <select class="form-control custom-select" formControlName="gender" id="gender"
+                              name="gender">
+                        <option value="" [defaultSelected]="true">Select a gender</option>
+                        <option value="M">M</option>
+                        <option value="F">F</option>
+                        <option value="O">Other</option>
+                      </select>
+                      <div *ngIf="gender.invalid" class="invalid-feedback">
+                        <div *ngIf="gender.errors">
+                          Gender is mandatory
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-12 col-lg-6"></div>
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label for="contractStartDate">Start date <small class="text-muted">(required)</small></label>
+                      <div class="input-group">
+                        <input #dstr="ngbDatepicker" [footerTemplate]="footerTemplate3" class="form-control"
+                               formControlName="startDate" id="contractStartDate" maxlength="20"
+                               [minDate]="{year: 2000, month: 1, day: 1}"
+                               ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                        <div class="input-group-append">
+                          <button (click)="dstr.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                                  type="button"></button>
+                        </div>
+                        <div *ngIf="startDate.invalid && (startDate.dirty||startDate.touched)" class="invalid-feedback">
+                          <div *ngIf="startDate.errors?.required">
+                            Start date is required
+                          </div>
+                          <div *ngIf="startDate.errors.ngbDate?.invalid">
+                            Start date must be correct and in the following format : DD/MM/YYYY
+                          </div>
+                        </div>
+                      </div>
+                      <ng-template #footerTemplate3>
+                        <hr class="my-0">
+                        <button (click)="startDate.setValue(today); dstr.close()"
+                                class="btn btn-primary btn-sm m-2 float-left">Today
+                        </button>
+                        <button (click)="dstr.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                      </ng-template>
+                    </div>
+
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label for="endDate">End date</label>
+                      <div class="input-group">
+                        <input #dend="ngbDatepicker" [footerTemplate]="footerTemplate4" class="form-control"
+                               formControlName="endDate" id="endDate" maxlength="20"
+                               [minDate]="{year: 2000, month: 1, day: 1}"
+                               ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                        <div class="input-group-append">
+                          <button (click)="dend.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                                  type="button"></button>
+                        </div>
+                      </div>
+                      <ng-template #footerTemplate4>
+                        <hr class="my-0">
+                        <button (click)="endDate.setValue(today); dend.close()"
+                                class="btn btn-primary btn-sm m-2 float-left">Today
+                        </button>
+                        <button (click)="dend.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                      </ng-template>
+                      <div *ngIf="endDate.invalid && (endDate.dirty||endDate.touched)" class="invalid-feedback">
+                        <div *ngIf="endDate.value && endDate.value !== '' && endDate.errors.ngbDate?.invalid">
+                          End date must be correct and in the following format : DD/MM/YYYY
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="form-group col-sm-12 col-lg-6 checkbox-col">
+                      <div class="form-check">
+                        <input class="form-check-input" formControlName="partOfReferral" id="isPartOfReferral"
+                               (change)="referrerEvent($event)" name="isPartOfReferral" type="checkbox"/>
+                        <label for="isPartOfReferral">Part of referral program</label>
+                      </div>
+                    </div>
+
+                    <ng-template #rt let-r="result" let-t="term">
+                      <ngb-highlight [result]="r.name"
+                                     [term]=""></ngb-highlight>
+                    </ng-template>
+
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label for="referrer">Referrer</label>
+                      <input
+                        #instanceReferrer="ngbTypeahead"
+                        (click)="clickReferrer$.next($event.target.value)"
+                        [inputFormatter]="formatter"
+                        [ngbTypeahead]="searchReferrer"
+                        [resultTemplate]="rt"
+                        class="form-control"
+                        formControlName="referrer"
+                        id="referrer"
+                        placeholder="Referrer"
+                        type="text"
+                      />
+                    </div>
+
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label for="contractType">Type
+                        <small class="text-muted">(required)</small>
+                      </label>
+                      <select class="form-control custom-select" formControlName="type" id="contractType"
+                              name="contractType">
+                        <option *ngFor="let type of this.formData.jobtypes" value="{{type.description}}">
+                          {{type.jobType | uppercase}}
+                        </option>
+                      </select>
+                      <div *ngIf="type.invalid" class="invalid-feedback">
+                        <div *ngIf="type.errors">
+                          Type is mandatory
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <label for="contractCompany">Company
+                        <small class="text-muted">(required)</small>
+                      </label>
+                      <select class="form-control custom-select" formControlName="company" id="contractCompany"
+                              name="contractCompany">
+                        <option value="">Select a company</option>
+                        <option *ngFor="let company of this.companies" value="{{company}}">
+                          {{company | uppercase}}
+                        </option>
+                      </select>
+                      <div *ngIf="company.invalid" class="invalid-feedback">
+                        <div *ngIf="company.errors">
+                          Company is mandatory
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-12 col-lg-6"></div>
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <div class="form-check">
+                        <input class="form-check-input" formControlName="isWorkPermitNecessary"
+                               id="isWorkPermitNecessary" name="isWorkPermitNecessary" type="checkbox"/>
+                        <label for="isWorkPermitNecessary">Work permit necessary</label>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-sm-12 col-lg-6">
+                      <div class="form-check">
+                        <input class="form-check-input" id="arhsLaptopNecessary" name="arhsLaptopNecessary"
+                               (change)="laptopNecessaryEvent()" formControlName="laptopNecessary"
+                               type="checkbox"/>
+                        <label for="arhsLaptopNecessary">Company laptop necessary</label>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+            <!-- Proposal request informations -->
+            <div class="col-12 col-sm-6 pt-4 border-left">
+              <app-employee-offer-form #employeeProposalComponent
+                                       *ngIf="type.value === employee || type.value === overhead"
+                                       [company]="company"
+                                       [type]="type"
+                                       [formData]="formData" [titles]="titles">
+              </app-employee-offer-form>
+              <app-freelancer-offer-form #freelancerProposalComponent
+                                         *ngIf="type.value === freelance">
+              </app-freelancer-offer-form>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Responsibles -->
+            <div class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Responsibles</h2>
+              </header>
+
+              <div class="p-3">
+                <app-responsible-at-arhs #responsibleAtArhsComponent
+                                         [employeeList]="employeeList"
+                                         [isEditCandidate]="true"
+                                         [userToShow]="candidateDatabase"
+                                         [isInductionResponsibleAvailable]="isInductionResponsibleAvailable"
+                                         [startDate]="startDate">
+                </app-responsible-at-arhs>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section  aria-labelledby="contact-tab" class="tab-pane fade" id="hardware" role="tabpane2">
+        <div class="box mx-0 pt-4">
+          <div class="row">
+            <!-- Laptop information -->
+            <div class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Laptop information</h2>
+              </header>
+
+              <div class="p-3">
+                <form [formGroup]="laptopForm" action="#" class="row">
+
+                  <!--Yes/No Radio-->
+                  <div class="form-group col-12">
+                    <label for="Internal">On site</label><br/>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input class="custom-control-input" checked="checked" (ngModelChange)="disableHardwareForm()"
+                             formControlName="hardware" id="Internal" mdbInput
+                             name="hardware" type="radio" value="1">
+                      <label class="custom-control-label" for="Internal">YES</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input class="custom-control-input" (ngModelChange)="disableHardwareForm()"
+                             formControlName="hardware" id="External" mdbInput
+                             name="hardware" type="radio" value="0">
+                      <label class="custom-control-label" for="External">NO</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="computerModel">Computer model
+                      <small class="text-muted">(required)</small>
+                    </label>
+                    <select class="form-control custom-select" formControlName="computerModel" id="computerModel"
+                            name="computerModel" (change)="setKeyboardLayoutField()">
+                      <option disabled [value]="null">Select a computer</option>
+                      <option *ngFor="let model of this.laptopModelList" value="{{model}}">
+                        {{model | uppercase}}
+                      </option>
+                    </select>
+                    <div *ngIf="laptopForm.invalid && (computerModel.dirty||computerModel.touched)" class="invalid-feedback">
+                      <div *ngIf="laptopForm.errors.laptopRequired">
+                        The computer model is required
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="keyboardLayout">Keyboard layout
+                      <small class="text-muted">(required)</small>
+                    </label>
+                    <select class="form-control custom-select" formControlName="keyboardLayout" id="keyboardLayout"
+                            name="keyboardLayout">
+                      <option disabled [value]="null">Select a layout</option>
+                      <option *ngFor="let layout of this.formData.keyboardModels" value="{{layout}}">
+                        {{layout | uppercase}}
+                      </option>
+                    </select>
+                    <div *ngIf="laptopForm.invalid" class="invalid-feedback">
+                      <div *ngIf="laptopForm.errors.keyBoardIfLaptop">
+                        The keyboard layout is required
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="operatingSystem">Operating system</label>
+                    <select class="form-control custom-select" formControlName="operatingSystem" id="operatingSystem"
+                            name="operatingSystem">
+                      <option *ngFor="let system of this.formData.operatingSystems" value="{{system}}">
+                        {{system | uppercase}}
+                      </option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- Hardware -->
+            <div class="col-12 col-sm-6 pt-4 border-left">
+              <header>
+                <h2 class="card-title">HARDWARE</h2>
+              </header>
+              <div class="p-3">
+                <form [formGroup]="hardwareForm" action="#" class="row">
+
+                  <!--Screens-->
+                  <div class="form-group col-sm-12 col-lg-12">
+                    <label for="screens">Screens</label><br/>
+                    <select class="form-control custom-select col-lg-6" formControlName="screens" id="screens"
+                            name="screens" (change)="hardwareUpdated()" [disabled]="checkboxDisable">
+                      <option *ngFor="let screen of SCREENS" value="{{screen}}">
+                        {{screen}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <!--Extra Assets Checkbox-->
+                  <div class="col-sm-12 col-lg-12">
+                    <label>Additional assets</label>
+                  </div>
+                  <div class="form-group col-sm-12" *ngFor="let asset of assets;let i=index"
+                       [ngClass]="{'col-lg-4': (i%2===0) , 'col-lg-8': (i%2!==0) }">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" [disabled]="checkboxDisable"
+                             id="{{asset?.id}}" value="{{asset?.name}}" (change)="updateAsset($event, asset)"
+                             [checked]="isChecked(asset)">
+                      <label class="form-check-label" for="{{asset?.id}}">{{asset?.name}}</label>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,250 @@
+<div class="modal-header">
+  <h4 class="modal-title">My details</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="row" style="margin: 0 !important;">
+  <div class="col-3 data-margin" style="padding-left: 0 !important;">
+    <!-- photo and info -->
+    <!--<form [formGroup]="informationForm" action="#" class="row"> -->
+
+    <!--<div class="form-group col-sm-12 col-lg-4"> -->
+    <div class="form-group-profile col-sm-12 row" style="margin: 0px">
+      <img alt="" class="employees-information-avatar" style="min-height: 265px; min-width: 265px; max-height: 265px; max-width: 265px;"
+           [src]="displayedUserPicture">
+      <div class="col-12" style="margin-top: 10px"><b>{{user.firstName}} {{user.lastName}}</b></div>
+      <div class="col-12">{{user.title}}</div>
+    </div>
+    <!-- </div> -->
+
+    <!-- </form> -->
+  </div>
+  <!-- Main navtabs -->
+  <div class="main-nav-tabs col-9 data-margin" style="padding-left: 10px!important;">
+
+    <!-- nav tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="true" class="nav-link active"
+                              data-toggle="tab" href="#mod-personal-contacts" id="mod-personal-contacts-tab"
+                              role="tab">Personal contacts</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#mod-emergency-contacts" id="mod-emergency-contacts-tab"
+                              role="tab">Emergency contacts</a></li>
+
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#mod-evoko" id="mod-evoko-tab"
+                              role="tab">Evoko</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#mod-personal-usage-policy" id="mod-personal-usage-policy-tab"
+                              role="tab">Personal usage policy</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#mod-public-ssh-keys" id="mod-public-ssh-keys-tab"
+                              role="tab">Public SSH keys</a></li>
+    </ul>
+
+    <div class="tab-content bg-white" id="myTabContent">
+      <section aria-labelledby="mod-personal-contacts-tab" class="tab-pane fade show active" id="mod-personal-contacts" role="tabpane1">
+        <div class="card">
+          <div class="card-body">
+          <form [formGroup]="contactForm" action="#" class="row">
+            <div class="form-group col-sm-12 col-lg-6">
+              <label for="landline">Landline</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><span class="fa fa-phone" style="width: 1rem"></span></span>
+                </div>
+                <input class="form-control" formControlName="landline" id="landline" name="landline"
+                       placeholder="Landline phone" type="text"/>
+              </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-lg-6">
+              <label class="label-ro" for="instantMessenger">Instant messenger</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><span class="fa-solid fa-bolt" style="width: 1rem"></span></span>
+                </div>
+                <input class="form-control" formControlName="messenger" id="instantMessenger"
+                       name="instantMessenger"
+                       placeholder="Instant messenger" type="text"/>
+              </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-lg-6">
+              <label class="label-ro" for="customerMail">Customer email</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><span class="fa fa-envelope" style="width: 1rem"></span></span>
+                </div>
+                <input class="form-control" formControlName="customerMail"
+                       id="customerMail" placeholder="Customer email"
+                       name="customerMail" type="text"/>
+              </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-lg-6">
+              <label class="label-ro" for="mobile">Mobile</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><span class="fa fa-mobile" style="width: 1rem"></span></span>
+                </div>
+                <input class="form-control" formControlName="mobile"
+                       id="mobile" name="mobile" placeholder="Mobile phone" type="text"/>
+              </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-lg-6">
+              <label class="label-ro" for="proMail">Professional email</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><span class="fa fa-envelope" style="width: 1rem"></span></span>
+                </div>
+                <input class="form-control" formControlName="proMail"
+                       id="proMail" name="proMail"
+                       placeholder="Professional email" type="text"/>
+              </div>
+            </div>
+          </form>
+        </div>
+        </div>
+      </section>
+
+      <!-- Tab Personal Information -->
+      <section aria-labelledby="mod-emergency-contacts-tab" class="tab-pane fade show" id="mod-emergency-contacts" role="tabpane2">
+        <div class="card">
+          <div class="card-body">
+          <form [formGroup]="emergencyContactForm" action="#">
+            <div class="form-group row" style="margin-bottom: -3.0rem ">
+              <div class="form-group col-sm-12 col-lg-6">
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <h3>Contact 1</h3>
+                </div>
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <label class="label-ro" for="contact1FullName">Full name</label>
+                  <input class="form-control" formControlName="fullNameContact1" id="contact1FullName"
+                         name="contact1FullName" placeholder="Full name" type="text">
+                </div>
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <label class="label-ro" for="relationShipContact1">Relationship</label>
+                  <input class="form-control" formControlName="relationshipContact1" id="relationShipContact1"
+                         name="relationShipContact1" placeholder="Relationship"
+                         type="text" maxlength="60">
+                </div>
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <label class="label-ro" for="phoneContact1">Phone number</label>
+                  <input class="form-control" formControlName="phoneNumberContact1" id="phoneContact1"
+                         name="phoneContact1" placeholder="Phone number" type="text">
+                </div>
+              </div>
+              <div class="form-group col-sm-12 col-lg-6">
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <h3>Contact 2</h3>
+                </div>
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <label class="label-ro" for="contact2FullName">Full name</label>
+                  <input class="form-control" formControlName="fullNameContact2" id="contact2FullName"
+                         name="contact2FullName" placeholder="Full name" type="text">
+                </div>
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <label class="label-ro" for="relationShipContact2">Relationship</label>
+                  <input class="form-control" formControlName="relationshipContact2" id="relationShipContact2"
+                         name="relationShipContact2" placeholder="Relationship"
+                         type="text" maxlength="60">
+                </div>
+                <div class="form-group contact-column-sm contact-column-lg">
+                  <label class="label-ro" for="phoneContact2">Phone number</label>
+                  <input class="form-control" formControlName="phoneNumberContact2" id="phoneContact2"
+                         name="phoneContact2" placeholder="Phone number" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="form-group row emergency-contact mt-4 mb-0">
+              <div class="form-group col-sm-12 col-lg-12">
+                <label for="contactComment">Comment</label>
+                <textarea class="form-control edit-comment" formControlName="contactComment" id="contactComment" maxlength="1000"
+                          name="contactComment" placeholder="Comment" rows="4"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        </div>
+      </section>
+
+
+      <!-- Tab Evoko Information -->
+      <section aria-labelledby="mod-evoko-tab" class="tab-pane fade show" id="mod-evoko" role="tabpane2">
+        <div class="card">
+          <div class="card-body mt-3 mb-4">
+            <p>Current PIN : {{evokoPin}}</p>
+            <button type="button" class="btn btn-primary mt-1" (click)="getOrUpdatePin(true)">Generate pin</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab Personal Usage Policy -->
+      <section aria-labelledby="mod-personal-usage-policy-tab" class="tab-pane fade" id="mod-personal-usage-policy" role="tabpane3">
+        <div class="card">
+          <div class="card-body">
+          <form [formGroup]="personalUsagePolicyForm" action="#" class="row">
+            <div class="form-group col-sm-12">
+              <div class="form-check">
+                <input class="form-check-input" formControlName="showBirthDay"
+                       name="showBirthdayTool"
+                       id="showBirthdayTool" type="checkbox">
+                <label for="showBirthdayTool">Show birthday information on tools (email included)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" formControlName="showJobAnniversary" id="displayJobAnniversary"
+                       name="displayJobAnniversary" type="checkbox">
+                <label for="displayJobAnniversary">Display job anniversary on Helios</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" formControlName="showUserPictureOnTools" id="displayUserPicture"
+                       name="displayUserPicture" type="checkbox">
+                <label for="displayUserPicture">Display user picture on tools (email included)</label>
+              </div>
+            </div>
+          </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab Public SSH Keys -->
+      <section aria-labelledby="mod-public-ssh-keys-tab" class="tab-pane fade" id="mod-public-ssh-keys" role="tabpane4">
+        <div class="card">
+          <form [formGroup]="publicSSHKeysForm"  action="#" >
+<!--            <div class="form-group col-sm-12 col-lg-12 mt-3 mb-0">-->
+<!--              <label class="label-ro" for="accentureMail">Accenture email</label>-->
+<!--              <input class="form-control" formControlName="accentureMail" id="accentureMail"-->
+<!--                     name="accentureMail" placeholder="Accenture email" type="text">-->
+<!--              <div *ngIf="publicSSHKeysForm.get('accentureMail').invalid && (publicSSHKeysForm.get('accentureMail').dirty || publicSSHKeysForm.get('accentureMail').touched)">-->
+<!--                <span *ngIf ="publicSSHKeysForm.get('accentureMail')?.hasError('incorrectMail')" class="invalid-feedback">The accenture email should be a valid email address</span>-->
+<!--              </div>-->
+<!--            </div>-->
+            <div class="mt-4 mb-0">
+              <div class="form-group col-sm-12 col-lg-12">
+                <label for="publicSshKeysYaml">Public SSH keys (yaml format)</label>
+                <textarea class="form-control edit-comment" formControlName="publicSshKeysYaml" id="publicSshKeysYaml"
+                          name="publicSshKeysYaml" placeholder="Public SSH keys (yaml format)" rows="10"></textarea>
+                <div *ngIf="publicSSHKeysForm.get('publicSshKeysYaml').invalid && (publicSSHKeysForm.get('publicSshKeysYaml').dirty || publicSSHKeysForm.get('publicSshKeysYaml').touched)">
+                  <span *ngIf ="publicSSHKeysForm.get('publicSshKeysYaml')?.hasError('invalidYaml')" class="invalid-feedback">The public SSH keys should be in a valid yaml format.</span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="updateProfile()">Save</button>
+</div>

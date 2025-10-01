@@ -1,0 +1,90 @@
+<div class="card-group">
+  <div class="card">
+
+    <header class="card-header card-header-lg">
+      <h2 class="card-title">Frontier worker declaration</h2>
+    </header>
+
+    <div class="card-body">
+      <div class="w-50">
+        <form [formGroup]="frontierDeclarationForm" action="#">
+          <div class="row emergency-contact">
+            <div class="col-12">
+              <div class="mb-3">
+                <label class="form-label" for="residentialCountry">Residential country</label>
+                <input class="form-control" id="residentialCountry" name="residential-country"
+                       formControlName="residentialCountry"
+                       placeholder="Residential country" type="text" disabled>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="socialSecurityNumber">Social security number (country of
+                  residence)</label>
+                <input class="form-control" id="socialSecurityNumber"
+                       name="socialSecurityNumber" placeholder="Social security number"
+                       formControlName="socialSecurityNumber"
+                       disabled
+                       type="text">
+              </div>
+
+              <h4>A1 form</h4>
+              <div class="row">
+                <div class="col-6 mb-3">
+                  <label class="form-label" for="a1Status">Status</label>
+                  <select class="form-control custom-select" formControlName="a1Status" id="a1Status"
+                          name="a1Status" [disabled]="readOnly">
+                    <option value="TO_DO">To do</option>
+                    <option value="REQUESTED">Requested</option>
+                    <option value="RECEIVED">Received</option>
+                  </select>
+                </div>
+                <div class="col-6 mb-3">
+                  <label class="form-label" for="endOfValidityDate">End of validity date</label>
+                  <div class="input-group">
+                    <input #dstr="ngbDatepicker" [footerTemplate]="footerTemplate3" class="form-control"
+                           formControlName="endOfValidityDate" id="endOfValidityDate" maxlength="20"
+                           [minDate]="{year: 2000, month: 1, day: 1}"
+                           [disabled]="readOnly || endOfValidityDateControl.disabled"
+                           ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                    <div class="input-group-append">
+                      <button (click)="dstr.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                              [disabled]="readOnly || endOfValidityDateControl.disabled"
+                              type="button"></button>
+                    </div>
+                    <div *ngIf="endOfValidityDateControl.invalid && (endOfValidityDateControl.dirty || endOfValidityDateControl.touched)" class="invalid-feedback">
+                      <div *ngIf="endOfValidityDateControl.errors.ngbDate?.invalid">
+                        End of validity date must be correct and in the following format : DD/MM/YYYY
+                      </div>
+                    </div>
+                  </div>
+                  <ng-template #footerTemplate3>
+                    <hr class="my-0">
+                    <button (click)="endOfValidityDateControl.setValue(today); dstr.close()"
+                            class="btn btn-primary btn-sm m-2 float-left">Today
+                    </button>
+                    <button (click)="dstr.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                  </ng-template>
+                </div>
+              </div>
+
+              <div *ngIf="residentialCountry === 'Belgium'">
+                <h4>Limosa</h4>
+                <div class="row">
+                  <div class="col-6 mb-3">
+                    <label class="form-label" for="limosaStatus">Status</label>
+                    <select class="form-control custom-select" formControlName="limosaStatus" id="limosaStatus"
+                            name="limosaStatus"
+                            [disabled]="readOnly"
+                    >
+                      <option value=""></option>
+                      <option value="RECEIVED">Received</option>
+=                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

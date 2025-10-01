@@ -1,0 +1,42 @@
+<ng-select
+  [(ngModel)]="filter"
+  (ngModelChange)="changeValue($event)"
+  [bindLabel]="label"
+  [bindValue]="idValue"
+  [clearSearchOnAdd]="clearSearchOnAdd"
+  [closeOnSelect]="closeOnSelect"
+  [items]="items"
+  [multiple]="multiple"
+  [ngStyle]="{'width': width ? width: null}"
+  [placeholder]="placeholder"
+  [selectableGroupAsModel]="selectableGroupAsModel"
+  [selectableGroup]="hasSelectAll"
+  [virtualScroll]="virtualScroll"
+  [selectOnTab]="selectOnTab"
+  [clearOnBackspace]="clearOnBackspace"
+  [groupBy]="groupBy"
+  [addTag]="addTag"
+  [addTagText]="addTagText"
+  [notFoundText]="notFoundText"
+  [disabled]="disabled"
+>
+  <ng-template *ngIf="hasSelectAll" let-index="index" let-item="item" let-item$="item$" ng-optgroup-tmp>
+    <input [ngModel]="item$.selected" id="item-all-{{index}}" type="checkbox"/> {{selectAllLabel}}
+  </ng-template>
+  <ng-template let-clear="clear" let-items="items" ng-multi-label-tmp>
+    <div *ngFor="let item of items | slice:0:maxTagsDisplayed" class="ng-value" [ngClass]="{'ng-value-multiple': multiple}">
+      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon left">×</span>
+      <span *ngIf="limitTagLength && limitTagLength > 0 && (forceTagLimit || items.length > 1); else noLimit"
+            class="ng-value-label">{{(label ? item[label] : item) | limitTo:limitTagLength}}</span>
+      <ng-template #noLimit>
+        <span class="ng-value-label">{{label ? item[label] : item}}</span>
+      </ng-template>
+    </div>
+    <div *ngIf="items.length > maxTagsDisplayed" class="ng-value">
+      <span class="ng-value-label">+{{items.length - maxTagsDisplayed}}</span>
+    </div>
+  </ng-template>
+  <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
+    <input [ngModel]="item$.selected" id="item-{{index}}" type="checkbox" [ngClass]="{'ng-value-multiple': multiple}"/> {{label ? item[label] : item}}
+  </ng-template>
+</ng-select>

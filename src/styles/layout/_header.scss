@@ -1,0 +1,53 @@
+/* ====================
+  MAIN HEADER
+==================== */
+
+.header {
+  padding: 1.25rem 1.625rem 1.25rem 5rem;
+  border-bottom: none;
+
+  &>div:first-child {
+    flex: 1;
+  }
+
+  a {
+    color: $black;
+  }
+
+  .header-appname {
+    border-left: none;
+
+    .fatman-logo {
+      max-height: 36px;
+      margin-right: 10px;
+    }
+  }
+}
+
+@media (max-width: 410px) {
+  .fatman-logo {
+    display: none;
+  }
+  .header-appname {
+    margin-left: 0;
+  }
+}
+
+.header-background {
+  background: rgba(255,255,255,0.9);
+}
+
+.main-header {
+  display: flex;
+  justify-content: flex-end;
+  align-content: flex-start;
+  margin: 0 0 1.5rem 0;
+
+  & > div:first-child {
+    flex: 1;
+  }
+  & > div + div {
+    align-self: flex-start;
+  }
+}
+

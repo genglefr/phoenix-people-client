@@ -1,0 +1,133 @@
+<div class="card">
+  <div class="card-body">
+
+    <div class="mb-2 ml-2 mr-2">
+      <h2 class="pt-2">Upload files</h2>
+      <div class="form-row mb-2">
+        <div class="form-group col-12 d-flex mb-1">
+          <label class="mb-0 mt-auto">Attachments</label>
+          <label class="btn btn-basic mb-0 ml-auto" for="file">Upload a file</label>
+          <input #attachmentInput
+                 (change)="onFileSelect($event)"
+                 accept=".xlsx, .xls, .csv"
+                 id="file"
+                 class="sr-only"
+                 multiple
+                 type="file">
+        </div>
+      </div>
+      <div (fileDropped)="onFileDrop($event)" appDragDrop class="dragover-container"
+           style="height: 150px;">
+        <div (click)="attachmentInput.click()"
+             *ngIf="file.value.length == 0"
+             class="drop-files-container" style="height: 150px; margin-bottom : 20px">
+          <div class="mx-auto align-self-center text-secondary">
+            <div style="color: grey">Drop files here</div>
+          </div>
+        </div>
+        <div *ngIf="file.value.length > 0"
+             class="attachments-container overflow-auto"
+             style="height: 150px">
+          <div class="attachments-list">
+            <ul class="card-body pt-2 mb-0">
+              <li *ngFor="let attachment of file.value" class="attachments-list-item">
+                <em class="fas fa-paperclip"></em>
+                <a
+                  class="attachments-link mr-auto">{{attachment.name}}</a>
+                <button (click)="removeFile(attachment)"
+                        aria-label="Remove"
+                        class="close" type="button">
+                  <span>&times;</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-end pt-2">
+        <div class="col-auto">
+          <button type="button" class="btn btn-primary mt-2" [disabled]="file?.value?.length === 0" (click)="upload()">Import</button>
+        </div>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <header>
+      <div class="row align-items-end mb-3">
+        <div class="col mb-2">
+          <label class="label-sm" for="search-engine">File name</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-search"></i></div>
+            </div>
+            <input type="text" class="form-control"
+                   id="search-engine" maxlength="150" style="width: 15rem;"
+                   [maxLength]="150" [(ngModel)]="fileConsumptionFilter.fileName">
+          </div>
+        </div>
+        <div class="col-auto  mt-auto align-items-end">
+          <button (click)="refreshPage()" class="btn btn-basic text-nowrap mb-2">
+            <i class="fa fa-refresh"></i>
+            Refresh
+          </button>
+          <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap ml-3 mb-2">
+            <i class="fa fa-search"></i>
+            Search
+          </button>
+        </div>
+      </div>
+
+    </header>
+    <div class="table-responsive" style="overflow-x: initial;">
+      <h3 class="text-center p-1" *ngIf="listFiles.content.length <= 0">
+        No data
+      </h3>
+      <table *ngIf="listFiles.content.length > 0" class="table table-full">
+        <thead>
+        <tr>
+          <th scope="col"><span (click)="changeSort('fileName')" class="sort-column"> File name  <i
+            class="fas {{
+          fileConsumptionFilter.sortingRow==='fileName'?!fileConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+          ></i></span></th>
+          <th scope="col"><span (click)="changeSort('createdOn')" class="sort-column"> Created on <i
+            class="fas {{ fileConsumptionFilter.sortingRow==='createdOn'?!fileConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+          ></i></span></th>
+          <th scope="col"><span (click)="changeSort('finishedOn')" class="sort-column"> Finished on <i
+            class="fas {{ fileConsumptionFilter.sortingRow==='finishedOn'?!fileConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+          ></i></span></th>
+          <th scope="col"><span (click)="changeSort('status')" class="sort-column"> Status  <i
+            class="fas {{
+          fileConsumptionFilter.sortingRow==='status'?!fileConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+          ></i></span></th>
+          <th class="text-right" scope="col" style="width: 20em;"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let file of listFiles.content">
+          <td>
+            {{getFileNameWithoutExtension(file.fileName)}}
+          </td>
+          <td>
+            {{formatDate(file.createdOn)}}
+          </td>
+          <td>
+            {{formatDate(file.finishedOn)}}
+          </td>
+          <td>
+            {{file.status}}
+          </td>
+          <td class="text-right">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <app-data-table-pagination (changeEventEmitter)="changePagination($event)" [pageDto]="listFiles"
+                               [pagination]="pagination">
+    </app-data-table-pagination>
+
+
+  </div>
+</div>

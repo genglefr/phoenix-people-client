@@ -1,0 +1,126 @@
+<div *ngIf="pageDto?.content?.length > 0" class="d-flex justify-content-end pt-4 px-4">
+
+  <select (change)="changePageOptions(0)" *ngIf="showPageSizeOptions" [(ngModel)]="pageSize"
+          class="form-control input-sm " style="max-width: 5vw;display: inline;margin-right: auto;"> style="display:
+    inline;margin-right: auto;">
+    <option *ngFor="let pageSize of pageSizeOptions; let first = first"
+            [selected]="first" [value]="pageSize">{{ pageSize }}</option>
+  </select>
+
+  <nav aria-label="Page navigation">
+    <ul *ngIf="pageDto.first && !pageDto.last" class="pagination">
+      <li class="page-item">
+        <button aria-label="Previous" class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link">{{pageDto.number + 1}} <span class="sr-only">(current)</span></button>
+      </li>
+      <li *ngIf="pageDto.totalPages>=pageDto.number + 2" class="page-item">
+        <button (click)="changePageOptions(pageDto.number + 1)"
+                class="page-link">{{pageDto.number + 2}}</button>
+      </li>
+      <li *ngIf="pageDto.totalPages>=pageDto.number + 3" class="page-item">
+        <button (click)="changePageOptions(pageDto.number + 2)"
+                class="page-link">{{pageDto.number + 3}}</button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePageOptions(pageDto.number+1)" aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+      <li *ngIf="showFirstAndLastPageIcon" class="page-item">
+        <button (click)="changePageOptions(pageDto.totalPages)" aria-label="Show last" class="page-link">
+          <i class="fas fa-fast-forward"></i>
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="!pageDto.first&&!pageDto.last" class="pagination">
+      <li *ngIf="showFirstAndLastPageIcon" class="page-item">
+        <button (click)="changePageOptions(0)" aria-label="Show first" class="page-link">
+          <i class="fas fa-fast-backward"></i>
+        </button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePageOptions(pageDto.number-1)" aria-label="Previous" class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li class="page-item ">
+        <button (click)="changePageOptions(pageDto.number-1)"
+                class="page-link">{{pageDto.number}} </button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link">{{pageDto.number + 1}}<span class="sr-only">(current)</span></button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePageOptions(pageDto.number+1)"
+                class="page-link">{{pageDto.number + 2}}</button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePageOptions(pageDto.number+1)" aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+      <li *ngIf="showFirstAndLastPageIcon" class="page-item">
+        <button (click)="changePageOptions(pageDto.totalPages)" aria-label="Show last" class="page-link">
+          <i class="fas fa-fast-forward"></i>
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="!pageDto.first&&pageDto.last" class="pagination">
+      <li *ngIf="showFirstAndLastPageIcon" class="page-item">
+        <button (click)="changePageOptions(0)" aria-label="Show first" class="page-link">
+          <i class="fas fa-fast-backward"></i>
+        </button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePageOptions(pageDto.number-1>=0?pageDto.number-1:0)"
+                aria-label="Previous"
+                class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li *ngIf="pageDto.number-1>0">
+        <button (click)="changePageOptions(pageDto.number-2)"
+                class="page-link">{{pageDto.number - 1}} </button>
+      </li>
+      <li *ngIf="pageDto.number>0">
+        <button (click)="changePageOptions(pageDto.number-1)"
+                class="page-link">{{pageDto.number}}</button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link ">{{pageDto.number + 1}}<span class="sr-only">(current)</span></button>
+      </li>
+      <li class="page-item">
+        <button aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="pageDto.first&&pageDto.last" class="pagination">
+      <li class="page-item">
+        <button aria-label="Previous" class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li *ngIf="pageDto.number-1>0">
+        <button (click)="changePageOptions(pageDto.number-2)"
+                class="page-link">{{pageDto.number - 1}} </button>
+      </li>
+      <li *ngIf="pageDto.number>0">
+        <button (click)="changePageOptions(pageDto.number-1)"
+                class="page-link">{{pageDto.number}}</button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link ">{{pageDto.number + 1}}<span class="sr-only">(current)</span></button>
+      </li>
+      <li class="page-item">
+        <button aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+</div>

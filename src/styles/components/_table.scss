@@ -1,0 +1,76 @@
+/* ====================
+  TABLE
+==================== */
+
+.table {
+  margin-bottom: 0;
+}
+
+/*-------------------- THEAD --------------------*/
+
+.table thead td,
+.table thead th {
+  border-top: 0;
+  border-bottom-width: 1px;
+  padding: 2rem 1.25rem 1.5rem 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  vertical-align: middle;
+  color: $black;
+  background-color: $primary-extra-light;
+}
+
+/*-------------------- ROW --------------------*/
+
+.table td, .table th {
+  padding: 1.125rem 1.25rem;
+  vertical-align: middle;
+  background: $white;
+  border-top: .0625rem solid $grey-light;
+}
+
+/*-------------------- PAGINATION --------------------*/
+
+.pagination {
+  background: $white;
+}
+
+/*-------------------- CUSTOM TABLE --------------------*/
+
+#stepTable:last-child {
+  border-bottom: none;
+}
+
+.fake-thead {
+  border-top: 0;
+  border-bottom-width: 1px;
+  padding: 2rem 1.25rem 1.5rem 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  vertical-align: middle;
+  color: $black;
+  background-color: $primary-extra-light;
+}
+
+td.pointer:hover {
+  background-color: $grey-extra-light;
+}
+
+.sort-column {
+  cursor: pointer;
+}
+
+/*-------------------- TABLE GROUPS --------------------*/
+
+.table-groups {
+  margin-bottom: unset;
+  overflow-x: auto;
+}
+
+.table-groups tbody tr {
+  height: 57px;
+}
+
+.table-member-remove {
+  width: 50px;
+}

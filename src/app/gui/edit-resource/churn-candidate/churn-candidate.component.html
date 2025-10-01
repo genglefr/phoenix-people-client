@@ -1,0 +1,44 @@
+<div class="border-top">
+  <div class="col-12 col-sm-6 pt-2 pt-sm-4 pl-0">
+    <header>
+      <h2 class="card-title">CHURN</h2>
+    </header>
+    <!--Reason-->
+    <div class="form-group col-12 pr-0">
+      <label class="label-ro" for="reason">Reason</label>
+      <select class="form-control custom-select" id="reason"
+              name="reason" (change)="churnUpdated()" [(ngModel)]="selectedReason">
+        <option value=null selected hidden> Choose an option ... </option>
+        <option *ngFor="let reason of REASONS;let i=index" value="{{reason.value}}">
+          {{reason.label}}
+        </option>
+      </select>
+    </div>
+
+    <div *ngIf="this.selectedReason">
+      <div class="form-group col-12 pr-0">
+        <div><label for="reasons">Comments</label></div>
+        <select
+          (change)="onReasonChange($event)"
+          [(ngModel)]="selectedComment"
+          class="form-control custom-select"
+          id="reasons"
+        >
+          <option value="" disabled selected>Select an option</option>
+          <option *ngFor="let comment of comments" [value]="comment">{{ comment }}</option>
+        </select>
+      </div>
+
+      <div class="form-group col-12 pr-0" [hidden]="isIncludedInComments()">
+      <textarea
+        (input)="onCommentChange($event)"
+        [(ngModel)]="comment"
+        class="form-control"
+        id="comments"
+        placeholder="Comment">
+      </textarea>
+      </div>
+    </div>
+  </div>
+</div>
+

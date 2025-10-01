@@ -1,0 +1,265 @@
+<!-- main-header -->
+<header class="main-header mb-0">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between">
+      <div class="col-auto">
+        <h1 class="main-title">{{onboardee.firstName}} {{onboardee.lastName}}</h1>
+      </div>
+      <div class="col col-auto">
+        <a class="btn btn-basic" routerLink=".."> Cancel </a>
+        <button (click)="updateOnboardeeInformation()" class="btn btn-primary ml-3" type="submit"> Save
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="main-content">
+
+  <!-- Main navtabs -->
+  <div class="main-nav-tabs">
+
+    <!-- nav tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="true" class="nav-link active"
+                              data-toggle="tab" href="#onboardee-information" id="onboardee-information-tab"
+                              role="tab">Personal Information</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#onboarding" id="onboarding-tab"
+                              role="tab">Onboarding</a></li>
+    </ul>
+
+    <!-- tab content -->
+    <div class="tab-content bg-white" id="myTabContent">
+
+      <section aria-labelledby="onboardee-information-tab" class="tab-pane fade show active"
+               id="onboardee-information"
+               role="tabpanel">
+
+        <div class="box mx-0 pt-4">
+          <div class="row border-bottom">
+            <!-- Resource informations -->
+            <div class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Resource information</h2>
+              </header>
+
+              <div class="p-3">
+                <form [formGroup]="onboardeeForm" class="row">
+                  <ng-template #rt let-r="result" let-t="term">
+                    <ngb-highlight [result]="r.lastName + ' ' + r.firstName + ' (' + r.account + ')'"
+                                   [term]=""></ngb-highlight>
+                  </ng-template>
+                  <div class="form-group col-12" style="margin-bottom: 0;">
+                    <div class="form-group row" style="margin-bottom: 0;">
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>First name</label>
+                        <input formControlName="firstName" class="form-control" type="text" readonly>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>Last name</label>
+                        <input formControlName="lastName" class="form-control" type="text" readonly>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>Start date</label>
+                        <input formControlName="startDate" class="form-control" ngbDatepicker readonly>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>End date</label>
+                        <input formControlName="endDate" class="form-control" type="text" readonly>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>Position (aligned with career path)</label>
+                        <input formControlName="jobPosition" class="form-control" type="text" readonly>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>Job title</label>
+                        <input formControlName="jobTitle" class="form-control" type="text">
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>Resource type</label>
+                        <input formControlName="resourceType" class="form-control" type="text" readonly>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>Referred by</label>
+                        <input formControlName="referrer" class="form-control" type="text" readonly>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label>Company</label>
+                        <input formControlName="company" class="form-control" type="text" readonly>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- Attachments -->
+            <div class="col-12 col-sm-6 pt-4 border-left">
+              <header>
+                <h2 class="card-title">Attachments</h2>
+              </header>
+
+              <div class="p-3">
+                <ng-container *ngIf="onboardee.attachments.length === 0">
+                  <p class="text-danger">No link exists for this candidate between Smartrecruiters and U-Source</p>
+                </ng-container>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item" *ngFor="let attachment of onboardee.attachments">
+                    <a (click)="downloadAttachment(attachment)">
+                      {{attachment.name}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- Responsibles -->
+            <div class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Responsibles</h2>
+              </header>
+
+              <div class="p-3">
+                <app-responsible-at-arhs #responsibleAtArhsComponent
+                                         [startDate]="startDate"
+                                         [employeeList]="employeeList"
+                                         [userToShow]="onboardee"
+                                         [isEditResource]="true">
+                </app-responsible-at-arhs>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section aria-labelledby="onboarding-tab" class="tab-pane fade p-4"
+               id="onboarding"
+               role="tabpanel">
+        <header class="pl-0 mb-3">
+          <ul class="actions-list flex-wrap align-items-end">
+            <li class="actions-list-item">
+              <label class="label-sm">Done</label>
+              <div (ngModelChange)="changeDone($event)" [(ngModel)]="onboardeeFilter.stepDone"
+                   aria-label="Activity"
+                   class="btn-group btn-group-toggle d-block" name="radiogroup" ngbRadioGroup>
+                <label class="btn btn-outline" ngbButtonLabel>
+                  <input class="btn btn-outline-light" ngbButton type="radio" value="ALL">All
+                </label>
+                <label class="btn btn-outline" ngbButtonLabel>
+                  <input class="btn btn-outline-light" ngbButton type="radio" value="YES">Yes
+                </label>
+                <label class="btn btn-outline" ngbButtonLabel>
+                  <input class="btn btn-outline-light" ngbButton type="radio" value="NO">No
+                </label>
+              </div>
+            </li>
+            <li class="actions-list-item">
+              <div>
+                <label class="label-sm" for="search-engine">Onboarding step</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fas fa-search"></i></div>
+                  </div>
+                  <input type="text" class="form-control"
+                         id="search-engine" maxlength="150" style="width: 20rem;"
+                         (ngModelChange)="changeStep($event)" [maxLength]="150" [(ngModel)]="onboardeeFilter.stepSearch">
+                </div>
+              </div>
+            </li>
+            <li class="actions-list-item">
+              <label for="dueDate">Due date</label>
+              <ng-select [items]="dueDates"
+                         [(ngModel)]="onboardeeFilter.dueDates"
+                         (ngModelChange)="changeDueDate($event)"
+                         [multiple]="true"
+                         [closeOnSelect]="false"
+                         [virtualScroll]="true"
+                         style="min-width: 20rem;"
+                         id="dueDate">
+                <ng-template let-clear="clear" let-items="items" ng-multi-label-tmp>
+                  <div *ngFor="let item of items | slice:0:1" class="ng-value">
+                    <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon left">×</span>
+                    <span class="ng-value-label">
+                    {{item}}
+                  </span>
+                  </div>
+                  <div *ngIf="items.length > 1" class="ng-value">
+                    <span class="ng-value-label">+{{items.length - 1}}</span>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </li>
+          </ul>
+        </header>
+        <div class="table-responsive" style="overflow-x: initial;">
+          <table class="table table-full">
+            <thead>
+            <tr>
+              <th scope="col"><span (click)="changeSort('isStepDone')" class="sort-column"> Done  <i
+                class="fas {{
+          onboardeeFilter.sortingRow==='isStepDone'?!onboardeeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+              ></i></span></th>
+              <th scope="col"><span (click)="changeSort('step')" class="sort-column"> Onboarding step<i
+                class="fas {{ onboardeeFilter.sortingRow==='step'?!onboardeeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+              ></i></span></th>
+              <th scope="col"><span (click)="changeSort('dueDate')" class="sort-column"> Due date<i
+                class="fas {{ onboardeeFilter.sortingRow==='dueDate'?!onboardeeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+              ></i></span></th>
+              <th scope="col">Note</th>
+              <th class="text-right" scope="col">
+                <button class="btn btn-sm btn-primary" (click)="addStep()">
+                  Add step
+                </button>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let step of onboardingSteps; let indexOfElement = index">
+              <td [id]="indexOfElement === onboardingSteps.length-1 ? 'last-item' :''">
+                <!-- Checkbox -->
+                <div class="form-check" (click)="toggleStep(step)">
+                  <input class="form-check-input" formControlName="stepDone" id="stepDone+{{indexOfElement}}"
+                         type="checkbox" [(ngModel)]="step.isStepDone"/>
+                  <label for="stepDone+{{indexOfElement}}"></label>
+                </div>
+              </td>
+              <td class="mid-size">
+                <div class="input-group mr-0">
+                  <input type="text" maxlength="255" class="form-control" [(ngModel)]="step.step"/>
+                  <div class="input-group-append">
+                    <button [disabled]="!step.link" (click)="goToLink(step.link)"
+                            class="btn btn-sm btn-basic no-after" type="button">
+                      <em class="fas fa-external-link-alt"></em>
+                    </button>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <select class="form-control custom-select" [(ngModel)]="step.dueDate">
+                  <option *ngFor="let dueDate of this.dueDates" value="{{dueDate}}">
+                    {{dueDate}}
+                  </option>
+                </select>
+              </td>
+              <td class="mid-size">
+                <input type="text" maxlength="255" [(ngModel)]="step.note" class="form-control"/>
+              </td>
+              <td class="text-right">
+                <button class="btn btn-sm btn-danger" (click)="deleteStep(step, indexOfElement)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+</section>

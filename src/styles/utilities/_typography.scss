@@ -1,0 +1,89 @@
+/* ====================
+  TYPOGRAPHY
+==================== */
+
+h1{
+  font-size: 1.5rem;
+  color: $black;
+}
+
+h2 {
+  color: $black-light;
+  text-transform: none;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+h1, h2 {
+  text-transform: uppercase;
+}
+
+h3 {
+  color: $black-light;
+  text-transform: capitalize;
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+h5 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  margin-right: 10px;
+}
+
+p {
+  margin-bottom: 0.875rem;
+}
+
+.text-primary {
+  color: $primary!important;
+}
+
+.text-danger {
+  color: $danger!important;
+}
+
+.text-success {
+  color: $success!important;
+}
+
+.text-info {
+  color: $info-background!important;
+}
+
+.text-black-light {
+  color: $black-light;
+}
+
+.text-grey-light {
+  color: $grey-light;
+}
+
+.text-grey {
+  color: $grey-darker;
+}
+
+.text-sm {
+  font-size: 0.8125rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-lg {
+  font-size: 1rem;
+}
+
+.striped {
+  font-style: italic;
+  text-decoration: line-through;
+}
+
+.first-letter::first-letter {
+  text-transform: uppercase;
+}

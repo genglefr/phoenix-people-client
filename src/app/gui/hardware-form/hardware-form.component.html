@@ -1,0 +1,32 @@
+<form [formGroup]="form" action="#" class="row">
+
+  <div class="form-group col-sm-12 col-lg-12">
+    <label for="screens">Screens</label><br/>
+    <select class="form-control custom-select col-lg-12" formControlName="screens" id="screens"
+            name="screens">
+      <option *ngFor="let screen of SCREENS" value="{{screen}}">
+        {{screen}}
+      </option>
+    </select>
+  </div>
+
+  <div class="col-sm-12 col-lg-12">
+    <label>Additional assets</label>
+  </div>
+  <div class="form-group col-sm-12" *ngFor="let asset of assets;let i=index"
+       [ngClass]="{'col-lg-4': (i%2===0) , 'col-lg-8': (i%2!==0) }">
+    <div class="form-check pl-0">
+      <input class="form-check-input" type="checkbox" [disabled]="disabled"
+             id="{{asset?.id}}" value="{{asset?.name}}" (change)="updateAsset($event, asset)"
+             [checked]="isChecked(asset)">
+      <label class="form-check-label ml-4" for="{{asset?.id}}">{{asset?.name}}</label>
+    </div>
+  </div>
+
+  <div class="form-group col-sm-12 col-lg-12">
+    <label for="comments">Additional comments</label>
+    <textarea class="form-control col-lg-12" formControlName="comments" id="comments">
+    </textarea>
+  </div>
+
+</form>

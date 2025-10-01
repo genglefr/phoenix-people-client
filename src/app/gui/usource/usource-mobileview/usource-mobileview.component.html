@@ -1,0 +1,142 @@
+<header class="px-4">
+  <div>
+    <label class="label-sm" for="search-engine">Search by name, account, job position, title or
+      phone number (min. 3 char.)</label>
+    <div class="input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><i class="fas fa-search"></i></div>
+            </div>
+      <input (ngModelChange)="changeFullName($event)" [maxLength]="50" [(ngModel)]="resourceFilter.fullSearch"
+             class="form-control"
+             id="search-engine" maxlength="50" type="text">
+    </div>
+  </div>
+  <div class="mt-3">
+    <label class="label-sm">Filter by companies:</label>
+    <select class="form-control custom-select" id="companySelection" (change)="changeCompany($event)">
+      <option *ngFor="let company of resourceCompanyList" [selected]="company.company === selectedCompany"
+              value="{{company.company}}">{{company.company}}</option>
+    </select>
+  </div>
+</header>
+<div class="mt-3 px-2">
+  <div class="card  mb-3" *ngFor="let resource of resources.content">
+    <div class="d-flex  align-items-center px-3  pt-3">
+      <figure class="mb-0">
+        <div class="position-relative">
+          <div class="{{resource.inHoliday ? 'badge-danger' : 'badge-success'}} availability-pill"></div>
+          <img class="user-avatar rounded-circle" [src]="'/api/resources/pictures/cropped/' + resource.resourceUuid">
+        </div>
+      </figure>
+      <h5 class="card-title  ml-3  mb-0">{{resource.firstName}} {{resource.lastName}}</h5>
+    </div>
+    <div class="card-body p-3">
+      <div class="d-flex  pb-4  pt-2">
+        <a class="btn  btn-primary  flex-fill  mr-2"  href="tel:{{resource.mobilePhone}}" *ngIf="resource.mobilePhone"><i class="fas fa-phone mr-2"></i>Call</a>
+        <a class="btn  btn-basic  flex-fill  ml-2" href="mailto:{{resource.email}}" *ngIf="resource.email"><i class="fas fa-paper-plane mr-2"></i>Email</a>
+      </div>
+      <div>
+        <ul style="list-style: none; padding-inline-start: unset;">
+          <li class="d-flex" *ngIf="resource.email">
+            <i class="fas fa-envelope mr-2 mb-auto mt-auto"></i>
+            <a class="text-break" href="mailto:{{resource.email}}">{{resource.email}}</a>
+          </li>
+          <li class="d-flex" class="mt-2" *ngIf="resource.mobilePhone">
+            <i class="fas fa-mobile-alt mr-2"></i>
+            <a class="ml-2" class="text-break" href="tel:{{resource.mobilePhone}}">{{resource.mobilePhone}}</a>
+          </li>
+          <li class="d-flex" class="mt-2" *ngIf="resource.landLinePhone">
+            <i class="fas fa-phone mr-2"></i>
+            <a class="text-break" href="tel:{{resource.landLinePhone}}">{{resource.landLinePhone}}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center">
+  <nav aria-label="Page navigation">
+    <ul *ngIf="resources.first&&!resources.last" class="pagination">
+      <li class="page-item">
+        <button aria-label="Previous" class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+      </li>
+      <li *ngIf="resources.totalPages>=resources.number+2" class="page-item">
+        <button (click)="changePage(resources.number +1)" class="page-link">{{resources.number+2}}</button>
+      </li>
+      <li *ngIf="resources.totalPages>=resources.number+3" class="page-item">
+        <button (click)="changePage(resources.number+2)" class="page-link">{{resources.number+3}}</button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePage(resources.number+1)" aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="resources.first&&resources.last" class="pagination">
+      <li class="page-item">
+        <button aria-label="Previous" class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+      </li>
+      <li class="page-item">
+        <button aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="!resources.first&&!resources.last" class="pagination">
+      <li class="page-item">
+        <button (click)="changePage(resources.number-1)" aria-label="Previous" class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li class="page-item ">
+        <button (click)="changePage(resources.number-1)"
+                class="page-link">{{resources.number}}</button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link">{{resources.number+1}}<span class="sr-only">(current)</span></button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePage(resources.number+1)"
+                class="page-link">{{resources.number+2}}</button>
+      </li>
+      <li class="page-item">
+        <button (click)="changePage(resources.number+1)" aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+    </ul>
+    <ul *ngIf="!resources.first&&resources.last" class="pagination">
+      <li class="page-item">
+        <button (click)="changePage(resources.number-1>0?resources.number-1:0)"
+                aria-label="Previous"
+                class="page-link">
+          <span aria-hidden="true">&laquo;</span>
+        </button>
+      </li>
+      <li *ngIf="resources.number-1>0">
+        <button (click)="changePage(resources.number-2)"
+                class="page-link">{{resources.number-1}}</button>
+      </li>
+      <li *ngIf="resources.number>0">
+        <button (click)="changePage(resources.number-1)" class="page-link">{{resources.number}}</button>
+      </li>
+      <li class="page-item active">
+        <button class="page-link ">{{resources.number+1}}<span class="sr-only">(current)</span></button>
+      </li>
+      <li class="page-item">
+        <button aria-label="Next" class="page-link">
+          <span aria-hidden="true">&raquo;</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+  </div>
+</div>

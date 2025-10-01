@@ -1,0 +1,312 @@
+<header *ngIf="this.isUserAdministrator" class="main-header mb-2">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Manage candidates</h1>
+      </div>
+      <div class="col col-auto">
+        <button (click)="moveSelected()" *ngIf="this.isUserAdministrator"
+           [disabled]="!candidatesToMove?.length"
+           class="btn btn-basic">Move selected</button>
+        <a class="btn btn-primary ml-3" routerLink="/administration/candidates/new">Create candidate</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content box">
+
+  <header class="px-4">
+    <div class="row align-items-end mb-4" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2">
+        <label class="label-sm">Full name (min. 3 char.)</label>
+        <input
+          [(ngModel)]="candidateFilter.fullname"
+          [maxLength]="50" class="form-control" id="search-fullname-engine" type="text">
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2">
+        <label class="label-sm">Account</label>
+        <input
+          [(ngModel)]="candidateFilter.account"
+          [maxLength]="50" class="form-control" id="search-account-engine" type="text">
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2" style="flex: 0 0 13%;max-width: 13%;">
+        <label class="label-sm">Status</label>
+        <app-multi-select (changeEventEmitter)="changeStatus($event)"
+                          [filter]="candidateFilter.status"
+                          [items]="statusList"
+                          [forceTagLimit]="true"
+                          [limitTagLength]="13"
+                          [placeholder]="'Select status'"
+                          idValue="status"
+                          label="description">
+        </app-multi-select>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2">
+        <label class="label-sm">Company</label>
+        <app-multi-select (changeEventEmitter)="changeCompany($event)"
+                          [filter]="candidateFilter.companies"
+                          [items]="companyList"
+                          [limitTagLength]="9"
+                          [placeholder]="'Select companies'">
+        </app-multi-select>
+      </div>
+      <div class="col-sm-1 col-md-1 col-lg-1 pr-0 mb-2">
+        <label class="label-sm">Start date</label>
+        <input [(ngModel)]="candidateFilterStartDate" class="form-control"
+               id="search-startDate-engine"
+               maxlength="50" placeholder="DD/MM/YYYY" type="text">
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2">
+        <label class="label-sm">Type</label>
+        <app-multi-select (changeEventEmitter)="changeType($event)"
+                          [filter]="candidateFilter.types"
+                          [items]="typeList"
+                          [limitTagLength]="9"
+                          [placeholder]="'Select types'"
+                          idValue="description"
+                          label="jobType">
+        </app-multi-select>
+      </div>
+      <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pr-0 mb-2" style="flex: 0 0 21%;max-width: 21%;">
+        <label class="label-sm">Laptop</label>
+        <app-multi-select (changeEventEmitter)="changeLaptopModel($event)"
+                          [filter]="candidateFilter.laptops"
+                          [items]="laptopModelsList"
+                          [limitTagLength]="34"
+                          [placeholder]="'Select laptops'">
+        </app-multi-select>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2" style="flex: 0 0 13%;max-width: 13%;">
+        <label class="label-sm">Keyboard</label>
+        <app-multi-select (changeEventEmitter)="changeKeyboard($event)"
+                          [filter]="candidateFilter.keyboards"
+                          [items]="keyboardList"
+                          [placeholder]="'Select keyboards'">
+        </app-multi-select>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2">
+        <label class="label-sm">New graduate</label>
+        <div [(ngModel)]="candidateFilterNewGraduate" (ngModelChange)="changeNewGraduate()"
+             aria-label="New graduate"
+             class="btn-group btn-group-toggle activity-button-group" name="radiogroup" ngbRadioGroup>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="all">All
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="yes">Yes
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="no">No
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2">
+        <label class="label-sm">Work permit necessary</label>
+        <div [(ngModel)]="candidateFilterWorkPermitNecessary" (ngModelChange)="changeWorkPermitNecessary()"
+             aria-label="Work permit necessary"
+             class="btn-group btn-group-toggle activity-button-group" name="radiogroup" ngbRadioGroup>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="all">All
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="yes">Yes
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="no">No
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-1 pr-0 mb-2 mt-3">
+        <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+          <i class="fa fa-search"></i>
+          Search
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="table-responsive">
+    <table class="table table-full">
+      <thead>
+      <tr>
+        <th scope="col">
+          <div *ngIf="isUserAdministrator" class="custom-control custom-checkbox" id="div-select-all">
+            <input (change)="selectAllCandidates()" [(ngModel)]="selectAll" class="custom-control-input"
+                   id="selectAll" type="checkbox">
+            <label class="custom-control-label" for="selectAll">&nbsp;</label>
+          </div>
+        </th>
+        <th scope="col"><span (click)="changeSort('firstName')" class="sort-column"> Full name <i
+          class="fas {{
+          candidateFilter.sortingRow==='firstName'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('status')" class="sort-column"> Status <i
+          class="fas {{
+          candidateFilter.sortingRow==='status'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('company')" class="sort-column"> Company <i
+          class="fas {{
+          candidateFilter.sortingRow==='company'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('startDate')" class="sort-column"> Start date <i
+          class="fas {{
+          candidateFilter.sortingRow==='startDate'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('typeResource')" class="sort-column"> Type <i
+          class="fas {{
+          candidateFilter.sortingRow==='typeResource'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('laptopModel')" class="sort-column"> Laptop <i
+          class="fas {{
+          candidateFilter.sortingRow==='laptopModel'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('keyboardModel')" class="sort-column"> Keyboard <i
+          class="fas {{
+          candidateFilter.sortingRow==='keyboardModel'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('newGraduate')" class="sort-column"> <abbr title="New graduate"> New gr. </abbr> <i
+          class="fas {{
+          candidateFilter.sortingRow==='newGraduate'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('WorkPermitNecessary')" class="sort-column"> <abbr title="Work Permit Necessary"> Work Permit Necessary</abbr> <i
+          class="fas {{
+          candidateFilter.sortingRow==='WorkPermitNecessary'?!candidateFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th class="text-right" scope="col"></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let candidate of candidates.content">
+        <td [ngStyle]="{'border-left-color': candidate.color}" class="company-cell pr-0">
+          <div *ngIf="isUserAdministrator && candidate.status === 'CONTRACT_SIGNED' && candidate.administrated
+          && (candidate.company && (!this.companyService.luxCompanies.includes(candidate.company ) || (candidate.residentialCountry != null)))"
+               class="custom-control custom-checkbox">
+            <input (change)="addCandidatesToList($event, candidate)" [(ngModel)]="candidate.checked"
+                   [id]="candidate.id" class="custom-control-input"
+                   type="checkbox">
+            <label [for]="candidate.id" class="custom-control-label">&nbsp;</label>
+          </div>
+        </td>
+        <td style="max-width: 220px;">
+          <b>{{candidate.firstName}} {{candidate.lastName}}</b> ({{candidate.account}})
+        </td>
+        <td>{{translateStatusType(candidate.status)}}</td>
+        <td>
+          <span class="badge-pill">
+            <div [ngStyle]="{'background-color': candidate.color}" class="pill"></div>
+            {{candidate.company}}
+          </span>
+        </td>
+        <td>{{candidate.startDate}}</td>
+        <td>{{translateJobType(candidate.resourceType)}}</td>
+        <td>{{translateLaptopType(candidate.laptopModel)}}</td>
+        <td>{{candidate.keyboardModel}}</td>
+        <td>{{candidate.newGraduate ? 'Yes' : 'No'}}</td>
+        <td>{{candidate.workPermitNecessary ? 'Yes' : 'No'}}</td>
+        <td class="text-right">
+          <button class="btn btn-sm btn-basic mb-2"
+             routerLink="/administration/candidates/{{candidate.account}}">Details</button>
+          <button (click)="move(candidate.account)" *ngIf="this.isUserAdministrator && candidate.administrated"
+                  [disabled]="candidate.status !== 'CONTRACT_SIGNED' || (candidate.company &&
+                  companyService.luxCompanies.includes(candidate.company) && EMPL_OVERH.includes(candidate.resourceType)
+                  && !candidate.residentialCountry)"
+                  class="btn btn-sm btn-basic mb-2 ml-3">Move
+          </button>
+          <button class="btn btn-sm btn-danger ml-3 mb-2" type="button" (click)="delete(candidate.account)" *ngIf="this.isUserAdministrator && candidate.administrated">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <div *ngIf="candidates.content.length>0" class="d-flex justify-content-end pt-4 px-4">
+
+    <select (change)="changePageSize()" [(ngModel)]="pageSize" class="form-control input-sm"
+            style="max-width: 5vw;display: inline;margin-right: auto;">
+      <option selected value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+
+    <nav aria-label="Page navigation">
+      <ul *ngIf="candidates.first&&!candidates.last" class="pagination">
+        <li class="page-item">
+          <button aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{candidates.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li *ngIf="candidates.totalPages>=candidates.number+2" class="page-item">
+          <button (click)="changePage(candidates.number +1)" class="page-link">{{candidates.number + 2}}</button>
+        </li>
+        <li *ngIf="candidates.totalPages>=candidates.number+3" class="page-item">
+          <button (click)="changePage(candidates.number+2)" class="page-link">{{candidates.number + 3}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(candidates.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="!candidates.first&&!candidates.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(candidates.number-1)" aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item ">
+          <button (click)="changePage(candidates.number-1)"
+                  class="page-link">{{candidates.number}}
+          </button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{candidates.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(candidates.number+1)"
+                  class="page-link">{{candidates.number + 2}}
+          </button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(candidates.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="candidates.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(candidates.number-1>0?candidates.number-1:0)"
+                  aria-label="Previous"
+                  class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li *ngIf="candidates.number-1>0">
+          <button (click)="changePage(candidates.number-2)"
+                  class="page-link">{{candidates.number - 1}}
+          </button>
+        </li>
+        <li *ngIf="candidates.number>0">
+          <button (click)="changePage(candidates.number-1)" class="page-link">{{candidates.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link ">{{candidates.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+  </div>
+
+</div>

@@ -1,0 +1,65 @@
+/* ====================
+  CUSTOM
+==================== */
+
+/*-------------------- COMPANIES --------------------*/
+
+.company-cell {
+  border-left: .3rem solid #000;
+}
+
+/*-------------------- GRID --------------------*/
+
+.col-xl-1 {
+  min-width: 13.5rem;
+}
+
+/*-------------------- LOAD --------------------*/
+
+.loading {
+  display: none !important;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgb(255, 255, 255);
+  z-index: 99999;
+  pointer-events: none !important;
+  -webkit-transform: translateY(-5%);
+  -moz-transform: translateY(-5%);
+  -ms-transform: translateY(-5%);
+  transform: translateY(-5%);
+  opacity: 0.4;
+}
+
+.loading-shown {
+  -webkit-transform: translateY(0);
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+  opacity: 0.4;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgb(255, 255, 255);
+  z-index: 99999;
+  pointer-events: none !important;
+  display: block;
+}
+
+/*-------------------- EDIT RESOURCE --------------------*/
+
+.employees-information-avatar {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.invalid-feedback {
+  display: block;
+  font-size: 100%;
+}

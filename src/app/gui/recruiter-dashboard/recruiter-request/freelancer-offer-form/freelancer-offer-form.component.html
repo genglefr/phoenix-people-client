@@ -1,0 +1,96 @@
+<header class="card-header card-header-lg">
+  <h2 class="card-title">Contracting company & customer information</h2>
+</header>
+<div class="card-body">
+  <form [formGroup]="contractingCompanyCustomerInformationForm">
+    <div class="form-group row">
+      <div class="form-group col-sm-12 col-lg-4">
+        <label for="contractingCompany">
+          Contracting company
+        </label>
+        <input class="form-control" formControlName="contractingCompany" id="contractingCompany"
+               type="text">
+      </div>
+      <div class="form-group col-sm-12 col-lg-8">
+        <label for="companyAddress">
+          Company address
+        </label>
+        <input class="form-control" formControlName="companyAddress" id="companyAddress"
+               type="text">
+      </div>
+      <div class="form-group col-sm-12 col-lg-4">
+        <label for="vatNumber">
+          VAT number
+        </label>
+        <input class="form-control" formControlName="vatNumber" id="vatNumber"
+               type="text">
+      </div>
+      <div class="form-group col-sm-12 col-lg-4">
+        <label for="legalRepresentative">
+          Legal representative
+        </label>
+        <input class="form-control" formControlName="legalRepresentative" id="legalRepresentative"
+               type="text">
+      </div>
+      <div class="form-group col-sm-12 col-lg-4">
+        <label for="customer">
+          Customer
+        </label>
+        <input class="form-control" formControlName="customer" id="customer"
+               type="text">
+      </div>
+      <div class="form-group col-sm-12 col-lg-4">
+        <label for="customerContractNumber">
+          Customer contract number
+        </label>
+        <input class="form-control" formControlName="customerContractNumber" id="customerContractNumber"
+               type="text">
+      </div>
+      <div class="form-group col-sm-12 col-lg-8">
+        <label for="customerAddress">
+          Customer address
+        </label>
+        <input class="form-control" formControlName="customerAddress" id="customerAddress"
+               type="text">
+      </div>
+    </div>
+  </form>
+</div>
+
+<header class="card-header card-header-lg card-header-full">
+  <h2 class="card-title">Consultant's mission</h2>
+</header>
+<div class="card-body">
+  <form [formGroup]="consultantMissionForm">
+    <div class="form-group row">
+      <div class="form-group col-sm-12 col-lg-4">
+        <label for="durationInWorkingDays">
+          Duration in working days
+        </label>
+        <input class="form-control" formControlName="durationInWorkingDays" id="durationInWorkingDays"
+               type="number">
+      </div>
+      <div class="form-group col-sm-12 col-lg-2">
+        <label for="price">
+          Price (daily rate)
+        </label>
+        <input class="form-control" formControlName="price" id="price"
+               type="number">
+      </div>
+      <div class="form-group col-sm-12 col-lg-6">
+        <label for="professionalEmailAddress">
+          Professional email address
+        </label>
+        <input class="form-control" formControlName="professionalEmailAddress" id="professionalEmailAddress"
+               type="text">
+      </div>
+      <div class="form-group col-sm-12 col-lg-12">
+        <label for="description">
+          Description of the service/mission and profile
+        </label>
+        <textarea class="form-control" formControlName="description" id="description" style="resize: none; height: 150px">
+        </textarea>
+      </div>
+    </div>
+  </form>
+</div>

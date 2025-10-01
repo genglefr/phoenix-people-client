@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="modal-title-new">
+    Resources
+  </h5>
+  <button aria-label="Close" class="close" data-dismiss="modal"
+          (click)="closeModal()"
+          type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <ul>
+    <li *ngFor="let resource of resources">
+      {{resource.fullName}} (<b>{{resource.account}}</b>)
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-basic" (click)="closeModal()" type="button">Close</button>
+</div>

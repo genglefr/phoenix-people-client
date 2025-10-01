@@ -1,0 +1,52 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">END-OF-CONTRACT PROCESS</h4>
+  <button (click)="activeModal.dismiss('Cross click')" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="modalForm" action="#" class="row">
+    <h3 class="col-12 card-title">Personal usage policy</h3>
+    <div class="form-group col-12">
+      <div class="form-check">
+        <input class="form-check-input" formControlName="showBirthDayModal"
+               name="showBirthdayToolModal"
+               id="showBirthdayToolModal" type="checkbox">
+        <label for="showBirthdayToolModal">Show birthday information on tools (email included)</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" formControlName="showJobAnniversaryModal" id="displayJobAnniversaryModal"
+               name="displayJobAnniversaryModal" type="checkbox">
+        <label for="displayJobAnniversaryModal">Display job anniversary on Helios</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" formControlName="showUserPictureOnToolsModal" id="displayUserPictureModal"
+               name="displayUserPictureModal" type="checkbox">
+        <label for="displayUserPictureModal">Display user picture on tools (email included)</label>
+      </div>
+    </div>
+
+    <h3 class="col-12 card-title">Holidays</h3>
+    <div class="form-group col-12">
+      <div class="form-check">
+        <input class="form-check-input" formControlName="deleteHoliday"
+               name="deleteHolidayHolaris"
+               id="deleteHolidayHolaris" type="checkbox">
+        <label for="deleteHolidayHolaris">Delete holidays after end date</label>
+      </div>
+    </div>
+
+    <h3 class="col-12 card-title">Emergency contacts</h3>
+    <div class="form-group col-12">
+      <div class="form-check">
+        <input class="form-check-input" formControlName="deleteContact"
+               name="deleteEmergencyContact"
+               id="deleteEmergencyContact" type="checkbox">
+        <label for="deleteEmergencyContact">Delete emergency contacts</label>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button (click)="save()" class="btn btn-primary" type="button">Save</button>
+</div>

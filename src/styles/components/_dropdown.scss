@@ -1,0 +1,30 @@
+/* ====================
+  DROPDOWN
+==================== */
+
+
+/*-------------------- DROPDOWN ITEMS --------------------*/
+
+
+.dropdown-item {
+  padding: 1rem;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected, .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+  color: $primary-dark!important;
+  background-color: $primary-extra-light!important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+  background-color: $primary-extra-light!important;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+  background-color: $breadcrumb;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  color: $white;
+  text-decoration: none;
+  background-color: $primary;
+}

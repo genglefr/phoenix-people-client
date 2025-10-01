@@ -1,0 +1,96 @@
+<div class="box mx-0 pt-4">
+
+    <header class="main-header align-items-center mb-0">
+      <div>
+        <h2>Phone information</h2>
+      </div>
+      <div class="col-auto">
+        <button id="phoneNotification" class="btn btn-basic mr-2" type="button" (click)="sendPhoneNotification(user.account)"
+                *ngIf="phoneSet && user && user.resourcePhoneList.length && isUserAdministrator && !isResourceCandidate">
+          Notify available phone
+        </button>
+        <a class="btn btn-basic mr-2" type="button" *ngIf="isUserAdministrator && !isResourceCandidate"
+           [routerLink]="['../..', 'phone-consumption', 'management']" [queryParams]="{resource: user.firstName + ' ' + user.lastName}">
+          See costs
+        </a>
+        <button class="btn btn-primary" type="button" (click)="openPhoneModal()" *ngIf="isUserAdministrator">
+          Add phone
+        </button>
+      </div>
+    </header>
+
+    <div class="p-3">
+      <header class="main-actions pt-0 pb-3 px-0">
+        <div class="row align-items-end">
+          <div class="col-auto"><label class="label-sm">Phone number</label>
+            <input
+              [maxLength]="50"
+              (input)="applyFilter('phoneNumber', $event)"
+              class="form-control"
+              id="search-phone-number" maxlength="50" type="text"
+            ></div>
+          <div class="col-auto">
+              <label class="label-sm">Phone model</label>
+              <input
+                [maxLength]="50"
+                (input)="applyFilter('phone.phoneModel', $event)"
+                class="form-control"
+                id="search-phone-model" maxlength="50" type="text"
+              >
+          </div>
+          <div class="col-auto">
+              <label class="label-sm">Phone IMEI</label>
+              <input
+                [maxLength]="50"
+                (input)="applyFilter('phone.phoneImei', $event)"
+                class="form-control"
+                id="search-phone-reference" maxlength="50" type="text"
+              >
+          </div>
+          <div class="col-auto">
+            <label class="label-sm">Reception date</label>
+            <input  (input)="applyFilter('receptionDate', $event)"
+                    class="form-control"
+                    id="search-receptionDate-engine"
+                    maxlength="50" placeholder="DD/MM/YYYY" type="text">
+          </div>
+        </div>
+      </header>
+      <div class="table-responsive">
+        <table class="table table-full">
+          <thead>
+          <tr>
+            <th scope="col">Phone number</th>
+            <th scope="col">Phone model</th>
+            <th scope="col">IMEI</th>
+            <th scope="col">Serial number</th>
+            <th scope="col"><span (click)="changeSortForPhones()" class="sort-column"> Reception date <i
+              class="fas {{ sortAscendingPhone ?'fa-sort-up':'fa-sort-down'}}"
+            ></i></span></th>
+            <th scope="col">Phone comment</th>
+            <th class="text-right" scope="col" *ngIf="isUserAdministrator"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let phone of user.resourcePhoneList | filter : filters;">
+            <td>{{phone.phoneNumber}}</td>
+            <td>{{phone.phone?.phoneModel}}</td>
+            <td>{{phone.phone?.phoneImei}}</td>
+            <td>{{phone.phone?.serialNumber}}</td>
+            <td>{{phone.receptionDate}}</td>
+            <td>{{phone.comment}}</td>
+            <td *ngIf="isUserAdministrator" class="text-right pr-0 pl-0">
+              <button class="btn btn-sm btn-basic" type="button" (click)="openPhoneModal(phone)">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-basic ml-2" type="button" (click)="removePhone(phone)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+</div>

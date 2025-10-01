@@ -1,0 +1,513 @@
+<header class="main-header mb-2">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Manage badges</h1>
+      </div>
+      <div class="col col-auto">
+        <button *ngIf="isAdminOrBadgeRead" class="btn btn-basic" data-target="#exportBadgesModal" data-toggle="modal"> Export badges</button>
+        <button *ngIf="isAdminStrict" (click)="exportBelvalPlaza()" class="btn btn-basic ml-3"> Export Belval plaza</button>
+        <button *ngIf="isAdmin" class="btn btn-primary ml-3" type="button" data-target="#createOrUpdateBadge" data-toggle="modal"
+                (click)="setBadgeEdit({})">
+          New Badge
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content box">
+
+  <header class="px-4 mb-2">
+    <div class="row align-items-end" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+        <div class="col-auto mb-3">
+          <label class="label-sm">Badge number</label>
+          <input
+            [maxLength]="50"
+            [(ngModel)]="badgeFilter.badgeNumber"
+            class="form-control"
+            id="search-badge-engine" maxlength="50" type="text"
+          >
+        </div>
+        <div class="col-auto mb-3">
+          <label class="label-sm">Owner</label>
+          <input
+            [maxLength]="150"
+            [(ngModel)]="badgeFilter.owner"
+            class="form-control"
+            id="search-lastName-engine" maxlength="150" type="text"
+          >
+        </div>
+        <div class="col-auto mb-3">
+          <label class="label-sm">Access type</label>
+          <app-multi-select (changeEventEmitter)="changeAccessType($event)"
+                            [filter]="badgeFilter.accessTypes"
+                            [items]="accessTypes"
+                            [placeholder]="'Select access type(s)'"
+                            [hasSelectAll]="true"
+                            [virtualScroll]="true"
+                            selectAllLabel="Select all access types"
+                            idValue="value"
+                            label="value"
+                            width="15rem">
+          </app-multi-select>
+        </div>
+        <div class="col-auto mb-3">
+          <label class="label-sm">Comment</label>
+          <input
+            [maxLength]="500"
+            [(ngModel)]="badgeFilter.comment"
+            class="form-control"
+            style="width: 300px"
+            id="search-comment-engine" maxlength="500" type="text"
+          >
+        </div>
+        <div class="col-auto mb-3">
+          <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+            <i class="fa fa-search"></i>
+            Search
+          </button>
+        </div>
+    </div>
+  </header>
+
+  <div class="table-responsive" style="overflow-x: initial;">
+    <table class="table table-full">
+      <thead>
+      <tr>
+        <th scope="col"><span (click)="changeSort('number')" class="sort-column"> Badge number  <i
+          class="fas {{
+          badgeFilter.sortingRow==='number'?!badgeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('owner')" class="sort-column"> Owner  <i
+          class="fas {{ badgeFilter.sortingRow==='owner'?!badgeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span> Access type</span></th>
+        <th scope="col"><span (click)="changeSort('company')" class="sort-column"> Entity  <i
+          class="fas {{ badgeFilter.sortingRow==='company'?!badgeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('attributionDate')" class="sort-column"> Attribution date  <i
+          class="fas {{ badgeFilter.sortingRow==='attributionDate'?!badgeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('returnDate')" class="sort-column"> Return date  <i
+          class="fas {{ badgeFilter.sortingRow==='returnDate'?!badgeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('comment')" class="sort-column"> Comment  <i
+          class="fas {{ badgeFilter.sortingRow==='comment'?!badgeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th class="text-right" scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let badge of badges?.content">
+        <td>{{badge.badgeNumber}}</td>
+        <td>
+          <a *ngIf="isAdminOrRead; else noLink" routerLink="/administration/{{badge.resource && badge.resource.candidate ? 'candidates' : 'resources'}}/{{badge.resource?.account}}">
+            {{badge.resource?.firstName}} {{badge.resource?.lastName}}
+          </a>
+          <ng-template #noLink>
+            {{badge.resource?.firstName}} {{badge.resource?.lastName}}
+          </ng-template>
+        </td>
+        <td>
+          <span *ngFor="let accessType of badge.accessTypes">
+            {{accessType}}
+            <br/>
+          </span>
+        </td>
+        <td>{{badge.company}}</td>
+        <td>{{badge.attributionDate}}</td>
+        <td>{{badge.returnDate}}</td>
+        <td [innerText]="badge.comment"></td>
+        <td class="text-right pl-0">
+          <div *ngIf="isAdmin && badge.administrated">
+            <a class="btn btn-sm btn-basic mb-2" type="button"
+               (click)="fetchBadgeHistoryAndDisplayModal(badge)">
+              <i class="fa fa-history"></i>
+            </a>
+            <a #showModalHistory style="display:none;" data-target="#badgeHistory" data-toggle="modal"></a>
+            <a class="btn btn-sm btn-basic ml-3 mb-2" type="button" data-target="#createOrUpdateBadge" data-toggle="modal"
+               (click)="setBadgeEdit(badge)">
+              <i class="fa fa-pencil"></i>
+            </a>
+            <button class="btn btn-sm btn-danger ml-3 mb-2" type="button" (click)="deleteBadge(badge)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="badges?.content.length>0" class="d-flex justify-content-end px-4 pt-4">
+
+    <select (change)="changePageSize(pageSize)" [(ngModel)]="pageSize" class="form-control input-sm "
+            style="max-width: 5vw;display: inline;margin-right: auto;">
+      <option selected value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+
+    <nav aria-label="Page navigation">
+      <ul *ngIf="badges?.first && !badges?.last" class="pagination">
+        <li class="page-item">
+          <button aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{badges?.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li *ngIf="badges?.totalPages>=badges?.number+2" class="page-item">
+          <button (click)="changePage(badges?.number +1)"
+                  class="page-link">{{badges?.number + 2}}</button>
+        </li>
+        <li *ngIf="badges?.totalPages>=badges?.number+3" class="page-item">
+          <button (click)="changePage(badges?.number+2)" class="page-link">{{badges?.number + 3}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(badges?.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="!badges?.first && !badges?.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(badges?.number-1)" aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item ">
+          <button (click)="changePage(badges?.number-1)"
+                  class="page-link">{{badges?.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{badges?.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(badges?.number+1)"
+                  class="page-link">{{badges?.number + 2}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(badges?.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="badges?.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(badges?.number-1>0?badges?.number-1:0)"
+                  aria-label="Previous"
+                  class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li *ngIf="badges?.number-1>0">
+          <button (click)="changePage(badges?.number-2)"
+                  class="page-link">{{badges?.number - 1}}</button>
+        </li>
+        <li *ngIf="badges?.number>0">
+          <button (click)="changePage(badges?.number-1)" class="page-link">{{badges?.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link ">{{badges?.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<!-- Modal for creation or update of badge. -->
+<div aria-hidden="true" aria-labelledby="createOrUpdateBadge" class="modal fade" id="createOrUpdateBadge"
+     data-backdrop="static" data-keyboard="false"
+     role="dialog" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="cropImageTitle" *ngIf="isCreation">New badge</h5>
+        <h5 class="modal-title" id="cropImageTitle" *ngIf="!isCreation">Edit badge - badge number ({{badgeEdit.badgeNumber}})</h5>
+        <button class="d-none" #exitButton data-dismiss="modal"></button>
+        <button aria-label="Close" class="close" data-dismiss="modal"
+                (click)="closeModal()"
+                type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="badgeForm">
+          <div class="form-group col-12">
+            <div class="row mt-1" >
+
+              <div class="col-6" *ngIf="badgeNumber.enabled">
+                <label for="badgeNumber">Badge number</label>
+                <input class="form-control" formControlName="badgeNumber" id="badgeNumber"
+                       placeholder="Badge number"
+                       [maxLength]="50"
+                       maxlength="50"
+                       type="text"/>
+                <div *ngIf="badgeNumber.invalid"
+                     class="invalid-feedback d-block">
+                  <div *ngIf="badgeNumber.errors?.required">
+                    The badge number is required
+                  </div>
+                  <div *ngIf="badgeNumber.errors?.maxlength">
+                    The badge number cannot be longer than 50 characters.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-1">
+              <div class="col-6">
+                <ng-template #rtOwner let-r="result.firstName" let-v="result.lastName" let-t="term">
+                  <ngb-highlight [result]="r + ' ' + v" [term]=""></ngb-highlight>
+                </ng-template>
+                <label for="owner">Owner</label>
+                <input
+                    #instanceOwner="ngbTypeahead"
+                    (click)="clickOwner.next($event.target.value)"
+                    (focusout)="checkOwnerValue()"
+                    [inputFormatter]="formatterOwner"
+                    [ngbTypeahead]="searchOwner"
+                    [resultTemplate]="rtOwner"
+                    class="form-control"
+                    formControlName="owner"
+                    id="owner"
+                    maxlength="200"
+                    placeholder="Owner name"
+                    type="text"
+                />
+                <div *ngIf="(owner.dirty || owner.touched)"
+                     class="invalid-feedback d-block">
+                  <div *ngIf="owner.value && !owner.value.firstName">
+                    An owner must be selected from the list.
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <label for="accessTypes">Access type(s)</label>
+                <app-multi-select (changeEventEmitter)="changeValueAccessTypes($event)"
+                                  [filter]="accessTypesControl.value"
+                                  [items]="accessTypes"
+                                  [virtualScroll]="true"
+                                  idValue="value"
+                                  label="value"
+                                  id="accessTypes"
+                >
+                </app-multi-select>
+              </div>
+            </div>
+            <div class="row mt-1" *ngIf="accessTypesControl.value && accessTypesControl.value.includes(BELVAL_PLAZA)">
+              <div class="col-6">
+                <label for="returnDate">Attribution date
+                  <small class="text-muted"></small>
+                </label>
+                <div class="input-group">
+                  <input #attributionDatePicker="ngbDatepicker" [footerTemplate]="footerTemplate" class="form-control"
+                         formControlName="attributionDate" id="attributionDate" maxlength="20"
+                         [minDate]="{year: 2000, month: 1, day: 1}"
+                         ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                  <div class="input-group-append">
+                    <button (click)="attributionDatePicker.toggle()"
+                            class="btn btn-basic btn-icon fa fa-calendar"
+                            [disabled]="attributionDate.disabled"
+                            type="button"></button>
+                  </div>
+                  <div *ngIf="attributionDate.invalid" class="invalid-feedback d-block">
+                    <div *ngIf="attributionDate.errors.ngbDate?.invalid">
+                      The attribution date must be correct and in the following format : DD/MM/YYYY
+                    </div>
+                  </div>
+                </div>
+                <ng-template #footerTemplate>
+                  <hr class="my-0">
+                  <button (click)="attributionDate.setValue(todayDate); attributionDatePicker.close()"
+                          class="btn btn-primary btn-sm m-2 float-left">Today
+                  </button>
+                  <button (click)="attributionDatePicker.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                </ng-template>
+              </div>
+              <div class="col-6">
+                <label for="returnDate">Return date
+                  <small class="text-muted"></small>
+                </label>
+                <div class="input-group">
+                  <input #returnDatePicker="ngbDatepicker" [footerTemplate]="footerTemplate" class="form-control"
+                         formControlName="returnDate" id="returnDate" maxlength="20"
+                         [minDate]="{year: 2000, month: 1, day: 1}"
+                         ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                  <div class="input-group-append">
+                    <button (click)="returnDatePicker.toggle()"
+                            class="btn btn-basic btn-icon fa fa-calendar"
+                            [disabled]="returnDate.disabled"
+                            type="button"></button>
+                  </div>
+                  <div *ngIf="returnDate.invalid" class="invalid-feedback d-block">
+                    <div *ngIf="returnDate.errors.ngbDate?.invalid">
+                      The return date must be correct and in the following format : DD/MM/YYYY
+                    </div>
+                  </div>
+                </div>
+                <ng-template #footerTemplate>
+                  <hr class="my-0">
+                  <button (click)="returnDate.setValue(todayDate); returnDatePicker.close()"
+                          class="btn btn-primary btn-sm m-2 float-left">Today
+                  </button>
+                  <button (click)="returnDatePicker.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="row mt-1">
+              <div class="col-12">
+                <label for="badgeComment">Badge comment</label>
+                <textarea class="form-control edit-comment"
+                          formControlName="comment" id="badgeComment"
+                          maxlength="4001"
+                          placeholder="Comment"
+                          style="resize: none !important;"
+                          rows="4">
+                </textarea>
+                <div *ngIf="comment.invalid" class="invalid-feedback d-block">
+                  <div *ngIf="comment.errors?.maxlength">
+                    The comment cannot be longer than 4000 characters.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-basic" (click)="closeModal()" type="button">Cancel</button>
+        <button class="btn btn-primary" [disabled]="badgeForm?.invalid || (owner.value && !owner.value.firstName)"
+                (click)="saveBadge()"
+                type="button">Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal for history of badge -->
+<div aria-hidden="true" aria-labelledby="badgeHistory" class="modal fade" id="badgeHistory"
+     data-backdrop="static" data-keyboard="false"
+     role="dialog" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 950px;">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="badge-history-modal">Badge history</h5>
+        <button #exitHistoryButton aria-label="Close" class="close" data-dismiss="modal"
+                type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="table-responsive" style="overflow-x: initial; max-height: 50em; overflow-y: auto;">
+          <table class="table table-full">
+            <thead>
+            <tr>
+              <th scope="col"><span (click)="changeHistorySort('owner')" class="sort-column"> Owner  <i
+                class="fas {{
+                badgeHistoryFilter.sortingRow==='owner'?!badgeHistoryFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'
+                }}"
+              ></i></span></th>
+              <th scope="col"><span (click)="changeHistorySort('company')" class="sort-column"> Entity
+                  <i class="fas {{ badgeHistoryFilter.sortingRow==='company'?!badgeHistoryFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}">
+                  </i>
+                </span>
+              </th>
+              <th scope="col"><span (click)="changeHistorySort('revisionDate')" class="sort-column">
+                Modification date
+                <i class="fas {{ badgeHistoryFilter.sortingRow==='revisionDate'?!badgeHistoryFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}">
+                </i>
+                </span>
+              </th>
+              <th scope="col"><span> Modification user</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let badge of badgeHistory?.content">
+              <td>{{badge.resource?.firstName ?  badge.resource?.firstName : 'No information'}} {{badge.resource?.lastName}}</td>
+              <td>{{badge.company}}</td>
+              <td>{{badge.revisionDate}}</td>
+              <td>{{badge.revisionUser}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-basic"
+                data-dismiss="modal"
+                type="button">Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal for export of badges. -->
+<div aria-hidden="true" aria-labelledby="exportBadgesModal" class="modal fade" id="exportBadgesModal"
+     data-backdrop="static" data-keyboard="false"
+     role="dialog" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exportBadgesTitle">Export badges</h5>
+        <button class="d-none" #exitButton data-dismiss="modal"></button>
+        <button aria-label="Close" class="close" data-dismiss="modal"
+                type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+          <div class="form-group col-12">
+            <div class="row mt-1">
+              <div class="col-12">
+                <label for="companies">Companies</label>
+                <app-multi-select
+                  [items]="managedCompanies"
+                  [label]="'company'"
+                  [multiple]="true"
+                  [placeholder]="'Select company'"
+                  (changeEventEmitter)="changeSelectedCompanies($event)"
+                  id="companies"
+                >
+                </app-multi-select>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-basic" data-dismiss="modal" type="button">Cancel</button>
+        <button class="btn btn-primary" [disabled]="!!!selectedCompanies.length"
+                (click)="exportBadgesByCompany()"
+                type="button">Export
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+

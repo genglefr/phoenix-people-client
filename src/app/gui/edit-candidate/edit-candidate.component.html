@@ -1,0 +1,1028 @@
+<!-- main-header -->
+<header class="main-header mb-0">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between">
+      <div class="col-auto">
+        <h1 *ngIf="onEdit==='new'" class="main-title">Create Candidate</h1>
+        <h1 *ngIf="onEdit==='edit'" class="main-title">{{user.firstName}} {{user.lastName}}</h1>
+      </div>
+      <div class="col col-auto">
+        <a class="btn btn-basic mr-2" routerLink=".."> Cancel </a>
+        <ng-container  *ngIf="this.isEntityManager || this.isAdminOfCandidate">
+          <button (click)="onSubmit()" *ngIf="onEdit === 'edit'" class="btn btn-primary" type="submit"> Save
+          </button>
+          <button (click)="onSubmit()" *ngIf="onEdit === 'new'" class="btn btn-primary" type="submit"> Create
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</header>
+
+<header *ngIf="onEdit === 'edit'" class="main-header">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between">
+      <div class="col ml-auto col-auto" *ngIf="onEdit === 'edit' && (isAdminOfCandidate)">
+        <button *ngIf="this.companyService.luxCompanies.includes(this.user.company)" class="btn btn-basic" (click)="generateCarPolicy()">
+          Generate car policy
+        </button>
+        <button [disabled]="!candidateService.canBeMoved(status.value, company.value, startDate.value,
+      isHardwareRequired, laptopForm.get('computerModel').value, laptopForm.get('keyboardLayout').value)" class="btn btn-basic ml-3"
+                (click)="moveCandidate()">
+          Move
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+<section class="main-content">
+
+  <!-- Main navtabs -->
+  <div class="main-nav-tabs">
+
+    <!-- nav tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="true" class="nav-link active"
+                              data-toggle="tab" href="#personal-information" id="personal-information-tab"
+                              role="tab">Personal Information</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#contact" id="contact-tab"
+                              role="tab">Contacts</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false"
+                              [ngClass]="!this.contractDetailsForm.get('laptopNecessary').value ? 'nav-link disabled' : 'nav-link'"
+                              data-toggle="tab" href="#hardware" id="hardware-tab"
+                              role="tab">Hardware</a></li>
+
+      <li class="nav-item" *ngIf="onEdit === 'edit'">
+        <a aria-controls="profile" aria-selected="false" class="nav-link"
+           data-toggle="tab" href="#badge" id="badge-tab"
+           role="tab">Badge
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="onEdit === 'edit'">
+        <a aria-controls="profile" aria-selected="false" class="nav-link"
+           data-toggle="tab" href="#phone" id="phone-tab"
+           role="tab">Phone
+        </a>
+      </li>
+    </ul>
+
+    <!-- tab content -->
+    <div class="tab-content bg-white" id="myTabContent">
+
+      <!-- Tab Personal Information -->
+      <section aria-labelledby="personal-information-tab" class="tab-pane fade show active"
+               id="personal-information"
+               role="tabpanel">
+
+        <div class="box mx-0 pt-4">
+          <div class="row border-bottom">
+            <!-- Informations -->
+            <div class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Information</h2>
+              </header>
+
+              <div class="p-3">
+                <form [formGroup]="informationForm" action="#" class="row">
+
+                  <div class="form-group col-sm-12 col-lg-4">
+                    <div class="form-group row" style="justify-content: center">
+                      <div class="form-group col-sm-12 col-lg-12">
+                        <img alt="" class="employees-information-avatar"
+                             [src]="croppedPicture">
+                      </div>
+                    </div>
+                    <div *ngIf="this.isAdminOfCandidate" class="row flex-column">
+                      <div class="form-group col-12">
+                        <button (click)="uploadPicture()" class="btn btn-secondary py-2 btn-block"
+                                type="button"><i aria-hidden="true" class="fas fa-upload fa-sm pr-2"></i>Upload
+                        </button>
+                      </div>
+                      <div class="form-group col-12">
+                        <button (click)="loadPictureInCropper()"
+                                class="btn btn-secondary py-2 btn-block"
+                                data-target="#editProfilePicture"
+                                data-toggle="modal" id="cropModalButton" type="button"><i aria-hidden="true"
+                                                                                          class="fas fa-crop fa-sm pr-2"></i>Crop
+                        </button>
+                      </div>
+                    </div>
+                    <input (change)="fileChangeEvent($event)" accept=".jpg,.jpeg,.png,.PNG" id="pictureUpload"
+                           style="display: none;"
+                           type="file">
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-8">
+                    <div class="form-group row align-items-end">
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="candidateStatus">Status
+                          <small class="text-muted">(required)</small>
+                        </label>
+                        <select class="form-control custom-select" formControlName="status" id="candidateStatus"
+                                name="candidateStatus">
+                          <option *ngFor="let status of this.formData.candidateStates" value="{{status.status}}">
+                            {{status.description | uppercase}}
+                          </option>
+                        </select>
+                        <div *ngIf="status.errors?.required">
+                          Status is required
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <div class="form-check">
+                          <input class="form-check-input" formControlName="newGraduate" id="isNewGraduate"
+                                 name="isNewGraduate" type="checkbox"/>
+                          <label for="isNewGraduate">New graduate</label>
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="firstName">First name
+                          <small class="text-muted">(required)</small>
+                        </label>
+                        <input class="form-control" formControlName="firstName" id="firstName" placeholder="First name"
+                               (ngModelChange)="generateAccountFromNames()"
+                               maxlength="101" type="text">
+                        <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
+                             class="invalid-feedback">
+                          <div *ngIf="firstName.errors?.required">
+                            First name is required
+                          </div>
+                          <div *ngIf="firstName.errors?.maxlength">
+                            First name size must not exceed 100 characters
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="lastName">Last name
+                          <small class="text-muted">(required)</small>
+                        </label>
+                        <input class="form-control" formControlName="lastName" id="lastName" placeholder="Last name"
+                               (ngModelChange)="generateAccountFromNames()"
+                               maxlength="101" type="text">
+                        <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="invalid-feedback">
+                          <div *ngIf="lastName.errors?.required">
+                            Last name is required
+                          </div>
+                          <div *ngIf="lastName.errors?.maxlength">
+                            Last name size must not exceed 100 characters
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="account">Account
+                          <small class="text-muted">(required)</small>
+                        </label>
+                        <input class="form-control" formControlName="account" id="account" placeholder="Account"
+                               maxlength="9" type="text"/>
+                        <div *ngIf="account.invalid && (account.dirty || account.touched)" class="invalid-feedback">
+                          <div *ngIf="account.errors?.required">
+                            Account is required
+                          </div>
+                          <div *ngIf="account.errors?.maxlength">
+                            Account size must not exceed 8 characters
+                          </div>
+                        </div>
+                        <div *ngIf="accountIsAlreadyUsedByResource" class="invalid-feedback">
+                          <div class="text-warning">
+                            Account already used by a resource
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label class="label-ro">Gender </label>
+                        <select class="form-control custom-select" formControlName="gender" id="gender"
+                                name="gender">
+                          <option value="">Select a gender</option>
+                          <option value="M">M</option>
+                          <option value="F">F</option>
+                          <option value="O">Other</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="birthDate">Birth date </label>
+                        <div class="input-group">
+                          <input #dp="ngbDatepicker" [footerTemplate]="footerTemplate1"
+                                 class="form-control" formControlName="birthDate" id="birthDate"
+                                 [minDate]="{year: 1950, month: 1, day: 1}"
+                                 maxlength="20" ngbDatepicker
+                                 placeholder="DD/MM/YYYY" type="text"/>
+                          <div *ngIf="this.isAdminOfCandidate" class="input-group-append">
+                            <button (click)="dp.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                                    type="button"></button>
+                          </div>
+                        </div>
+                        <ng-template #footerTemplate1>
+                          <hr class="my-0">
+                          <button (click)="birthDate.setValue(today); dp.close()"
+                                  class="btn btn-primary btn-sm m-2 float-left">Today
+                          </button>
+                          <button (click)="dp.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                        </ng-template>
+                        <div *ngIf="birthDate.invalid && (birthDate.dirty||birthDate.touched)"
+                             class="invalid-feedback">
+                          <div *ngIf="birthDate.errors.ngbDate?.invalid">
+                            Birth date must be correct and in the following format : DD/MM/YYYY
+                          </div>
+                        </div>
+                      </div>
+                      <ng-template #rtCountry let-r="result.countryName" let-t="term">
+                        <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                      </ng-template>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="country">Nationality</label>
+                        <input
+                          #instanceNationality="ngbTypeahead"
+                          (click)="clickNationality.next($event.target.value)"
+                          (focusout)="checkCountryValue()"
+                          [ngbTypeahead]="searchNationality"
+                          [resultTemplate]="rtCountry"
+                          [inputFormatter]="formatterCountry"
+                          class="form-control"
+                          formControlName="country"
+                          id="country"
+                          placeholder="Country"
+                          type="text"
+                          maxlength="41"
+                        />
+                        <div *ngIf="(country.dirty || country.touched)"
+                             class="invalid-feedback">
+                          <div *ngIf="country.value && !country.value.countryCode">
+                            Country must be selected from the list.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="resCountry">
+                          Residential country
+                        </label>
+                        <ng-template #rcCountry let-r="result.countryLabel" let-t="term">
+                          <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                        </ng-template>
+                        <input
+                          #instanceResCountry="ngbTypeahead"
+                          (click)="clickResCountry.next($event.target.value)"
+                          (focusout)="checkResidentialCountryValue()"
+                          [inputFormatter]="formatterResidentialCountry"
+                          [ngbTypeahead]="searchResidentialCountry"
+                          [resultTemplate]="rcCountry"
+                          class="form-control"
+                          formControlName="resCountry"
+                          id="resCountry"
+                          maxlength="41"
+                          placeholder="Country"
+                          type="text"
+                        />
+                        <div *ngIf="(residentialCountry.dirty || residentialCountry.touched)"
+                             class="invalid-feedback">
+                          <div *ngIf="residentialCountry.value && !residentialCountry.value.countryCode">
+                            Residential country must be selected from the list.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6"></div>
+                      <div class="form-group col-sm-12 col-lg-6" *ngIf="displayFrontierFields">
+                        <label for="socialConsent">Consent to declare data to social security authorities</label>
+                        <select class="form-control custom-select" formControlName="socialConsent" id="socialConsent"
+                                name="socialConsent">
+                          <option *ngFor="let response of SOCIAL_CONSENT_RESPONSES" [ngValue]="response.value">
+                            {{response.displayValue}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="form-group col-6" *ngIf="displaySocialSecurityNumber">
+                        <label class="label-ro" for="socialSecurityNumber">
+                          Social security number (residential country)
+                        </label>
+                        <input class="form-control" formControlName="socialSecurityNumber" id="socialSecurityNumber"
+                               placeholder="Social security number"
+                               maxlength="255" type="text"/>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-12">
+                        <label class="label-ro" for="informationComment">Comment </label>
+                        <textarea class="form-control" formControlName="comment" id="informationComment"
+                                  name="informationComment" placeholder="Comment" rows="5"></textarea>
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6 checkbox-col">
+                        <div class="form-check">
+                          <input class="form-check-input" formControlName="partOfReferral" id="isPartOfReferral"
+                                 (change)="referrerEvent($event)" name="isPartOfReferral" type="checkbox"/>
+                          <label for="isPartOfReferral">Part of referral program</label>
+                        </div>
+                      </div>
+
+                      <ng-template #rt let-r="result" let-t="term">
+                        <ngb-highlight [result]="r.name"
+                                       [term]=""></ngb-highlight>
+                      </ng-template>
+
+                      <div class="form-group col-sm-12 col-lg-6">
+                        <label for="referrer">Referrer</label>
+                        <input
+                          #instanceReferrer="ngbTypeahead"
+                          (click)="clickReferrer$.next($event.target.value)"
+                          [inputFormatter]="formatter"
+                          [ngbTypeahead]="searchReferrer"
+                          [resultTemplate]="rt"
+                          class="form-control"
+                          formControlName="referrer"
+                          id="referrer"
+                          placeholder="Referrer"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Contract details -->
+            <div class="col-12 col-sm-6 pt-4 border-left">
+              <!-- Contract details div -->
+              <header>
+                <h2 class="card-title">Contract details</h2>
+              </header>
+
+              <div class="p-3">
+                <form [formGroup]="contractDetailsForm" action="#" class="row">
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="contractType">Type
+                      <small class="text-muted">(required)</small>
+                    </label>
+                    <select class="form-control custom-select" formControlName="type" id="contractType"
+                            name="contractType" (change)="checkTimesheet($event.target.value)">
+                      <option *ngFor="let type of this.formData.jobtypes" value="{{type.description}}">
+                        {{type.jobType | uppercase}}
+                      </option>
+                    </select>
+                    <div *ngIf="type.invalid" class="invalid-feedback">
+                      <div *ngIf="type.errors">
+                        Type is mandatory
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="contractCompany">Company</label>
+                    <select class="form-control custom-select" formControlName="company" id="contractCompany"
+                            name="contractCompany" (change)="updateLaptopModel($event.target.value)">
+                      <option value="">Select a company</option>
+                      <option *ngFor="let company of this.formData.companies" value="{{company}}">
+                        {{company | uppercase}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="contractStartDate">Start date
+                    </label>
+                    <div class="input-group">
+                      <input #dstr="ngbDatepicker" [footerTemplate]="footerTemplate3" class="form-control"
+                             formControlName="start" id="contractStartDate" maxlength="20"
+                             [minDate]="{year: 2000, month: 1, day: 1}"
+                             ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                      <div *ngIf="this.isAdminOfCandidate" class="input-group-append">
+                        <button (click)="dstr.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                                type="button"></button>
+                      </div>
+                      <div *ngIf="startDate.invalid && (startDate.dirty||startDate.touched)" class="invalid-feedback">
+                        <div *ngIf="startDate.errors.ngbDate?.invalid">
+                          Start date must be correct and in the following format : DD/MM/YYYY
+                        </div>
+                      </div>
+                    </div>
+                    <ng-template #footerTemplate3>
+                      <hr class="my-0">
+                      <button (click)="startDate.setValue(today); dstr.close()"
+                              class="btn btn-primary btn-sm m-2 float-left">Today
+                      </button>
+                      <button (click)="dstr.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                    </ng-template>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="endDate">End date</label>
+                    <div class="input-group">
+                      <input #dend="ngbDatepicker" [footerTemplate]="footerTemplate4" class="form-control"
+                             formControlName="end" id="endDate" maxlength="20"
+                             [minDate]="{year: 2000, month: 1, day: 1}"
+                             ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                      <div *ngIf="this.isAdminOfCandidate" class="input-group-append">
+                        <button (click)="dend.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                                type="button"></button>
+                      </div>
+                    </div>
+                    <ng-template #footerTemplate4>
+                      <hr class="my-0">
+                      <button (click)="endDate.setValue(today); dend.close()"
+                              class="btn btn-primary btn-sm m-2 float-left">Today
+                      </button>
+                      <button (click)="dend.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                    </ng-template>
+                    <div *ngIf="endDate.invalid && (endDate.dirty||endDate.touched)" class="invalid-feedback">
+                      <div *ngIf="endDate.value && endDate.value !== '' && endDate.errors.ngbDate?.invalid">
+                        End date must be correct and in the following format : DD/MM/YYYY
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="endProbation">End of probation</label>
+                    <div class="input-group">
+                      <input #dendProb="ngbDatepicker" [footerTemplate]="footerTemplateEndOfProbation" class="form-control"
+                             formControlName="endProbation" id="endProbation" maxlength="20"
+                             [minDate]="{year: 2000, month: 1, day: 1}"
+                             ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+                      <div *ngIf="this.isAdminOfCandidate" class="input-group-append">
+                        <button (click)="dendProb.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                                type="button"></button>
+                      </div>
+                    </div>
+                    <ng-template #footerTemplateEndOfProbation>
+                      <hr class="my-0">
+                      <button
+                        (click)="endProbation.setValue(today); endProbation.markAsDirty(); endProbation.markAsTouched(); dendProb.close()"
+                        class="btn btn-primary btn-sm m-2 float-left">Today
+                      </button>
+                      <button (click)="dendProb.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                    </ng-template>
+                    <div *ngIf="endProbation.invalid && (endProbation.dirty||endProbation.touched)" class="invalid-feedback">
+                      <div *ngIf="endProbation.value && endProbation.value !== '' && (endProbation.errors?.format ||
+                        endProbation.errors.ngbDate?.invalid)">
+                        End of probation must be correct and in the following format : DD/MM/YYYY
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-sm-12 col-lg-6"></div>
+
+                  <div class="form-group col-sm-12 col-lg-4">
+                    <label class="label-ro">Contract type
+                      <small class="text-muted">(required)</small>
+                    </label>
+                    <div class="mt-1 pt-1">
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input (change)="handleChangeContractType($event)" class="custom-control-input"
+                               formControlName="contractTypeRadio" id="fullTime" mdbInput
+                               name="contractTypeRadio" type="radio" value="fullTime">
+                        <label class="custom-control-label" for="fullTime">Full time</label>
+                      </div>
+                      <div class="custom-control custom-radio custom-control-inline">
+                        <input (change)="handleChangeContractType($event)" class="custom-control-input"
+                               formControlName="contractTypeRadio" id="partTime" mdbInput
+                               name="contractTypeRadio" type="radio" value="partTime">
+                        <label class="custom-control-label" for="partTime">Part time</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-0 col-lg-2">
+                    <label for="partTimePercentage" style="color: transparent">Percentage</label>
+                    <div class="input-group">
+                      <input class="form-control" formControlName="workPercentage" id="partTimePercentage"
+                             max="100"
+                             min="0" name="landline" type="number"/>
+                      <div class="input-group-append">
+                        <span class="input-group-text"><span style="width: 1rem">%</span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-0 col-lg-2">
+                    <ng-container *ngIf="this.companyService.belgianCompanies.includes(this.company.value) && this.EMPLOYEE_AND_OVERHEAD.includes(this.type.value)">
+                      <label for="workingTime">Working time</label>
+                      <select class="form-control custom-select" formControlName="workingTime" id="workingTime"
+                              name="workingTime">
+                        <option *ngFor="let workingTime of this.WORKING_TIME_LIST" [value]="workingTime">
+                          {{workingTime}}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <app-job-position-select [jobPositions]="formData.jobpositions"
+                                             [control]="jobPosition">
+                    </app-job-position-select>
+                  </div>
+
+                  <ng-template #rtJobTitle let-r="result" let-t="term">
+                    <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                  </ng-template>
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label class="label-ro" for="jobTitle">Job title</label>
+                    <input
+                      #instanceJobTitle="ngbTypeahead"
+                      (click)="clickJobTitle$.next($event.target.value)"
+                      [inputFormatter]="formatterString"
+                      [ngbTypeahead]="searchJobTitle"
+                      [resultTemplate]="rtJobTitle"
+                      class="form-control"
+                      formControlName="jobTitle"
+                      id="jobTitle"
+                      maxlength="256"
+                      placeholder="Job title"
+                      type="text"
+                    />
+                    <div *ngIf="jobTitle.invalid && (jobTitle.dirty || jobTitle.touched)" class="invalid-feedback">
+                      <div *ngIf="jobTitle.errors?.maxlength">
+                        Job title size must not exceed 255 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="w-100"></div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label></label>
+                    <div class="form-check">
+                      <input class="form-check-input" id="arhsAccountNecessary" name="arhsAccountNecessary"
+                             formControlName="accountNecessary" type="checkbox">
+                      <label for="arhsAccountNecessary">Phoenix account necessary</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label></label>
+                    <div class="form-check">
+                      <input class="form-check-input" id="arhsLaptopNecessary" name="arhsLaptopNecessary"
+                             (change)="laptopNecessaryEvent($event)" formControlName="laptopNecessary"
+                             type="checkbox"/>
+                      <label for="arhsLaptopNecessary">Company laptop necessary</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <div class="form-check">
+                      <input class="form-check-input" id="timesheetNotMandatory" name="timesheetNotMandatory"
+                             formControlName="timesheetNotMandatory" type="checkbox"/>
+                      <label for="timesheetNotMandatory">Timesheet not mandatory</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-sm-12 col-lg-6"></div>
+                  <div class="col-12 p-0">
+                    <!-- Churn-->
+                    <app-churn-candidate *ngIf="checkChurn" [churn]="churnIn"
+                                         (updateChurn)="updateChurn($event)"></app-churn-candidate>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="row border-bottom">
+            <!-- Work permit -->
+            <div class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Work Permit Information</h2>
+              </header>
+
+              <div class="p-3">
+                <app-work-permit #workPermitComponent
+                                 [today]="today"
+                                 [isAdminOfCandidate]="isAdminOfCandidate"
+                                 [isCandidate]="true"
+                                 [workPermitIdNotRequired]="workPermitIdNotRequired"
+                >
+                </app-work-permit>
+              </div>
+            </div>
+
+            <!-- Responsibles -->
+            <div class="col-12 col-sm-6 pt-4 border-left">
+              <header>
+                <h2 class="card-title">Responsibles</h2>
+              </header>
+
+              <div class="p-3">
+                <app-responsible-at-arhs #responsibleAtArhsComponent
+                                         [employeeList]="employeeList"
+                                         [userToShow]="user"
+                                         [isEditCandidate]="true"
+                                         [isInductionResponsibleAvailable]="isInductionResponsibleAvailable"
+                                         [startDate]="startDate"
+                >
+                </app-responsible-at-arhs>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div *ngIf="this.displayResidencePermitInfo" class="col-12 col-sm-6 pt-4">
+              <header>
+                <h2 class="card-title">Residence Permit Information</h2>
+              </header>
+              <div class="p-3">
+                <app-work-permit #residencePermitComponent
+                                 [today]="today"
+                                 [isAdminOfCandidate]="isUserAdministrator"
+                                 [isResidencePermit]="true"
+                >
+                </app-work-permit>
+              </div>
+            </div>
+
+            <!-- Customer & contract info -->
+            <div class="col-12 col-sm-6 pt-4" [ngClass]="this.displayResidencePermitInfo ? ' border-left' : 'border-right'">
+              <header>
+                <h2 class="card-title">Customer & Contract Information</h2>
+              </header>
+
+              <div [ngClass]="{'custom-card-body-size': !checkChurn}" class="p-3">
+                <form [formGroup]="contractDetailsForm" class="row">
+                  <ng-template #rtDepartment let-r="result" let-t="term">
+                    <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                  </ng-template>
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label class="label-ro" for="contractDepartment">Department</label>
+                    <input
+                      #instanceDepartment="ngbTypeahead"
+                      (click)="clickDepartment$.next($event.target.value)"
+                      [inputFormatter]="formatterString"
+                      [ngbTypeahead]="searchDepartment"
+                      [resultTemplate]="rtDepartment"
+                      class="form-control"
+                      formControlName="contractDepartment"
+                      id="contractDepartment"
+                      maxlength="31"
+                      placeholder="Department"
+                      type="text"
+                    />
+                    <div *ngIf="department.invalid && (department.dirty || department.touched)"
+                         class="invalid-feedback">
+                      <div *ngIf="department.errors?.maxlength">
+                        Department size must not exceed 30 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--<ng-template #rtPartner let-r="result" let-t="term">
+                    <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                  </ng-template>
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label class="label-ro" for="jobPartner">Job partner </label>
+                    <input
+                      #instancePartner="ngbTypeahead"
+                      (click)="clickPartner$.next($event.target.value)"
+                      [inputFormatter]="formatterString"
+                      [ngbTypeahead]="searchPartner"
+                      [resultTemplate]="rtPartner"
+                      class="form-control"
+                      formControlName="jobPartner"
+                      id="jobPartner"
+                      maxlength="201"
+                      placeholder="Job partner"
+                      type="text"
+                    />
+                    <div *ngIf="jobPartner.invalid && (jobPartner.dirty || jobPartner.touched)"
+                         class="invalid-feedback">
+                      <div *ngIf="jobPartner.errors?.maxlength">
+                        Job partner size must not exceed 200 characters
+                      </div>
+                    </div>
+                  </div>-->
+                </form>
+
+                <form [formGroup]="customerAndContractInformationForm" action="#" class="row">
+
+                  <ng-template #rtCustomer let-r="result" let-t="term">
+                    <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                  </ng-template>
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="customer">Customer</label>
+                    <input
+                      #instanceCustomer="ngbTypeahead"
+                      (click)="clickCustomer$.next($event.target.value)"
+                      [inputFormatter]="formatterString"
+                      [ngbTypeahead]="searchCustomer"
+                      [resultTemplate]="rtCustomer"
+                      class="form-control"
+                      formControlName="customer"
+                      id="customer"
+                      maxlength="21"
+                      placeholder="Customer"
+                      type="text"
+                    />
+                    <div *ngIf="customer.invalid && (customer.dirty || customer.touched)" class="invalid-feedback">
+                      <div *ngIf="customer.errors?.maxlength">
+                        Customer size must not exceed 20 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <ng-template #rtContract let-r="result" let-t="term">
+                    <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                  </ng-template>
+                  <div class="form-group col-sm-12 col-lg-6">
+                    <label for="contract">Contract</label>
+                    <input
+                      #instanceContract="ngbTypeahead"
+                      (click)="clickContract$.next($event.target.value)"
+                      [inputFormatter]="formatterString"
+                      [ngbTypeahead]="searchContract"
+                      [resultTemplate]="rtContract"
+                      class="form-control"
+                      formControlName="contract"
+                      id="contract"
+                      maxlength="51"
+                      placeholder="Contract"
+                      type="text"
+                    />
+                    <div *ngIf="contract.invalid && (contract.dirty || contract.touched)" class="invalid-feedback">
+                      <div *ngIf="contract.errors?.maxlength">
+                        Contract size must not exceed 50 characters
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Tab Contact -->
+      <section aria-labelledby="contact-tab" class="tab-pane fade" id="contact" role="tabpane3">
+        <div class="box mx-0 pt-4">
+          <div class="row">
+            <!-- Contacts -->
+            <div class="col-12">
+              <header class="card-header card-header-lg">
+                <h2 class="card-title">Personal contacts</h2>
+              </header>
+
+              <div class="p-3">
+                <form [formGroup]="contactForm" action="#" class="row">
+
+                  <div class="form-group col-12 col-lg-4 col-md-6">
+                    <label for="landline">Landline</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><span class="fa fa-phone" style="width: 1rem"></span></span>
+                      </div>
+                      <input class="form-control" formControlName="landline" id="landline" name="landline"
+                             maxlength="41" placeholder="Landline phone" type="text"/>
+                    </div>
+                    <div *ngIf="landline.invalid && (landline.dirty || landline.touched)"
+                         class="invalid-feedback">
+                      <div *ngIf="landline.errors?.maxlength">
+                        Landline size must not exceed 40 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-12 col-lg-4 col-md-6">
+                    <label class="label-ro" for="instantMessenger">Instant messenger</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><span class="fa-solid fa-bolt" style="width: 1rem"></span></span>
+                      </div>
+                      <input class="form-control" formControlName="messenger" id="instantMessenger"
+                             name="instantMessenger"
+                             maxlength="151" placeholder="Instant messenger" type="text"/>
+                    </div>
+                    <div *ngIf="messenger.invalid && (messenger.dirty || messenger.touched)"
+                         class="invalid-feedback">
+                      <div *ngIf="messenger.errors?.maxlength">
+                        Instant messenger size must not exceed 150 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-12 col-lg-4 col-md-6">
+                    <label class="label-ro" for="mobile">Mobile</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><span class="fa fa-mobile" style="width: 1rem"></span></span>
+                      </div>
+                      <input class="form-control" formControlName="mobile"
+                             id="mobile" maxlength="41" name="mobile" placeholder="Mobile phone" type="text"/>
+                    </div>
+                    <div *ngIf="mobile.invalid && (mobile.dirty || mobile.touched)"
+                         class="invalid-feedback">
+                      <div *ngIf="mobile.errors?.maxlength">
+                        Mobile size must not exceed 40 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-12 col-lg-4 col-md-6">
+                    <label class="label-ro" for="customerMail">Customer email</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><span class="fa fa-envelope" style="width: 1rem"></span></span>
+                      </div>
+                      <input class="form-control" formControlName="customerMail"
+                             id="customerMail" placeholder="Customer email"
+                             maxlength="61" name="customerMail" type="text"/>
+                    </div>
+                    <div *ngIf="customerMail.invalid && (customerMail.dirty || customerMail.touched)"
+                         class="invalid-feedback">
+                      <div *ngIf="customerMail.errors?.maxlength">
+                        Customer mail size must not exceed 60 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-12 col-lg-4 col-md-6">
+                    <label class="label-ro" for="proMail">Professional email</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><span class="fa fa-envelope" style="width: 1rem"></span></span>
+                      </div>
+                      <input class="form-control" formControlName="proMail"
+                             id="proMail" maxlength="61"
+                             name="proMail" placeholder="Professional email" type="text"/>
+                    </div>
+                    <div *ngIf="proMail.invalid && (proMail.dirty || proMail.touched)"
+                         class="invalid-feedback">
+                      <div *ngIf="proMail.errors?.maxlength">
+                        Professional mail size must not exceed 60 characters
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- Tab Hardware -->
+      <section  aria-labelledby="contact-tab" class="tab-pane fade" id="hardware" role="tabpane4">
+        <div class="box mx-0 pt-4">
+          <div class="row">
+            <!-- Laptop nformations -->
+            <div class="col-12 col-sm-6">
+              <header>
+                <h2 class="card-title">Laptop information</h2>
+              </header>
+
+              <div class="p-3">
+                <app-laptop-form [form]="laptopForm"
+                                 [laptopModelList]="laptopModelList"
+                                 [keyboardModels]="formData.keyboardModels"
+                                 [operatingSystems]="formData.operatingSystems"
+                                 (changeHardware)="updateHardwareForm()">
+                </app-laptop-form>
+              </div>
+            </div>
+
+            <!-- Hardware -->
+            <div class="col-12 col-sm-6 border-left">
+              <header class="card-header card-header-lg">
+                <h2 class="card-title">HARDWARE</h2>
+              </header>
+              <div class="card-body">
+                <app-hardware-form [form]="hardwareForm"
+                                   [assets]="assets"
+                                   [disabled]="!isHardwareRequired">
+                </app-hardware-form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab badges -->
+      <section *ngIf="onEdit === 'edit'" aria-labelledby="badge" class="tab-pane fade" id="badge" role="tabpane5">
+        <div class="card-group">
+          <div class="card">
+
+            <header class="card-header card-header-lg">
+              <h2 class="card-title">Badge</h2>
+            </header>
+
+            <div class="card-body">
+              <form [formGroup]="badgeForm">
+                <div *ngIf="isAdminOfCandidate" class="row mt-1 col-12">
+                  <div class="col-3 pl-0">
+                    <label for="badgeNumber">Badge number</label>
+                    <ng-template #rtBadgeNumber let-r="result.badgeNumber" let-t="term">
+                      <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+                    </ng-template>
+                    <input #instanceBadgeNumber="ngbTypeahead"
+                           (click)="clickBadgeNumber$.next($event.target.value)"
+                           [ngbTypeahead]="searchBadgeNumber"
+                           [inputFormatter]="formatterBadge"
+                           class="form-control"
+                           formControlName="badgeNumber"
+                           type="text"
+                           id="badgeNumber"
+                           [resultTemplate]="rtBadgeNumber"
+                    />
+                  </div>
+                  <div class="col-1">
+                    <button class="btn btn-primary" type="button" style="margin-top: 2em;"
+                            [disabled]="!badgeNumber.value"
+                            (click)="addToBadgeList()">
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="table-responsive" style="margin-top: 2em;">
+                  <table class="table table-full">
+                    <thead>
+                    <tr>
+                      <th scope="col"><span (click)="changeSort()" class="sort-column"> Badge number  <i
+                        class="fas {{sortAscending?'fa-sort-up':'fa-sort-down'}}"
+                      ></i></span></th>
+                      <th scope="col" *ngFor="let access of accessTypes;" >
+                        <span>{{access}}</span>
+                      </th>
+                      <th class="text-right" scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let badge of badges">
+                      <td>{{badge.badgeNumber}}</td>
+                      <td *ngFor="let access of accessTypes">
+                        <div class="form-check" (click)="toggleBadgeAccessType(badge, access)">
+                          <input class="form-check-input"
+                                 [disabled]="!isAdminOfCandidate"
+                                 [checked]="isAccessChecked(badge, access)"
+                                 type="checkbox"/>
+                          <label class="form-check-label" style="margin-bottom: 1em;"></label>
+                        </div>
+                      </td>
+                      <td *ngIf="isAdminOfCandidate" class="text-right pr-0 pl-0">
+                        <button class="btn btn-sm btn-basic" type="button" (click)="removeBadge(badge)">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab phone -->
+      <section *ngIf="onEdit === 'edit'" aria-labelledby="phone" class="tab-pane fade" id="phone" role="tabpane6">
+        <app-manage-phone-numbers [isUserAdministrator]="isAdminOfCandidate" [user]="user" [isResourceCandidate]="true"></app-manage-phone-numbers>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- Modal for cropping -->
+<div aria-hidden="true" aria-labelledby="cropImageTitle" class="modal fade" id="editProfilePicture"
+     role="dialog" tabindex="-1">
+
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="cropImageTitle">Edit profile picture</h5>
+        <button #exitButton (click)="cancelCropping()" aria-label="Close" class="close" data-dismiss="modal"
+                type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body d-flex align-items-center justify-content-center flex-column">
+        <div style="height: 300px;" class="d-flex justify-content-center align-items-center">
+          <image-cropper
+            #cropperComponent
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded()"
+            (cropperReady)="cropperReady()"
+            [alignImage]="'center'"
+            [imageChangedEvent]="imageChangedEvent"
+            [aspectRatio]="1"
+            [maintainAspectRatio]="true"
+            [format]="'jpeg'"
+            outputType="base64">
+          </image-cropper>
+        </div>
+
+        <div>
+          <button (click)="rotateLeft()" class="btn btn-basic btn-sm mr-1"><i class="fa fa-undo" aria-hidden="true"></i></button>
+          <button (click)="rotateRight()" class="btn btn-basic btn-sm"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="cancelCropping()" class="btn btn-link" data-dismiss="modal" type="button">Cancel</button>
+        <button (click)="setCroppedAsUserPic()" class="btn btn-primary" data-dismiss="modal" type="button">Apply
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

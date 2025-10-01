@@ -1,0 +1,260 @@
+<div class="modal-header align-items-center">
+  <h2 class="modal-title" id="send-mail-title">
+    {{title}}
+  </h2>
+  <button (click)="close()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <div *ngIf="!showHardwareTab">
+    <ng-container *ngTemplateOutlet="request"></ng-container>
+  </div>
+
+  <div *ngIf="showHardwareTab" class="main-nav-tabs">
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+      <li class="nav-item"><a aria-selected="true" class="nav-link active"
+                              data-toggle="tab" href="#request" id="request-tab"
+                              role="tab">Request</a></li>
+
+      <li class="nav-item"><a aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#hardware" id="hardware-tab"
+                              role="tab">Hardware</a></li>
+    </ul>
+
+    <div class="tab-content bg-white" id="myTabContent">
+
+      <section aria-labelledby="request-tab" class="tab-pane fade show active"
+               id="request"
+               role="tabpanel">
+
+        <div class="card card-body">
+          <ng-container *ngTemplateOutlet="request"></ng-container>
+        </div>
+      </section>
+
+      <section aria-labelledby="hardware-tab" class="tab-pane fade" id="hardware" role="tabpane3">
+        <div class="box mx-0 pt-4">
+          <div class="row">
+          <!-- Laptop information -->
+          <div class="col-12 col-sm-6 pt-4">
+            <header>
+              <h2 class="card-title">Laptop information</h2>
+            </header>
+            <div class="card-body">
+              <app-laptop-form [form]="laptopForm"
+                               [laptopModelList]="laptopModelList"
+                               [keyboardModels]="formData.keyboardModels"
+                               [operatingSystems]="formData.operatingSystems"
+                               (changeHardware)="updateHardwareForm()">
+              </app-laptop-form>
+            </div>
+          </div>
+
+          <!-- Hardware -->
+          <div class="col-12 col-sm-6 pt-4 border-left">
+            <header>
+              <h2 class="card-title">HARDWARE</h2>
+            </header>
+            <div class="card-body">
+              <app-hardware-form [form]="hardwareForm"
+                                 [assets]="assets"
+                                 [disabled]="!isHardwareRequired">
+              </app-hardware-form>
+            </div>
+          </div>
+        </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="close()" class="btn btn-basic" type="button">
+    Cancel
+  </button>
+  <button [disabled]="sendMailForm.invalid || sendMailForm.errors || sendMailForm.errors?.manualReminder"
+          (click)="sendMail()" class="btn btn-primary" type="button">
+    {{ laptopForm.dirty || hardwareForm.dirty ? 'Save & Send' : 'Send' }}
+  </button>
+</div>
+
+<ng-template #request>
+  <form [formGroup]="sendMailForm">
+    <div *ngIf="sendMailForm.errors?.manualReminder" class="invalid-feedback">
+      One receiver is at least required
+    </div>
+    <div class="form-group">
+      <label for="mail-to">Mail to</label>
+      <ng-select [items]="mailList"
+                 [virtualScroll]="true"
+                 [selectOnTab]="true"
+                 [multiple]="true"
+                 [addTag]="bindAddMail"
+                 id="mail-to"
+                 formControlName="mail-to"
+                 [clearOnBackspace]="false"
+                 [(ngModel)]="selectedMails">
+        <ng-template ng-tag-tmp let-search="searchTerm">
+          Add mail address: {{search}}
+        </ng-template>
+      </ng-select>
+      <div *ngIf="mailToForm.invalid && (mailToForm.dirty || mailToForm.touched)" class="invalid-feedback">
+        <div *ngIf="mailToForm.errors?.required">
+          Receivers are required
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="mail-cc">Mail cc</label>
+      <ng-select [items]="mailList"
+                 [virtualScroll]="true"
+                 [selectOnTab]="true"
+                 [multiple]="true"
+                 [addTag]="bindAddMail"
+                 id="mail-cc"
+                 formControlName="mail-cc"
+                 [clearOnBackspace]="false"
+                 [(ngModel)]="selectedCCMails">
+        <ng-template ng-tag-tmp let-search="searchTerm">
+          Add mail address: {{search}}
+        </ng-template>
+      </ng-select>
+    </div>
+    <div class="form-group">
+      <label for="mail-to">Mail bcc</label>
+      <ng-select [items]="mailList"
+                 [virtualScroll]="true"
+                 [selectOnTab]="true"
+                 [multiple]="true"
+                 [addTag]="bindAddMail"
+                 id="mail-bcc"
+                 formControlName="mail-bcc"
+                 [clearOnBackspace]="false"
+                 [(ngModel)]="selectedBCCMails"
+      >
+        <ng-template ng-tag-tmp let-search="searchTerm">
+          Add mail address: {{search}}
+        </ng-template>
+      </ng-select>
+      <div *ngIf="mailBCCForm.invalid && (mailBCCForm.dirty || mailBCCForm.touched)" class="invalid-feedback">
+        <div *ngIf="mailBCCForm.errors?.required">
+          Receivers are required
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="mail-subject">Subject</label>
+      <input class="form-control" id="mail-subject" formControlName="mail-subject" type="text">
+      <div *ngIf="mailSubjectForm.invalid && (mailSubjectForm.dirty || mailSubjectForm.touched)" class="invalid-feedback">
+        <div *ngIf="mailSubjectForm.errors?.required">
+          Subject is required
+        </div>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="commentAvailable">
+      <label for="comment">Comment</label>
+      <input class="form-control" id="comment" formControlName="comment" type="text">
+    </div>
+    <div class="form-group" *ngIf="addressRequired">
+      <label for="mail-subject">Address <small class="text-muted">(required)</small></label>
+      <input class="form-control" id="mail-address" formControlName="mail-address" type="text">
+      <div *ngIf="mailSubjectForm.invalid && (mailSubjectForm.dirty || mailSubjectForm.touched)" class="invalid-feedback">
+        <div *ngIf="mailSubjectForm.errors?.required">
+          Address is required
+        </div>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="referrerOption">
+      <label for="referrer">Referrer</label>
+      <ng-select    formControlName="mail-referrer"
+                    [items]="resourceList"
+                    [selectOnTab]="true"
+                    [virtualScroll]="true"
+                    bindLabel="fullName"
+                    id="referrer">
+      </ng-select>
+    </div>
+
+
+
+    <div class="form-group">
+      <label for="mail-body">Body</label>
+      <textarea class="form-control" style="resize: none; height: 150px;" id="mail-body" formControlName="mail-body"></textarea>
+      <div *ngIf="mailBodyForm.invalid && (mailBodyForm.dirty || mailBodyForm.touched)" class="invalid-feedback">
+        <div *ngIf="mailBodyForm.errors?.required">
+          Body is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row" *ngIf="isProposal">
+      <div class="form-group col-12" *ngIf="candidateProposal && candidateProposalWithoutCar; else onlyOneProposal">
+        Proposals :
+        <ul>
+          <li>
+            <a (click)="downloadFileFromServer(candidateProposal, proposalFileName('Proposal request with car', candidateProposal))">
+              {{proposalFileName('Proposal request with car', candidateProposal)}}
+            </a>
+          </li>
+          <li>
+            <a (click)="downloadFileFromServer(candidateProposalWithoutCar, proposalFileName('Proposal request without car', candidateProposalWithoutCar))">
+              {{proposalFileName('Proposal request without car', candidateProposalWithoutCar)}}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <ng-template #onlyOneProposal>
+        <div class="form-group col-12">
+          Proposal : <a (click)="downloadFileFromServer(candidateProposal, proposalFileName('Proposal request', candidateProposal))">{{proposalFileName('Proposal request', candidateProposal)}}</a>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-12 d-flex mb-1">
+        <label class="mb-0 mt-auto">Attachments</label>
+        <label class="btn btn-basic mb-0 ml-auto" for="file">Upload a file</label>
+        <input #attachmentInput
+               (change)="addFile($event.target.files)"
+               accept=".xlsx, .xls, .pdf, .png, .jpg, .jpeg, .doc, .docx"
+               id="file"
+               class="sr-only"
+               multiple
+               type="file">
+      </div>
+    </div>
+    <div (fileDropped)="addDropFile($event)" appDragDrop class="dragover-container"
+         style="height: 150px;">
+      <div (click)="attachmentInput.click()"
+           *ngIf="newAttachmentsFile.length == 0"
+           class="drop-files-container" style="height: 150px; margin-bottom : 20px">
+        <div class="mx-auto align-self-center text-secondary">
+          <div style="color: grey">Drop files here</div>
+        </div>
+      </div>
+      <div *ngIf="newAttachmentsFile.length > 0"
+           class="attachments-container overflow-auto"
+           style="height: 150px">
+        <div class="attachments-list">
+          <ul class="card-body pt-2 mb-0">
+            <li *ngFor="let attachment of newAttachmentsFile" class="attachments-list-item">
+              <em class="fas fa-paperclip"></em>
+              <a (click)="downloadFileFromClient(attachment)"
+                 class="attachments-link mr-auto">{{attachment.name}}</a>
+              <button (click)="removeFile(attachment)"
+                      aria-label="Remove"
+                      class="close" type="button">
+                <span>&times;</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>

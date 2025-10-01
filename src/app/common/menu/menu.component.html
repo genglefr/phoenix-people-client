@@ -1,0 +1,204 @@
+<nav class="sidenav" id="sidenav" role="navigation" tabindex="-1">
+  <ul class="sidemenu">
+    <li class="sidemenu-item">
+      <button type="button" class="sidemenu-link js-display-controls js-sidemenu" aria-controls="sidepanel1" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+        <span class="sr-only">Menu</span>
+      </button>
+
+      <div class="sidepanel" id="sidepanel1" aria-hidden="true">
+        <!-- Menu Part I -->
+        <header
+          class="sidepanel-header d-flex justify-content-between align-items-center"
+          role="button"
+          (click)="toggleUsourcePanel()"
+          aria-controls="adminPanelContent"
+          [attr.aria-expanded]="isUsourcePanelExpanded">
+
+          <span>PEOPLE</span>
+
+          <i class="fas"
+             [ngClass]="{
+               'fa-angle-down': isUsourcePanelExpanded,
+               'fa-angle-up': !isUsourcePanelExpanded
+            }"></i>
+        </header>
+        <div class="sidepanel-content collapse"
+             [ngClass]="{ 'show': isUsourcePanelExpanded }">
+          <ul class="sidepanel-menu">
+            <li class="sidepanel-menu-item">
+              <a [routerLinkActiveOptions]="{ exact: true }" class="sidepanel-menu-link" routerLink="/"
+                 routerLinkActive="active">Who is who
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- Menu Part II -->
+        <div *ngIf="showAdminMenu">
+          <header
+            class="sidepanel-header d-flex justify-content-between align-items-center"
+            role="button"
+            (click)="toggleAdminPanel()"
+            aria-controls="adminPanelContent"
+            [attr.aria-expanded]="isAdminPanelExpanded">
+
+            <span>ADMINISTRATION</span>
+
+            <i class="fas"
+               [ngClass]="{
+               'fa-angle-down': isAdminPanelExpanded,
+               'fa-angle-up': !isAdminPanelExpanded
+            }"></i>
+          </header>
+          <div class="sidepanel-content collapse"
+               [ngClass]="{ 'show': isAdminPanelExpanded }">
+            <ul class="sidepanel-menu">
+              <li (click)="close()" *ngIf="isRead || isAdministrator || isAdminByEntity" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link"
+                   routerLink="/administration/resources"
+                   routerLinkActive="active">Manage resources
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isRead || isAdministrator || isAdminByEntity || isEntityManager" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link"
+                   routerLink="/administration/candidates"
+                   routerLinkActive="active">Manage candidates
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isAdministrator || isAdminByEntity" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link"
+                   routerLink="/administration/partners"
+                   routerLinkActive="active">Manage partners
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isAdministrator || isBadgeRead || isAdminByEntity" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link" routerLink="/administration/badge/management"
+                   routerLinkActive="active">Manage badges
+                </a>
+              </li>
+              <li
+                (click)="close()"
+                *ngIf="isAdministrator || isAdminByEntity"
+                class="sidepanel-menu-item"
+              >
+                <a
+                  class="sidepanel-menu-link"
+                  routerLink="/administration/phone/management"
+                  routerLinkActive="active"
+                >Manage phones</a>
+              </li>
+              <li (click)="close()" *ngIf="isReferralManager" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link" routerLink="administration/referrer"
+                   routerLinkActive="active">Referrer overview
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isAdministrator" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link" routerLink="/administration/alarm-codes/management"
+                   routerLinkActive="active">Alarm codes
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isAdministrator" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link" routerLink="/dailyEmails"
+                   routerLinkActive="active">Daily emails
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isAdministrator || isAdminByEntity" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link" routerLink="/hardware-request"
+                   routerLinkActive="active">Hardware request
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isAdministrator || isAdminByEntity" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link" routerLink="/administration/phone-consumption/management"
+                   routerLinkActive="active">Phone consumption
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="isRead || isAdminOrReadGlobal || isAdminByEntity" aria-hidden="false" class="sidepanel-content" id="sidepanel-content3">
+            <div class="form-group">
+              <label>Companies</label>
+              <app-multi-select  (changeEventEmitter)="changeValueCompany($event)"
+                                 [filter]="selectedCompanies"
+                                 [hasSelectAll]="true"
+                                 [items]="resourceCompanyList"
+                                 [limitTagLength]="10"
+                                 [placeholder]="'Select'"
+                                 idValue="company"
+                                 label="company"
+                                 selectAllLabel="Select all companies">
+              </app-multi-select>
+            </div>
+            <div class="form-group">
+              <label>Types</label>
+              <app-multi-select  (changeEventEmitter)="changeValueTypes($event)"
+                                 [filter]="selectedTypes"
+                                 [hasSelectAll]="true"
+                                 [items]="resourceTypeList"
+                                 [placeholder]="'Select'"
+                                 idValue="description"
+                                 label="jobType"
+                                 selectAllLabel="Select all types">
+              </app-multi-select>
+            </div>
+            <button class="btn btn-block btn-primary"
+                    [disabled]="!isExportable()" (click)="export()">
+              Export
+            </button>
+          </div>
+          <div *ngIf="isAdministrator" aria-hidden="false" class="sidepanel-content" id="sidepanel-content-5">
+            <button class="btn btn-block btn-primary" (click)="openCheckSanityModal()">
+              Check sanity
+            </button>
+          </div>
+        </div>
+        <div aria-hidden="false" class="sidepanel-content" id="sidepanel-content-6">
+          <button class="btn btn-block btn-primary" (click)="openPreferencesModal()">
+            Preferences
+          </button>
+        </div>
+        <!-- Menu Part III -->
+        <div *ngIf="showOnBoardingMenu">
+          <header
+            class="sidepanel-header d-flex justify-content-between align-items-center"
+            role="button"
+            (click)="toggleOnboardingPanel()"
+            aria-controls="adminPanelContent"
+            [attr.aria-expanded]="isOnboardingPanelExpanded">
+
+            <span>ONBOARDING</span>
+
+            <i class="fas"
+               [ngClass]="{
+               'fa-angle-down': isOnboardingPanelExpanded,
+               'fa-angle-up': !isOnboardingPanelExpanded
+            }"></i>
+          </header>
+          <div class="sidepanel-content collapse"
+               [ngClass]="{ 'show': isOnboardingPanelExpanded }">
+            <ul class="sidepanel-menu">
+              <li (click)="close()" *ngIf="isManagerOnBoarding" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link"
+                   routerLink="/onboarding/manager-dashboard"
+                   routerLinkActive="active">Manager dashboard
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isRecruiter" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link"
+                   routerLink="/onboarding/recruiter-dashboard"
+                   routerLinkActive="active">Recruiter dashboard
+                </a>
+              </li>
+              <li (click)="close()" *ngIf="isEntityManager || isRecruiter" class="sidepanel-menu-item">
+                <a class="sidepanel-menu-link"
+                   routerLink="/onboarding/kanban-dashboard"
+                   routerLinkActive="active">SR kanban board
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</nav>
+

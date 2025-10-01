@@ -1,0 +1,120 @@
+<form [formGroup]="responsibleForm" action="#">
+  <ng-template #rtr let-r="result" let-t="term">
+    <ngb-highlight [result]="r.lastName + ' ' + r.firstName + ' (' + r.account + ')'"
+                   [term]=""></ngb-highlight>
+  </ng-template>
+  <div class="row align-items-end">
+    <div class="form-group col-md-12 col-lg-6" *ngIf="isEditCandidate">
+      <label for="manager">Manager</label>
+      <input
+        #instanceManager="ngbTypeahead"
+        (click)="clickManager$.next($event.target.value)"
+        [inputFormatter]="formatterEmployee"
+        [ngbTypeahead]="searchManager"
+        [resultTemplate]="rtr"
+        class="form-control"
+        formControlName="manager"
+        id="manager"
+        type="text"
+      />
+      <div *ngIf="manager.invalid && (manager.dirty || manager.touched)" class="invalid-feedback-custom">
+        <div *ngIf="manager.errors.notInList">
+          Please select a valid manager.
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isEditCandidate" class="form-group col-md-12 col-lg-6">
+      <label for="inductionResponsible-candidate">Induction responsible</label>
+      <input
+        #instanceInductionResponsible="ngbTypeahead"
+        (click)="clickInductionResponsible$.next($event.target.value)"
+        [inputFormatter]="formatterEmployee"
+        [ngbTypeahead]="searchInductionResponsible"
+        [resultTemplate]="rtr"
+        class="form-control"
+        formControlName="inductionResponsible"
+        id="inductionResponsible-candidate"
+        type="text"
+      />
+      <div *ngIf="inductionResponsible.invalid && (inductionResponsible.dirty || inductionResponsible.touched)" class="invalid-feedback-custom">
+        <div *ngIf="inductionResponsible.errors.notInList">
+          Please select a valid induction responsible.
+        </div>
+      </div>
+      <div *ngIf="!isInductionResponsibleAvailable" class="invalid-feedback-custom">
+        <div>
+          This resource is on Holiday on the start date of this candidate.
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isEditResource" class="form-group col-md-12 col-lg-6">
+      <div class="form-group">
+        <label for="inductionResponsible">Induction responsible</label>
+        <input
+          #instanceInductionResponsible="ngbTypeahead"
+          (click)="clickInductionResponsible$.next($event.target.value)"
+          [inputFormatter]="formatterEmployee"
+          [ngbTypeahead]="searchInductionResponsible"
+          [resultTemplate]="rtr"
+          class="form-control"
+          formControlName="inductionResponsible"
+          id="inductionResponsible"
+          type="text"
+        />
+        <div *ngIf="inductionResponsible.invalid && (inductionResponsible.dirty || inductionResponsible.touched)" class="invalid-feedback-custom">
+          <div *ngIf="inductionResponsible.errors.notInList">
+            Please select a valid induction responsible.
+          </div>
+        </div>
+        <div *ngIf="!isInductionResponsibleAvailable" class="invalid-feedback-custom">
+          <div>
+            This resource is on Holiday on the start date of this candidate.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isEditCandidate" class="form-group col-md-12 col-lg-6">
+      <label for="mentor-candidate">Mentor</label>
+      <input
+        #instanceMentor="ngbTypeahead"
+        (click)="clickMentor$.next($event.target.value)"
+        [inputFormatter]="formatterEmployee"
+        [ngbTypeahead]="searchMentor"
+        [resultTemplate]="rtr"
+        class="form-control"
+        formControlName="mentor"
+        id="mentor-candidate"
+        type="text"
+      />
+      <div *ngIf="mentor.invalid && (mentor.dirty || mentor.touched)" class="invalid-feedback-custom">
+        <div *ngIf="mentor.errors.notInList">
+          Please select a valid mentor.
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isEditResource" class="form-group col-md-12 col-lg-6">
+      <div class="form-group">
+        <label for="mentor">Mentor</label>
+        <input
+          #instanceMentor="ngbTypeahead"
+          (click)="clickMentor$.next($event.target.value)"
+          [inputFormatter]="formatterEmployee"
+          [ngbTypeahead]="searchMentor"
+          [resultTemplate]="rtr"
+          class="form-control"
+          formControlName="mentor"
+          id="mentor"
+          type="text"
+        />
+        <div *ngIf="mentor.invalid && (mentor.dirty || mentor.touched)" class="invalid-feedback-custom">
+          <div *ngIf="mentor.errors.notInList">
+            Please select a valid mentor.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+

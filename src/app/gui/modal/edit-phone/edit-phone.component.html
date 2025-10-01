@@ -1,0 +1,116 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="modal-title-new" *ngIf="isCreation; else isEdit">
+    Add phone
+  </h5>
+  <ng-template #isEdit><h5 class="modal-title" id="modal-title-edit">
+    Edit phone
+    <span *ngIf="isOwner"> for {{owner.fullName}}</span>
+  </h5></ng-template>
+  <button aria-label="Close" class="close" data-dismiss="modal"
+          (click)="closeModal()"
+          type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="phoneForm">
+    <div class="form-group col-12">
+      <div class="row mt-1" >
+          <div class="col-6 mt-1" *ngIf="isOwner && isCreation">
+            <label for="phoneModel">Owner</label>
+            <ng-select    [(ngModel)]="selectedOwner"
+                          [ngModelOptions]="{standalone: true}"
+                          [items]="ownerList"
+                          [selectOnTab]="true"
+                          [virtualScroll]="true"
+                          bindLabel="fullName"
+                          id="owner">
+            </ng-select>
+        </div>
+        <div class="col-6 mt-1">
+          <label for="phoneNumber">Phone number</label>
+          <input class="form-control" formControlName="phoneNumber" id="phoneNumber"
+                 placeholder="Phone number"
+                 type="text"/>
+          <div *ngIf="phoneNumber.invalid && (phoneNumber.dirty||phoneNumber.touched)" class="invalid-feedback">
+            <div *ngIf="phoneNumber.errors?.pattern">
+              Phone number must be in correct format
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mt-1">
+          <label for="phoneModel">Phone model</label>
+          <ng-select        [formControl]="phoneModel"
+                            [items]="phoneModelList"
+                            [addTag]="true"
+                            [clearOnBackspace]="true"
+                            [selectOnTab]="true"
+                            id="phoneModel"
+                            addTagText="Add model">
+          </ng-select>
+        </div>
+
+        <div class="col-6 mt-1">
+          <label for="phoneImei">Phone IMEI</label>
+          <input class="form-control" formControlName="phoneImei" id="phoneImei"
+                 placeholder="Phone IMEI"
+                 type="text"/>
+        </div>
+
+        <div class="col-6 mt-1">
+          <label for="serialNumber">Serial number</label>
+          <input class="form-control" formControlName="serialNumber" id="serialNumber"
+                 placeholder="Serial number"
+                 type="text"/>
+        </div>
+
+        <div class="col-6 mt-1">
+          <label for="receptionDate">Reception date <small>(required)</small></label>
+          <div class="input-group">
+            <input #dstr="ngbDatepicker" [footerTemplate]="footerTemplate" class="form-control"
+                   formControlName="receptionDate" id="receptionDate" maxlength="20"
+                   [minDate]="{year: 2000, month: 1, day: 1}"
+                   ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+            <div class="input-group-append">
+              <button (click)="dstr.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                      type="button"></button>
+            </div>
+            <div *ngIf="receptionDate.invalid && (receptionDate.dirty||receptionDate.touched)" class="invalid-feedback">
+              <div *ngIf="receptionDate.errors.ngbDate?.invalid">
+                Reception date must be correct and in the following format : DD/MM/YYYY
+              </div>
+              <div *ngIf="receptionDate.errors.required">
+                Reception date is required
+              </div>
+            </div>
+          </div>
+          <ng-template #footerTemplate>
+            <hr class="my-0">
+            <button (click)="receptionDate.setValue(today); dstr.close()"
+                    class="btn btn-primary btn-sm m-2 float-left">Today
+            </button>
+            <button (click)="dstr.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+          </ng-template>
+        </div>
+        <div class="col-12 mt-1">
+          <label for="comment">Comment</label>
+          <textarea class="form-control edit-comment"
+                    formControlName="comment" id="comment"
+                    placeholder="Comment"
+                    style="resize: none !important;"
+                    rows="4">
+          </textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-basic" (click)="closeModal()" type="button">Cancel</button>
+  <button class="btn btn-primary" [disabled]="receptionDate.invalid || phoneNumber.invalid"
+          (click)="saveChanges()"
+          type="button">Save
+  </button>
+</div>

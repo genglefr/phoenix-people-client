@@ -1,0 +1,148 @@
+/* ====================
+  INPUTS
+==================== */
+
+
+/*-------------------- FROM CONTROL --------------------*/
+
+
+.form-control {
+  background: $white;
+  height: auto;
+  border: 1px solid $grey-dark;
+
+  &:disabled {
+    background: $grey-light;
+  }
+
+  &:focus {
+    border-color: $primary-light;
+    box-shadow: 0 0 0 0.2rem $primary-extra-light;
+  }
+}
+
+/*-------------------- FORM CHECK INPUT --------------------*/
+
+
+.form-check-input {
+  margin-left: 0;
+  margin-top: 0;
+}
+
+/*-------------------- LABEL --------------------*/
+
+
+label {
+  font-size: 0.875rem;
+  color: $black-light;
+  margin-bottom: 8px;
+
+  &.label-sm {
+    color: $black-light;
+  }
+}
+
+.required-field {
+  color: $danger;
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+/*-------------------- TEXTAREA --------------------*/
+
+textarea {
+  resize: none;
+  overflow: hidden;
+}
+
+/*-------------------- TEST CASES FACET INPUT --------------------*/
+
+#inputSearchTestCase {
+  width: 100%;
+  padding-right: 48px;
+}
+
+#btn-search-all {
+  margin-left: -48px;
+  border: 0;
+  -webkit-appearance: none;
+  z-index: 5;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/*-------------------- CUSTOM INPUT --------------------*/
+
+.input-min-height {
+  min-height: calc(1.5em + 0.75rem + 3px);
+}
+
+/*-------------------- CUSTOM DISABLED --------------------*/
+
+.disabled-label {
+  color:grey !important;
+}
+
+/*-------------------- CUSTOM SELECT --------------------*/
+
+.custom-select {
+  font-size: .85rem;
+}
+
+.custom-select:disabled {
+  background-color: $grey-light;
+  pointer-events: none;
+}
+
+/*-------------------- LIMITED LABEL --------------------*/
+
+.limited-label {
+  max-width: 260px;
+  //white-space: nowrap;
+  //overflow: hidden;
+  //text-overflow: ellipsis;
+
+  &::first-letter {
+    text-transform: capitalize;
+  }
+}
+
+@media screen and (max-width: 2200px) {
+  .limited-label {
+    max-width: 160px;
+  }
+}
+
+@media screen and (max-width: 2000px) {
+  .limited-label {
+    max-width: 140px;
+  }
+}
+
+/*-------------------- SELECT --------------------*/
+
+.ng-select .ng-option {
+  white-space: normal !important;
+}
+
+
+/*-------------------- SELECT --------------------*/
+
+textarea {
+  resize: none;
+}
+
+
+/*-------------------- INVALID FEEDBACK --------------------*/
+
+.invalid-feedback-custom {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 100%;
+  color: $danger;
+}
+
+.invalid-feedback {
+  display: block;
+  font-size: 100%;
+}

@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title">Generate working certificate</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close(false)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="row p-4">
+  <div class="col-12">
+    <label for="template">Template</label>
+    <select class="form-control custom-select" [(ngModel)]="templateName" id="template"
+            name="template">
+      <option disabled [ngValue]="null">Select a template</option>
+      <option *ngFor="let template of this.templateList" [ngValue]="template">
+        {{template}}
+      </option>
+    </select>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-basic" (click)="activeModal.close(false)">Cancel</button>
+  <button type="submit" class="btn btn-primary" (click)="generateTemplate()" [disabled]="!templateName">Generate</button>
+</div>

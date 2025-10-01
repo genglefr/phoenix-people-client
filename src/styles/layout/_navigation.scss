@@ -1,0 +1,86 @@
+/* ====================
+  MENU
+==================== */
+
+/*-------------------- SIDEMENU --------------------*/
+
+.sidenav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 100vh;
+  background-color: $primary;
+  z-index: 1000;
+  border-right: none;
+
+  .sidemenu {
+    &:after {
+      background-color: $primary;
+    }
+
+    .sidemenu-link {
+      color: $white;
+      background-color: $primary;
+      border-bottom: 1px solid $white;
+
+      &:hover, &:focus {
+        color: $white;
+        background-color: $primary-dark;
+      }
+    }
+
+    .sidepanel {
+      .sidepanel-header, .sidepanel-menu {
+        color: $black;
+      }
+
+      a {
+        color: $primary;
+      }
+
+      .sidepanel-expand {
+        background-color: transparent;
+        padding: 0 .25rem;
+        border: 0;
+        font-size: 1rem;
+        color: $primary;
+
+        &[aria-expanded="false"] {
+          transform: rotate(180deg);
+        }
+
+        &:focus {
+          outline: 2px solid $primary-light;
+        }
+      }
+    }
+  }
+}
+
+/* ===== BREADCRUMB ===== */
+
+.breadcrumb {
+  background: $breadcrumb ;
+  border-bottom: none;
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+
+  .breadcrumb-item {
+    & + .breadcrumb-item::before {
+      color: $grey-dark;
+    }
+
+    a {
+      color: $primary;
+      text-decoration: underline;
+    }
+  }
+
+  .active span {
+    color: $black-light;
+  }
+
+  .breadcrumb-mw {
+    max-width: 15%;
+  }
+}

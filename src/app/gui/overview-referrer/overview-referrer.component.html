@@ -1,0 +1,148 @@
+<header class="main-header">
+
+  <!-- main heading -->
+  <div class="main-heading">
+    <h1 class="main-title">Referrer overview</h1>
+  </div>
+</header>
+
+<div class="main-content box">
+
+  <header class="main-actions px-0">
+    <ul class="actions-list flex-wrap align-items-end"
+        appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+      <li class="actions-list-item">
+        <label class="label-sm">Full name</label>
+        <input
+          [maxLength]="50"
+          [(ngModel)]="referredFilter.referredName"
+          class="form-control"
+          id="search-lastName-engine" maxlength="50" type="text"
+        >
+      </li>
+      <li class="actions-list-item">
+        <label class="label-sm">Company</label>
+        <app-multi-select (changeEventEmitter)="changeEntity($event)"
+                          [filter]="referredFilter.companies"
+                          [items]="resourceCompanyList"
+                          [placeholder]="'Select companies'"
+                          idValue="company"
+                          label="company"
+                          width="15rem">
+        </app-multi-select>
+      </li>
+      <li class="actions-list-item">
+        <label class="label-sm">Type</label>
+        <app-multi-select (changeEventEmitter)="changeType($event)"
+                          [filter]="referredFilter.types"
+                          [items]="resourceTypeList"
+                          [placeholder]="'Select types'"
+                          idValue="description"
+                          label="jobType"
+                          width="13rem">
+        </app-multi-select>
+      </li>
+      <li class="actions-list-item">
+        <label class="label-sm">Referrer</label>
+        <input
+          [maxLength]="50"
+          [(ngModel)]="referredFilter.referrerName"
+          class="form-control"
+          id="search-account-engine" maxlength="255" type="text"
+        >
+      </li>
+      <li class="actions-list-item">
+        <div [(ngModel)]="referredFilter.status" (ngModelChange)="searchWithFilter()"
+             aria-label="Activity"
+             class="btn-group btn-group-toggle activity-button-group" name="radiogroup" ngbRadioGroup>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="">All
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="Resource">Resource
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="Candidate">Candidate
+          </label>
+        </div>
+      </li>
+
+    </ul>
+
+    <ul class="actions-list ml-auto mt-auto align-items-end">
+      <li class="actions-list-item">
+        <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+          <i class="fa fa-search"></i>
+          Search
+        </button>
+      </li>
+    </ul>
+  </header>
+  <div class="table-responsive" style="overflow-x: initial;">
+    <table class="table table-full">
+      <thead>
+      <tr>
+        <th scope="col">
+          <app-data-table-sort (changeSort)="changeSort($event)"
+                               [filter]="this.referredFilter"
+                               [label]="'Full name'"
+                               [sortingRow]="'referredName'">
+          </app-data-table-sort>
+        </th>
+        <th scope="col">
+          <app-data-table-sort (changeSort)="changeSort($event)"
+                               [filter]="this.referredFilter"
+                               [label]="'Company'"
+                               [sortingRow]="'company'">
+          </app-data-table-sort>
+        </th>
+        <th scope="col">
+          <app-data-table-sort (changeSort)="changeSort($event)"
+                               [filter]="this.referredFilter"
+                               [label]="'Type'"
+                               [sortingRow]="'type'">
+          </app-data-table-sort>
+        </th>
+        <th scope="col">
+          <app-data-table-sort (changeSort)="changeSort($event)"
+                               [filter]="this.referredFilter"
+                               [label]="'Referrer'"
+                               [sortingRow]="'referrerName'">
+          </app-data-table-sort>
+        </th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let referred of referredPage.content">
+        <td>
+          {{referred.referredName}}
+        </td>
+        <td>
+                <span class="badge-pill">
+                  <div [ngStyle]="{'background-color': referred.color}" class="pill"></div>
+                  {{referred.company}}
+                </span>
+        </td>
+        <td>
+          {{translateJobType(referred.type)}}
+          <br/>
+          {{referred.status}}
+        </td>
+        <td>
+          {{referred.referrerName}}
+        </td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic mr-1" type="button"
+               (click)="openEditModal(referred)">
+          <i class="fa fa-pencil"></i>
+        </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-data-table-pagination (changeEventEmitter)="changePagination($event)" [pageDto]="referredPage"
+                             [pagination]="pagination">
+  </app-data-table-pagination>

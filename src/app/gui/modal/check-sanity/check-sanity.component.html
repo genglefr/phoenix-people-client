@@ -1,0 +1,65 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Check sanity</h4>
+  <button (click)="activeModal.dismiss('Cross click')" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <div class="col-12">
+      <div class="row">
+        <label class="mb-1 mt-auto" for="password-field">Password</label>
+      </div>
+      <div class="row">
+        <input type="password" class="form-control input-md col-12" id="password-field"
+               [(ngModel)]="password">
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-12 d-flex mb-1">
+      <label class="mb-0 mt-auto">Attachment</label>
+    </div>
+  </div>
+  <div (fileDropped)="addDropFile($event)" appDragDrop class="dragover-container"
+       [style.height.px]="newAttachmentsFile ? '60' : '114'">
+    <div
+         *ngIf="!newAttachmentsFile"
+         class="drop-files-container" style="height: 120px; margin-bottom : 20px">
+      <div class="w-100 align-self-center text-secondary">
+        <div style="color: grey">Drop file here</div>
+        <label class="btn btn-basic mb-0 ml-auto mt-2" for="file">Upload a file</label>
+        <input #attachmentInput
+               (change)="addFile($event.target.files)"
+               accept=".xlsx"
+               id="file"
+               class="sr-only"
+               type="file">
+      </div>
+    </div>
+    <div *ngIf="newAttachmentsFile"
+         class="attachments-container overflow-hidden"
+         style="height: 58px">
+      <div class="attachments-list">
+        <ul class="card-body py-3 mb-0">
+          <li class="attachments-list-item">
+            <em class="fas fa-paperclip"></em>
+            <a (click)="downloadFileFromClient(newAttachmentsFile)"
+               class="attachments-link mr-auto">{{newAttachmentsFile.name}}</a>
+            <button (click)="removeFile()"
+                    aria-label="Remove"
+                    class="close" type="button">
+              <span>&times;</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="activeModal.close()" class="btn btn-basic" type="button">Cancel</button>
+  <button class="btn btn-primary ml-3" type="button" (click)="checkSanityFile()">
+    Check sanity
+  </button>
+</div>

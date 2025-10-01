@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{action}} {{multiple ? 'Selected' : ''}} Confirmation</h4>
+  <button (click)="activeModal.dismiss('Cross click')" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div *ngIf="!multiple" class="modal-body">
+  Are you sure that you want to {{action}} the candidate ?
+</div>
+<div *ngIf="multiple" class="modal-body">
+  Are you sure that you want to {{action}} all the selected candidates ?
+</div>
+<div class="modal-footer">
+  <button (click)="activeModal.close()" class="btn btn-basic" type="button">Cancel</button>
+
+  <button (click)="moveClick(account, isEdit)" *ngIf="action == 'move' && !multiple" class="btn btn-primary"
+          type="button">Yes
+  </button>
+  <button (click)="moveSelectedClick()" *ngIf="action == 'move' && multiple" class="btn btn-primary"
+          type="button">Yes
+  </button>
+  <button (click)="deleteClick(account)" *ngIf="action == 'delete'" class="btn btn-primary"
+          type="button">Yes
+  </button>
+</div>

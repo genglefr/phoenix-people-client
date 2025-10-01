@@ -1,0 +1,357 @@
+<header class="main-header mb-2">
+  <div class="main-content">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Daily emails</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content box py-0">
+  <div class="table-responsive">
+    <table class="table table-full">
+      <thead>
+      <tr>
+        <th scope="col">Type of email</th>
+        <th scope="col">Schedule</th>
+        <th scope="col">Parameters</th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr >
+        <td>Force sending Birthdays email for current date.</td>
+        <td>{{scheduleAllDays}}</td>
+        <td width="350px"></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendBirthdayClick()"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Force sending New Comers email for the current date.</td>
+        <td>{{scheduleAllDays}}</td>
+        <td></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendNewComersClick()"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>End contracts (input parameter in format YYYYMM)</td>
+        <td>{{scheduleAllDays}}</td>
+        <td><input type="text" placeholder="YYYYMM" class="form-control input-lg" id="endContract" [(ngModel)]="endContractMonth"></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendEndContractsClick()" [class.disabled]="!endContractMonth"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>End contracts for freelancers and subcontractors (input parameter in format YYYYMM).</td>
+        <td>{{scheduleManual}}</td>
+        <td><input type="text" placeholder="YYYYMM" class="form-control input-lg" id="endContractFreelancer" [(ngModel)]="endContractFreelancerMonth" placeholder="YYYYMM"></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendEndContractsFreelancersClick()" [class.disabled]="!endContractFreelancerMonth"> Send</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td>End contracts for the selected date.</td>
+        <td>{{scheduleAllDays}}</td>
+        <td>
+            <div class="input-group">
+              <input #endChosenDate="ngbDatepicker" [footerTemplate]="footerTemplate5"
+                     class="form-control" [(ngModel)]="endContractChosenDate" id="endContractChosenDate"
+                     maxlength="20" ngbDatepicker
+                     placeholder="DD/MM/YYYY" type="text"/>
+              <div class="input-group-append">
+                <button (click)="endChosenDate.toggle()" class="btn btn-basic btn-icon fa fa-calendar" type="button"></button>
+              </div>
+              <ng-template #footerTemplate5>
+                <hr class="my-0">
+                <button (click)="setEndContractChosenDate(today); endChosenDate.close()" class="btn btn-primary btn-sm m-2 float-left">
+                  Today
+                </button>
+                <button (click)="endChosenDate.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+              </ng-template>
+            </div>
+        </td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendEndContractChosenDateClick()" [class.disabled]="!endContractChosenDate"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send the Welcome emails to the specified user(s) (search for more users).</td>
+        <td>{{scheduleAuto}}</td>
+        <td>
+          <app-multi-select (changeEventEmitter)="changeCandidateValue($event)"
+                            [filter]="selectedCandidates"
+                            [items]="referrers"
+                            [virtualScroll]="true"
+                            [placeholder]="'Select employees'"
+                            idValue="account"
+                            label="name">
+          </app-multi-select>
+        </td>
+        <td class="text-right">
+          <a (click)="sendWelcomesClick()" [class.disabled]="selectedCandidates.length<=0"
+             class="btn btn-sm btn-basic"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send notification to Infrastructure team for account creation.<br>
+          <p class="text-danger">If the resource is not a candidate, the laptop and keyboard information WON'T be in the infrastructure notification!<br>
+            You'll be able to retrieve this information ONLY for CANDIDATES (Manage candidates screen).
+          </p>
+        </td>
+        <td>{{scheduleAuto}}</td>
+        <td>
+          <div>
+            <input #resourceCreate="ngbTypeahead" (click)="clickResourceCreate$.next($event.target.value)"
+                   [inputFormatter]="formatter" [ngbTypeahead]="searchUsersCreate" [resultTemplate]="rt" class="form-control" [(ngModel)]="accountToCreate"
+                   id="resourceCreate" placeholder="Select employee" type="text"/>
+            <ng-template #rt let-r="result" let-t="term">
+              <ngb-highlight [result]="r.name"
+                             [term]=""></ngb-highlight>
+            </ng-template>
+          </div>
+        </td>
+        <td class="text-right">
+          <a *ngIf="accountToCreate && accountToCreate.email; else noEmail" class="btn btn-sm btn-basic"
+             data-target="#editProfilePicture"
+             data-toggle="modal"> Send</a>
+          <ng-template #noEmail>
+            <a (click)="sendAccountCreationClick()" [class.disabled]="!accountToCreate"
+               class="btn btn-sm btn-basic"> Send</a>
+          </ng-template>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Force Work End Permit reminder to the HRO.</td>
+        <td>{{scheduleAuto}}</td>
+        <td></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendEndPermitReminderClick()"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send invitation to provide documents for the Work End Permit renewing.</td>
+        <td>{{scheduleManual}}</td>
+        <td></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendEndPermitReminderToResourcesClick()"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send notification to Infrastructure for resource update.</td>
+        <td>{{scheduleAuto}}</td>
+        <td>
+          <div>
+            <input #resourceUpdate="ngbTypeahead" (click)="clickResourceUpdate$.next($event.target.value)"
+                   [(ngModel)]="resourceToUpdate" [inputFormatter]="formatter" [ngbTypeahead]="searchUsersToUpdate"
+                   [resultTemplate]="rt" class="form-control"
+                   id="resourceUpdate" placeholder="Select employee" type="text"/>
+            <ng-template #rt let-r="result" let-t="term">
+              <ngb-highlight [result]="r.name"
+                             [term]=""></ngb-highlight>
+            </ng-template>
+          </div>
+        </td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendResourceUpdateClick()" [class.disabled]="!resourceToUpdate"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send the new arrival mail for the newcomers with a start date between the two selected dates.</td>
+        <td>{{scheduleAuto}}</td>
+        <td>
+          <form [formGroup]="resourceUpdateForm">
+            <div>
+              From:
+              <div class="input-group">
+                <input #dpComersFrom="ngbDatepicker" [footerTemplate]="footerTemplate1"
+                       class="form-control" formControlName="comersFromDate" id="newComersFrom"
+                       maxlength="20" ngbDatepicker
+                       placeholder="DD/MM/YYYY" type="text"/>
+                <div class="input-group-append">
+                  <button (click)="dpComersFrom.toggle()" class="btn btn-basic btn-icon fa fa-calendar" type="button"></button>
+                </div>
+                <ng-template #footerTemplate1>
+                  <hr class="my-0">
+                  <button (click)="comersFromDate.setValue(today); dpComersFrom.close()" class="btn btn-primary btn-sm m-2 float-left">
+                    Today
+                  </button>
+                  <button (click)="dpComersFrom.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                </ng-template>
+              </div>
+            </div>
+
+            <div>
+              To:
+              <div class="input-group">
+                <input #dpComersTo="ngbDatepicker" [footerTemplate]="footerTemplate2"
+                       class="form-control" formControlName="comersToDate" id="newComersTo"
+                       maxlength="20" ngbDatepicker
+                       placeholder="DD/MM/YYYY" type="text"/>
+                <div class="input-group-append">
+                  <button (click)="dpComersTo.toggle()" class="btn btn-basic btn-icon fa fa-calendar" type="button"></button>
+                </div>
+                <ng-template #footerTemplate2>
+                  <hr class="my-0">
+                  <button (click)="comersToDate.setValue(today); dpComersTo.close()" class="btn btn-primary btn-sm m-2 float-left">
+                    Today
+                  </button>
+                  <button (click)="dpComersTo.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                </ng-template>
+              </div>
+            </div>
+          </form>
+        </td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendNewArrivalsBetweenDatesClick()"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send the birthday mail for every resources having their birthday in the selected period.</td>
+        <td>{{scheduleAuto}}</td>
+        <td>
+          <form [formGroup]="birthdayForm">
+            <div>
+              From:
+              <div class="input-group">
+                <input #dpBirthFrom="ngbDatepicker" [footerTemplate]="footerTemplate3"
+                       class="form-control" formControlName="birthDateFrom" id="birthDateFrom"
+                       maxlength="20" ngbDatepicker
+                       placeholder="DD/MM/YYYY" type="text"/>
+                <div class="input-group-append">
+                  <button (click)="dpBirthFrom.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                          type="button"></button>
+                </div>
+                <ng-template #footerTemplate3>
+                  <hr class="my-0">
+                  <button (click)="birthDateFrom.setValue(today); dpBirthFrom.close()"
+                          class="btn btn-primary btn-sm m-2 float-left">
+                    Today
+                  </button>
+                  <button (click)="dpBirthFrom.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                </ng-template>
+              </div>
+            </div>
+
+            <div>
+              To:
+              <div class="input-group">
+                <input #dpBirthTo="ngbDatepicker" [footerTemplate]="footerTemplate4"
+                       class="form-control" formControlName="birthDateTo" id="birthDateTo"
+                       maxlength="20" ngbDatepicker
+                       placeholder="DD/MM/YYYY" type="text"/>
+                <div class="input-group-append">
+                  <button (click)="dpBirthTo.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                          type="button"></button>
+                </div>
+                <ng-template #footerTemplate4>
+                  <hr class="my-0">
+                  <button (click)="birthDateTo.setValue(today); dpBirthTo.close()"
+                          class="btn btn-primary btn-sm m-2 float-left">
+                    Today
+                  </button>
+                  <button (click)="dpBirthTo.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+                </ng-template>
+              </div>
+            </div>
+          </form>
+        </td>
+
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendBirthdayBetweenDatesClick()"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send email for job anniversary.<br>
+        </td>
+        <td>{{scheduleAllDays}}</td>
+        <td>
+          <div>
+            <input #jobAnniversaryResourceTh="ngbTypeahead" (click)="clickJobAnniversary$.next($event.target.value)"
+                   [inputFormatter]="fullNameFormatter" [ngbTypeahead]="searchJobAnniversaryResource" [resultTemplate]="rtx" class="form-control"
+                   [(ngModel)]="jobAnniversaryResource" id="jobAnniversaryResourceTh" placeholder="Select employee" type="text"/>
+            <ng-template #rtx let-r="result" let-t="term">
+              <ngb-highlight [result]="r.fullName"
+                             [term]=""></ngb-highlight>
+            </ng-template>
+          </div>
+        </td>
+        <td class="text-right">
+          <a (click)="sendJobAnniversaryClick()" [class.disabled]="!jobAnniversaryResource"
+             class="btn btn-sm btn-basic"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Send an email for referee employees that started x(input value) months ago. Enter a number.</td>
+        <td>{{scheduleFri}}</td>
+        <td><input type="number" step="1" value="1" min="1" class="form-control input-lg" id="refereeEmployees" [(ngModel)]="refereeMonth"></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendRefereeClick()" [class.disabled]="!refereeMonth"> Send</a>
+        </td>
+      </tr>
+
+      <tr >
+        <td>Resources eligible for a new seniority holiday (input parameter in format YYYYMM)</td>
+        <td>{{scheduleLastDayOfMonth}}</td>
+        <td><input type="text" placeholder="YYYYMM" class="form-control input-lg" id="resourcesEligibleForSE"
+                   [(ngModel)]="resourcesEligibleForSEMonth"></td>
+        <td class="text-right">
+          <a class="btn btn-sm btn-basic" (click)="sendResourcesEligibleForSEClick()"
+             [class.disabled]="!resourcesEligibleForSEMonth">
+            Send
+          </a>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- Modal for cropping -->
+<div aria-hidden="true" aria-labelledby="cropImageTitle" class="modal fade" id="editProfilePicture"
+     role="dialog" tabindex="-1">
+
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="cropImageTitle">Confirmation</h5>
+        <button #exitButton aria-label="Close" class="close" data-dismiss="modal"
+                type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p> The selected resource already has an account. Do you really want to send this email? </p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-link" data-dismiss="modal" type="button">Cancel</button>
+        <button (click)="sendAccountCreationClick()" [class.disabled]="accountToCreate ? false : true"
+                class="btn btn-primary" data-dismiss="modal" type="button">Send
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+

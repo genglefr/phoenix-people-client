@@ -1,0 +1,290 @@
+<header class="main-header mb-2">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-3" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+      <div class="col-auto">
+        <h1 class="main-title">Manage resources</h1>
+      </div>
+      <div class="col col-auto" *ngIf="this.hasAdminRole">
+        <button (click)="export()" class="btn btn-basic"> Export result</button>
+        <button class="btn btn-primary ml-3" routerLink="/administration/resources/new">Create resource</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content box">
+
+    <header class="px-4">
+      <div class="row align-items-end mb-4">
+        <div class="col">
+          <div class="row align-items-end" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+            <!-- Full name -->
+            <div class="col pr-2">
+              <label class="label-sm">Full name</label>
+              <input
+                [maxLength]="50"
+                [(ngModel)]="resourceFilter.fullname"
+                class="form-control"
+                id="search-lastName-engine" maxlength="50" type="text"
+              >
+            </div>
+            <!-- Account -->
+            <div class="col px-2">
+              <label class="label-sm">Account</label>
+              <input
+                [maxLength]="50"
+                [(ngModel)]="resourceFilter.account"
+                class="form-control"
+                id="search-account-engine" maxlength="50" type="text"
+              >
+            </div>
+            <!-- Company -->
+            <div class="col px-2">
+              <label class="label-sm">Company</label>
+              <app-multi-select (changeEventEmitter)="changeEntity($event)"
+                                [filter]="resourceFilter.companies"
+                                [items]="resourceCompanyList"
+                                [placeholder]="'Select companies'"
+                                idValue="company"
+                                label="company"
+                                width="15rem">
+              </app-multi-select>
+            </div>
+            <!-- Type -->
+            <div class="col px-2">
+              <label class="label-sm">Type</label>
+              <app-multi-select (changeEventEmitter)="changeType($event)"
+                                [filter]="resourceFilter.types"
+                                [items]="resourceTypeList"
+                                [placeholder]="'Select types'"
+                                idValue="description"
+                                label="jobType"
+                                width="13rem">
+              </app-multi-select>
+            </div>
+            <!-- Start date -->
+            <div class="col px-2">
+              <label class="label-sm">Start date</label>
+              <input [(ngModel)]="resourceFilterStartDate"
+                     class="form-control"
+                     id="search-startDate-engine"
+                     maxlength="50" placeholder="DD/MM/YYYY" type="text">
+            </div>
+            <!-- End date -->
+            <div class="col pl-2">
+              <label class="label-sm">End date</label>
+              <input [(ngModel)]="resourceFilterEndDate" class="form-control"
+                     id="search-endDate-engine"
+                     maxlength="50" placeholder="DD/MM/YYYY" type="text">
+            </div>
+            <!-- Status -->
+            <div class="col col-auto">
+              <label class="label-sm">Status</label>
+              <div [(ngModel)]="resourceFilter.activity" (ngModelChange)="changeActivity($event)"
+                   aria-label="Activity"
+                   class="btn-group btn-group-toggle d-block" name="radiogroup" ngbRadioGroup>
+                <label class="btn btn-outline" ngbButtonLabel>
+                  <input class="btn btn-outline-light" ngbButton type="radio" value="all">All
+                </label>
+                <label class="btn btn-outline" ngbButtonLabel>
+                  <input class="btn btn-outline-light" ngbButton type="radio" value="active">Active
+                </label>
+                <label class="btn btn-outline" ngbButtonLabel>
+                  <input class="btn btn-outline-light" ngbButton type="radio" value="inactive">Inactive
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col col-auto">
+          <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+            <i class="fa fa-search"></i>
+            Search
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="table-responsive" style="overflow-x: initial;">
+        <table class="table table-full">
+            <thead>
+            <tr>
+                <th scope="col"><span (click)="changeSort('firstName')" class="sort-column"> Full name  <i
+                        class="fas {{
+          resourceFilter.sortingRow==='firstName'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+                ></i></span></th>
+                <th scope="col"><span (click)="changeSort('company')" class="sort-column"> Company <i
+                        class="fas {{ resourceFilter.sortingRow==='company'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+                ></i></span></th>
+                <th scope="col"><span (click)="changeSort('typeResource')" class="sort-column"> Type  <i
+                        class="fas {{ resourceFilter.sortingRow==='typeResource'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+                ></i></span></th>
+                <th scope="col"><span (click)="changeSort('startDate')" class="sort-column"> Start date <i
+                        class="fas {{ resourceFilter.sortingRow==='startDate'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+                ></i></span></th>
+                <th scope="col"><span (click)="changeSort('endDate')" class="sort-column"> End date  <i
+                        class="fas {{ resourceFilter.sortingRow==='endDate'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+                ></i></span></th>
+                <th scope="col"><span (click)="changeSort('jobPosition')" class="sort-column"> Position / Title <i
+                        class="fas {{ resourceFilter.sortingRow==='jobPosition'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+                ></i></span></th>
+                <th scope="col" style="max-width: 21rem;"> Contact</th>
+                <th class="text-right" scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let resource of resources.content"
+                [style.background-color]="resource.active ? null : 'rgba(0,0,0,.03)'">
+                <td [ngStyle]="{'border-left-color': resource.color}" class="company-cell">
+                  <ul class="actions-list">
+                    <li class="actions-list-item">
+                      <div style="position: relative">
+                        <div class="{{resource.inHoliday ? 'badge-danger' : 'badge-success'}} availability-pill"></div>
+                        <img class="user-avatar rounded-circle" [src]="'/api/administration/photo/' + resource.account + '?' + getTimestamp()">
+                      </div>
+                    </li>
+                    <li class="actions-list-item">
+                      <b>{{resource.firstName}} {{resource.lastName}}</b> ({{resource.account}})
+                    </li>
+                  </ul>
+                </td>
+                <td>
+                <span class="badge-pill">
+                  <div [ngStyle]="{'background-color': resource.color}" class="pill"></div>
+                    {{resource.company}}
+                </span>
+                </td>
+                <td>{{translateJobType(resource.resourceType)}}</td>
+                <td>{{resource.startDate}}</td>
+                <td>{{resource.endDate}}</td>
+                <td>
+                  {{ resource.jobPosition}}
+                  <br/>
+                  {{resource.jobTitle}}
+                </td>
+                <td class="limit-col pr-0 pl-0">
+                    <ul style="list-style: none; padding-inline-start: unset; margin-bottom: 0 !important;">
+                        <li *ngIf="resource.email"><i class="fas fa-envelope mr-2"></i><a
+                                href="mailto:{{resource.email}}">{{resource.email}}</a></li>
+                        <li *ngIf="resource.mobilePhone"><i class="fas fa-mobile-alt mr-2"></i><a
+                                href="tel:{{resource.mobilePhone}}"
+                                style="margin-left: 5px">{{resource.mobilePhone}}</a></li>
+                        <li *ngIf="resource.landLinePhone"><i class="fas fa-phone mr-2"></i><a
+                                href="tel:{{resource.landLinePhone}}">{{resource.landLinePhone}}</a></li>
+                    </ul>
+                </td>
+                <td class="text-right pl-0">
+                  <div class="btn-group mb-2">
+                    <span *ngIf="hasFullAccessToEva()">
+                      <a type="button" class="btn btn-sm btn-basic text-center pr-2" [href]="evaLink + resource.account" target="_blank">Go to Eva</a>
+                      <button type="button" class="btn btn-sm btn-basic dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                       <div class="dropdown-menu" style="min-width: 9.5rem;">
+                        <a class="dropdown-item" [href]="plarisLink + resource.account" target="_blank">Plaris</a>
+                        <a class="dropdown-item" [href]="holarisLink + resource.account" target="_blank">Holaris</a>
+                        <a class="dropdown-item" [href]="comparisLink + resource.account" target="_blank">Comparis</a>
+                        <a class="dropdown-item" [href]="timesheetLink + resource.account + '/' + currentPeriod" target="_blank">Timesheet</a>
+                      </div>
+                    </span>
+                    <span *ngIf="!hasFullAccessToEva()">
+                      <a type="button" class="btn btn-sm btn-basic text-center dropdown-toggle pl-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Go to </a>
+                      <div class="dropdown-menu" style="min-width: 9.5rem;">
+                        <a class="dropdown-item" *ngIf="hasAccessToEva(resource.company, resource.resourceType)" [href]="evaLink + resource.account" target="_blank">Eva</a>
+                        <a class="dropdown-item" [href]="plarisLink + resource.account" target="_blank">Plaris</a>
+                        <a class="dropdown-item" [href]="holarisLink + resource.account" target="_blank">Holaris</a>
+                        <a class="dropdown-item" [href]="comparisLink + resource.account" target="_blank">Comparis</a>
+                        <a class="dropdown-item" [href]="timesheetLink + resource.account + '/' + currentPeriod" target="_blank">Timesheet</a>
+                      </div>
+                    </span>
+                  </div>
+                    <a class="btn btn-sm btn-basic mb-2 ml-3"
+                       routerLink="/administration/resources/{{resource.account}}">Details</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="resources.content.length>0" class="d-flex justify-content-end pt-4 px-4">
+
+        <select (change)="changePageSize()" [(ngModel)]="pageSize" class="form-control input-sm "
+                style="max-width: 5vw;display: inline;margin-right: auto;">
+            <option selected value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+
+        <nav aria-label="Page navigation">
+            <ul *ngIf="resources.first&&!resources.last" class="pagination">
+                <li class="page-item">
+                    <button aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                <li class="page-item active">
+                    <button class="page-link">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+                </li>
+                <li *ngIf="resources.totalPages>=resources.number+2" class="page-item">
+                    <button (click)="changePage(resources.number +1)"
+                            class="page-link">{{resources.number + 2}}</button>
+                </li>
+                <li *ngIf="resources.totalPages>=resources.number+3" class="page-item">
+                    <button (click)="changePage(resources.number+2)" class="page-link">{{resources.number + 3}}</button>
+                </li>
+                <li class="page-item">
+                    <button (click)="changePage(resources.number+1)" aria-label="Next" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            </ul>
+            <ul *ngIf="!resources.first&&!resources.last" class="pagination">
+                <li class="page-item">
+                    <button (click)="changePage(resources.number-1)" aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                <li class="page-item ">
+                    <button (click)="changePage(resources.number-1)"
+                            class="page-link">{{resources.number}}</button>
+                </li>
+                <li class="page-item active">
+                    <button class="page-link">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+                </li>
+                <li class="page-item">
+                    <button (click)="changePage(resources.number+1)"
+                            class="page-link">{{resources.number + 2}}</button>
+                </li>
+                <li class="page-item">
+                    <button (click)="changePage(resources.number+1)" aria-label="Next" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            </ul>
+            <ul *ngIf="resources.last" class="pagination">
+                <li class="page-item">
+                    <button (click)="changePage(resources.number-1>0?resources.number-1:0)"
+                            aria-label="Previous"
+                            class="page-link">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                <li *ngIf="resources.number-1>0">
+                    <button (click)="changePage(resources.number-2)"
+                            class="page-link">{{resources.number - 1}}</button>
+                </li>
+                <li *ngIf="resources.number>0">
+                    <button (click)="changePage(resources.number-1)" class="page-link">{{resources.number}}</button>
+                </li>
+                <li class="page-item active">
+                    <button class="page-link ">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+                </li>
+                <li class="page-item">
+                    <button aria-label="Next" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+

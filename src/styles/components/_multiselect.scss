@@ -1,0 +1,58 @@
+/* ====================
+  MULTISELECT
+==================== */
+
+
+app-multi-select {
+  .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+    background-color: $primary-extra-light;
+  }
+
+  .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon.left {
+    border-right: 1px solid $primary-light;
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected, .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+    color: $black;
+    background-color: $primary-extra-light;
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+    background-color: $primary-extra-light;
+    color: $black;
+  }
+}
+
+.ng-value-none {
+  background: white;
+  font-size: .875rem;
+}
+
+.ng-value-none-disabled {
+  background: $grey-light;
+  font-size: .875rem;
+}
+
+.select {
+  width: inherit;
+}
+
+.overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon:hover {
+  color: $white;
+  background-color: $primary!important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon.left {
+  background-color: $primary-extra-light!important;
+  border-right: 1px solid $primary-light!important;
+}
+
+app-multi-select .ng-value .ng-value-label,
+.ng-select-multiple .ng-value .ng-value-label {
+  background-color: $primary-extra-light;
+}

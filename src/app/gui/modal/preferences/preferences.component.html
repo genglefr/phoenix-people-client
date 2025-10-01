@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Preferences</h4>
+  <button aria-label="Close" class="close" (click)="activeModal.dismiss('Cross click')" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ngb-tabset [activeId]="activeTab" (tabChange)="updateTab($event)">
+    <ngb-tab [id]="homepageTab" title="Homepage">
+      <ng-template ngbTabContent>
+        <div class="tab-content box">
+          <form [formGroup]="homepageFrom">
+            <div style="margin-top: 0.625rem">
+              <label class="label-sm">Set homepage:</label>
+              <select class="form-control custom-select" id="homePageSelection" formControlName="homepagePreferences">
+                <option *ngFor="let homepage of homePageList"
+                        value="{{homepage.name}}">{{homepage.displayName}}</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab [id]="entityTab" title="Entity">
+      <ng-template ngbTabContent>
+        <div class="tab-content box">
+            <div style="margin-top: 0.625rem">
+              <label class="label-sm">Filter by companies:</label>
+              <app-multi-select
+                [items]="resourceCompanyList"
+                [filter]="selectedCompanies"
+                [label]="'company'"
+                [multiple]="true"
+                [placeholder]="'Select company'"
+                (changeEventEmitter)="changeCompanies($event)"></app-multi-select>
+            </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>
+<div class="modal-footer">
+  <button (click)="activeModal.close()" class="btn btn-basic" type="button">Cancel</button>
+  <button class="btn btn-primary ml-3" type="button" (click)="savePreferences()">
+    Save
+  </button>
+</div>

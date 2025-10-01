@@ -1,0 +1,182 @@
+<header>
+  <h2 class="card-title">Proposal request information</h2>
+</header>
+<div class="p-3">
+  <form [formGroup]="proposalRequestInformationForm">
+    <div class="form-group row">
+      <div class="form-group col-sm-12 col-lg-12">
+        <label for="address">
+          Address
+        </label>
+        <input class="form-control" formControlName="address" id="address"
+                type="text">
+      </div>
+
+      <div class="form-group col-sm-12 col-lg-6">
+        <app-job-position-select [jobPositions]="formData.jobpositions"
+                                 [control]="jobPosition" [required]="true">
+        </app-job-position-select>
+      </div>
+
+      <ng-template #rtJobTitle let-r="result" let-t="term">
+        <ngb-highlight [result]="r" [term]=""></ngb-highlight>
+      </ng-template>
+      <div class="form-group col-sm-12 col-lg-6">
+        <label class="label-ro" for="jobTitle">
+          Job title
+          <small class="text-muted">(required)</small>
+        </label>
+        <input
+          #instanceJobTitle="ngbTypeahead"
+          (click)="clickJobTitle$.next($event.target.value)"
+          [inputFormatter]="formatterString"
+          [ngbTypeahead]="searchJobTitle"
+          [resultTemplate]="rtJobTitle"
+          class="form-control"
+          formControlName="jobTitle"
+          id="jobTitle"
+          maxlength="41"
+          placeholder="Job title"
+          type="text"
+        />
+        <div *ngIf="jobTitle.invalid && (jobTitle.dirty || jobTitle.touched)" class="invalid-feedback">
+          <div *ngIf="jobTitle.errors?.required">
+            Job title is required
+          </div>
+          <div *ngIf="jobTitle.errors?.maxlength">
+            Job title size must not exceed 255 characters
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col-sm-12 col-lg-6 checkbox-col">
+        <div class="form-check">
+          <input class="form-check-input" formControlName="youngGraduate" id="isYoungGraduate"
+                 name="isYoungGraduate" type="checkbox"/>
+          <label for="isYoungGraduate">New graduate ?</label>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<header>
+  <h2 class="card-title">Package</h2>
+</header>
+<div class="p-3">
+  <form [formGroup]="packageForm">
+    <div class="form-group row">
+      <div class="form-group col-sm-12 col-lg-6">
+        <label for="salary">
+          Salary
+          <small class="text-muted">(required)</small>
+        </label>
+        <input class="form-control" formControlName="salary" id="salary"
+               type="number">
+        <div *ngIf="salary.invalid && (salary.dirty || salary.touched)"
+             class="invalid-feedback">
+          <div *ngIf="salary.errors?.required">
+            Salary is required
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-sm-12 col-lg-6">
+        <label class="label-ro" for="carCategory">
+          Car category
+          <small class="text-muted">(required)</small>
+        </label>
+        <select class="form-control custom-select" formControlName="carCategory" id="carCategory"
+                name="carCategory">
+          <option disabled [value]="null">Select a car category</option>
+          <option *ngFor="let carCategory of carCategories" value="{{carCategory}}">
+            {{carCategory}}
+          </option>
+        </select>
+        <div *ngIf="carCategory.invalid && (carCategory.dirty || carCategory.touched)"
+             class="invalid-feedback">
+          <div *ngIf="carCategory.errors?.required">
+            Car category is required
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-sm-8 col-lg-4">
+        <label>Salary without car</label>
+        <div class="form-check mt-2">
+          <input class="form-check-input" formControlName="hasSecondSalary" id="hasSecondSalary"
+                 name="hasSecondSalary" type="checkbox"/>
+          <label for="hasSecondSalary" [style.opacity]="hasSecondSalary.disabled ? '0.42' : null">
+            Second salary offer without car:
+          </label>
+        </div>
+      </div>
+      <div class="form-group col-sm-12 col-lg-6">
+        <label>&nbsp;</label>
+        <div>
+          <input class="form-control" formControlName="secondSalary" id="secondSalary"
+                 type="number">
+          <div *ngIf="salary.invalid && (salary.dirty || salary.touched)"
+               class="invalid-feedback">
+            <div *ngIf="salary.errors?.required">
+              Second salary is required
+            </div>
+          </div>
+        </div>
+        <div class="invalid-feedback" *ngIf="displaySalaryWarning">
+          <div>
+            Salary offer without car is lower than salary offer with car
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-sm-12 col-lg-6">
+        <div class="form-check">
+          <input class="form-check-input" formControlName="insurancePackage" id="insurancePackage"
+                 name="insurancePackage" type="checkbox"/>
+          <label for="insurancePackage">
+            Insurance package
+            <small class="text-muted">(required)</small>
+          </label>
+        </div>
+        <div *ngIf="insurancePackage.invalid && (insurancePackage.dirty || insurancePackage.touched)"
+             class="invalid-feedback">
+          <div *ngIf="insurancePackage.errors?.required">
+            Insurance package is required
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-sm-12 col-lg-6">
+        <div class="form-check">
+          <input class="form-check-input" formControlName="mealVouchers" id="mealVouchers"
+                 name="mealVouchers" type="checkbox"/>
+          <label for="mealVouchers">
+            Meal vouchers
+            <small class="text-muted">(required)</small>
+          </label>
+        </div>
+        <div *ngIf="mealVouchers.invalid && (mealVouchers.dirty || mealVouchers.touched)"
+             class="invalid-feedback">
+          <div *ngIf="mealVouchers.errors?.required">
+            Meal vouchers are required
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-sm-12 col-lg-6">
+        <div class="form-check">
+          <input class="form-check-input" formControlName="gsm" id="gsm"
+                 name="gsm" type="checkbox"/>
+          <label for="gsm">
+             iPhone/GSM
+            <small class="text-muted">(required)</small>
+          </label>
+        </div>
+        <div *ngIf="gsm.invalid && (gsm.dirty || gsm.touched)"
+             class="invalid-feedback">
+          <div *ngIf="gsm.errors?.required">
+            Gsm is required
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+

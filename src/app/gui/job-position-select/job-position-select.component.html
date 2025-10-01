@@ -1,0 +1,20 @@
+<label class="label-ro">Job position
+  <small class="text-muted" *ngIf="required">(required)</small>
+</label>
+<ng-select [formControl]="control"
+           [clearOnBackspace]="false"
+           [items]="jobPositions"
+           [placeholder]="'Select a job position'"
+           [selectOnTab]="true"
+           groupBy="domain"
+           bindLabel="name" bindValue="name" >
+  <ng-template ng-optgroup-tmp let-item="item">
+    {{item.domain}}
+  </ng-template>
+</ng-select>
+<div *ngIf="control.invalid && (control.dirty || control.touched)"
+     class="invalid-feedback">
+  <div *ngIf="control.errors?.required">
+    Job position is required
+  </div>
+</div>

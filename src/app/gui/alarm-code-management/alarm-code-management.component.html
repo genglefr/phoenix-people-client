@@ -1,0 +1,180 @@
+<header class="main-header mb-2">
+  <div class="main-content">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Alarm codes</h1>
+      </div>
+      <div class="col col-auto">
+        <button class="btn btn-primary" type="button" data-target="#createOrUpdateBadge" data-toggle="modal"
+                (click)="setAlarmCodeInForm()">
+          New alarm code
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<div class="main-content box">
+
+  <header class="px-4">
+    <div class="row align-items-end mb-2" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+      <div class="col-auto mb-3">
+        <label class="label-sm">Floor</label>
+        <input
+          [maxLength]="50"
+          [(ngModel)]="alarmCodeFilter.floor"
+          class="form-control"
+          id="search-floor-engine" maxlength="50" type="text"
+        >
+      </div>
+      <div class="col-auto mb-3">
+        <label class="label-sm">Code</label>
+        <input
+          [maxLength]="150"
+          [(ngModel)]="alarmCodeFilter.code"
+          class="form-control"
+          id="search-code-engine" maxlength="150" type="text"
+        >
+      </div>
+      <div class="col-auto mb-3">
+        <label class="label-sm">Owner</label>
+        <input
+          [maxLength]="150"
+          [(ngModel)]="alarmCodeFilter.owner"
+          class="form-control"
+          id="search-lastName-engine" maxlength="150" type="text"
+        >
+      </div>
+      <div class="col-auto mb-3">
+        <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+          <i class="fa fa-search"></i>
+          Search
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="table-responsive" style="overflow-x: initial;">
+    <table class="table table-full">
+      <thead>
+      <tr>
+        <th scope="col"><span (click)="changeSort('floor')" class="sort-column"> Floor  <i
+          class="fas {{
+          alarmCodeFilter.sortingRow==='floor'?!alarmCodeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('code')" class="sort-column"> Code  <i
+          class="fas {{
+          alarmCodeFilter.sortingRow==='code'?!alarmCodeFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span> Owner </span></th>
+        <th scope="col"><span> Comment </span></th>
+        <th class="text-right" scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let alarmCode of alarmCodes?.content">
+        <td>{{alarmCode.floor}}</td>
+        <td>{{alarmCode.code}}</td>
+        <td>
+          <ng-container *ngFor="let resource of alarmCode.accountList">
+            {{resource?.firstName}} {{resource?.lastName}} <br/>
+          </ng-container>
+        </td>
+        <td [innerText]="alarmCode.comment"></td>
+        <td class="text-right pl-0">
+          <a class="btn btn-sm btn-basic mb-2" type="button" data-target="#createOrUpdateBadge" data-toggle="modal"
+             (click)="setAlarmCodeInForm(alarmCode)">
+            <i class="fa fa-pencil"></i>
+          </a>
+          <button class="btn btn-sm btn-danger ml-3 mb-2" type="button" (click)="deleteBadge(alarmCode)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="alarmCodes?.content.length>0" class="d-flex justify-content-end  px-4 pt-4">
+
+    <select (change)="changePageSize(pageSize)" [(ngModel)]="pageSize" class="form-control input-sm "
+            style="max-width: 5vw;display: inline;margin-right: auto;">
+      <option selected value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+
+    <nav aria-label="Page navigation">
+      <ul *ngIf="alarmCodes?.first && !alarmCodes?.last" class="pagination">
+        <li class="page-item">
+          <button aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{alarmCodes?.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li *ngIf="alarmCodes?.totalPages>=alarmCodes?.number+2" class="page-item">
+          <button (click)="changePage(alarmCodes?.number +1)"
+                  class="page-link">{{alarmCodes?.number + 2}}</button>
+        </li>
+        <li *ngIf="alarmCodes?.totalPages>=alarmCodes?.number+3" class="page-item">
+          <button (click)="changePage(alarmCodes?.number+2)" class="page-link">{{alarmCodes?.number + 3}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(alarmCodes?.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="!alarmCodes?.first && !alarmCodes?.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(alarmCodes?.number-1)" aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item ">
+          <button (click)="changePage(alarmCodes?.number-1)"
+                  class="page-link">{{alarmCodes?.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{alarmCodes?.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(alarmCodes?.number+1)"
+                  class="page-link">{{alarmCodes?.number + 2}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(alarmCodes?.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="alarmCodes?.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(alarmCodes?.number-1>0?alarmCodes?.number-1:0)"
+                  aria-label="Previous"
+                  class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li *ngIf="alarmCodes?.number-1>0">
+          <button (click)="changePage(alarmCodes?.number-2)"
+                  class="page-link">{{alarmCodes?.number - 1}}</button>
+        </li>
+        <li *ngIf="alarmCodes?.number>0">
+          <button (click)="changePage(alarmCodes?.number-1)" class="page-link">{{alarmCodes?.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link ">{{alarmCodes?.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+

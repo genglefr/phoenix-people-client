@@ -1,0 +1,71 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="modal-title-new" *ngIf="!phoneFixedCostDto; else isEdit">Add cost</h5>
+  <ng-template #isEdit><h5 class="modal-title" id="modal-title-edit">Edit cost</h5></ng-template>
+  <button aria-label="Close" class="close" data-dismiss="modal"
+          (click)="closeModal()"
+          type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="costForm">
+    <div class="form-group col-12">
+      <div class="row mt-1" >
+
+        <div class="col-6">
+          <label for="period">Period</label>
+          <input class="form-control" formControlName="period" id="period"
+                 placeholder="YYYYMM"
+                 type="text"/>
+          <div *ngIf="period.invalid && (period.dirty||period.touched)" class="invalid-feedback">
+            <div *ngIf="period.errors?.required">
+              Period is required
+            </div>
+            <div *ngIf="period.errors?.pattern">
+              Period must be in correct format: YYYMM
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mt-1">
+          <label for="company">Company</label>
+          <ng-select        [formControl]="company"
+                            [items]="companyList"
+                            [clearOnBackspace]="true"
+                            [selectOnTab]="true"
+                            id="company"
+                            bindLabel="company">
+          </ng-select>
+          <div *ngIf="company.invalid && (company.dirty||company.touched)" class="invalid-feedback">
+            <div *ngIf="company.errors?.required">
+              Company is required
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 mt-1">
+          <label for="cost">Cost</label>
+          <input class="form-control" formControlName="cost" id="cost"
+                 placeholder="Cost"
+                 type="number" step="0.01"/>
+          <div *ngIf="cost.invalid && (cost.dirty||cost.touched)" class="invalid-feedback">
+            <div *ngIf="cost.errors?.required">
+              Cost is required
+            </div>
+            <div *ngIf="cost.errors?.min">
+              Cost must be positive
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-basic" (click)="closeModal()" type="button">Cancel</button>
+  <button class="btn btn-primary" [disabled]="costForm.invalid"
+          (click)="saveChanges()"
+          type="button">Save
+  </button>
+</div>

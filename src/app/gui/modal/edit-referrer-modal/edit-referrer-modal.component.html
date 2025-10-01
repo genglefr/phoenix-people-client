@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="modal-title-edit">Edit referrer of {{referred.referredName}}</h5>
+  <button aria-label="Close" class="close" data-dismiss="modal"
+          (click)="activeModal.close()"
+          type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+    <div class="form-group col-12">
+      <div class="row mt-1" >
+        <div class="col-12 mt-1">
+          <label for="referrer">Referrer</label>
+          <ng-select [(ngModel)]="referred.referrerAccount"
+                     [clearOnBackspace]="false"
+                     [items]="resources"
+                     [placeholder]="'Select a resource'"
+                     [selectOnTab]="true"
+                     [virtualScroll]="true"
+                     bindLabel="name"
+                     bindValue="account"
+                    id="referrer">
+          </ng-select>
+          <p class="text-warning ml-1" *ngIf="!referred.referrerAccount">
+            If no referrer is set the resource will not be visible in the overview anymore
+          </p>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-basic" (click)="activeModal.close()" type="button">Cancel</button>
+  <button class="btn btn-primary"
+          (click)="save()"
+          type="button">Save
+  </button>
+</div>

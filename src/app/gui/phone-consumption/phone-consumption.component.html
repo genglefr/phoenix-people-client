@@ -1,0 +1,70 @@
+<header class="main-header mb-2">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Phone consumption</h1>
+      </div>
+      <div class="col col-auto">
+        <button (click)="openExportModal()" class="btn btn-basic"> Cost export </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content pt-0">
+  <!-- Main navtabs -->
+  <div class="main-nav-tabs">
+
+    <!-- nav tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+      <li class="nav-item">
+        <a aria-controls="profile" aria-selected="true" class="nav-link active" (click)="detectChanges()"
+                              data-toggle="tab" href="#consumption" id="consumption-tab"
+                              role="tab">Consumption</a>
+      </li>
+      <li class="nav-item">
+        <a aria-controls="profile" aria-selected="true" class="nav-link" (click)="detectChanges()"
+                              data-toggle="tab" href="#fixed-cost" id="fixed-cost-tab"
+                              role="tab">Fixed cost</a>
+      </li>
+      <li class="nav-item">
+        <a aria-controls="profile" aria-selected="true" class="nav-link" (click)="detectChanges()"
+           data-toggle="tab" href="#file-import" id="file-import-tab"
+           role="tab">Import phone consumption</a>
+      </li>
+    </ul>
+  </div>
+  <!-- tab content -->
+  <div class="tab-content bg-white" id="myTabContent">
+
+    <!-- Tab Consumption -->
+    <section aria-labelledby="consumption-tab" class="tab-pane fade show active"
+             id="consumption"
+             role="tabpanel">
+
+    <app-consumption-tab [phoneConsumptionPage]="phoneConsumptionPage" [(pageIndex)]="pageIndex" [(pageSize)]="pageSize"
+                         [phoneConsumptionStatusList]="phoneConsumptionStatusList" [phoneConsumptionPeriodList]="phoneConsumptionPeriodList"
+                         [resourceCompanyList]="administratedCompanyList" [phoneConsumptionFilter]="phoneConsumptionFilter">
+    </app-consumption-tab>
+    </section>
+    <!-- Tab Fixed cost -->
+    <section aria-labelledby="fixed-cost-tab" class="tab-pane fade"
+             id="fixed-cost"
+             role="tabpanel">
+
+
+            <app-fixed-cost-tab [phoneFixedCostPage]="phoneFixedCostPage" [(pageIndex)]="pageFixedCostIndex" [(pageSize)]="pageFixedCostSize"
+                                [(phoneFixedCostPeriodList)]="phoneFixedCostPeriodList"
+                                [resourceCompanyList]="administratedCompanyList" [phoneFixedCostFilter]="phoneFixedCostFilter">
+            </app-fixed-cost-tab>
+    </section>
+
+    <section aria-labelledby="import-file-tab" class="tab-pane fade"
+             id="file-import"
+             role="tabpanel">
+            <app-file-import-tab>
+            </app-file-import-tab>
+    </section>
+  </div>
+</div>

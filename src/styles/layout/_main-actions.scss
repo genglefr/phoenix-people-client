@@ -1,0 +1,35 @@
+/*------------------------------------*\
+    #MAIN ACTIONS
+\*------------------------------------*/
+.main-actions {
+  padding: 1.25rem;
+  background-color: #fff;
+  border-width: 1px;
+}
+
+
+.actions-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  list-style: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.actions-list-item + .actions-list-item {
+  padding-left: 1.25rem;
+}
+
+.actions-list-divider {
+  -ms-flex-item-align: stretch;
+  align-self: stretch;
+  width: .0625rem;
+  min-height: 100%;
+  margin-left: 1.875rem;
+  margin-right: 1.875rem;
+  background-color: #999fa3;
+}

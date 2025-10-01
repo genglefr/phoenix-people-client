@@ -1,0 +1,265 @@
+<header class="main-header mb-2">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">SmartRecruiters board</h1>
+      </div>
+      <div class="col col-auto">
+        <a class="btn btn-basic" routerLink="../..">
+          Cancel
+        </a>
+        <button class="btn btn-primary ml-3" type="submit" (click)="updateBoardColumns()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="main-content pt-0">
+
+  <!-- Main navtabs -->
+  <div class="main-nav-tabs">
+    <!-- nav tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="true" class="nav-link active"
+                              data-toggle="tab" href="#board" id="board-tab"
+                              (click)="changeTab('Board')"
+                              role="tab">Board</a></li>
+
+      <li class="nav-item"><a aria-controls="profile" aria-selected="false" class="nav-link"
+                              data-toggle="tab" href="#configuration" id="configuration-tab"
+                              (click)="changeTab('Configuration')"
+                              role="tab">Configuration</a></li>
+    </ul>
+
+    <!-- tab content -->
+    <div class="tab-content bg-white" id="myTabContent">
+
+      <!-- Tab Board -->
+      <div *ngIf="currentTab === 'Board'" aria-labelledby="board-tab" class="tab-pane fade show active card"
+               id="board"
+               role="tabpanel">
+        <div class="card-body">
+          <header class="px-0 mb-3">
+            <div class="row align-items-end pt-3 mb-3">
+              <div class="col-auto mb-3">
+                <div style="width: 20rem" class="pt-2">
+                  <label>Search for candidate</label>
+                  <div class="input-group searchbar" id="search-engine">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><i class="fas fa-search"></i></div>
+                    </div>
+                    <input class="form-control" type="text" [(ngModel)]="search" (ngModelChange)="searchForCandidate()">
+                  </div>
+                </div>
+              </div>
+              <div class="col-auto mb-3">
+                <label>
+                  Company
+                </label>
+                <ng-select [items]="companies"
+                           [(ngModel)]="selectedCompanies"
+                           (ngModelChange)="changeCompanyFilterValue($event)"
+                           [multiple]="true"
+                           style="width: 20rem"
+                           [virtualScroll]="true">
+                  <ng-template let-clear="clear" let-items="items" ng-multi-label-tmp>
+                    <div *ngFor="let item of items | slice:0:1" class="ng-value">
+                      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon left">×</span>
+                      <span class="ng-value-label">
+                    {{item}}
+                  </span>
+                    </div>
+                    <div *ngIf="items.length > 1" class="ng-value">
+                      <span class="ng-value-label">+{{items.length - 1}}</span>
+                    </div>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input [ngModel]="item$.selected" id="item-option-company-{{index}}" type="checkbox"/> {{item}}
+                  </ng-template>
+                </ng-select>
+              </div>
+              <div class="col-auto mb-3">
+                <label>
+                  Job status
+                </label>
+                <ng-select [items]="jobStatuses"
+                           [(ngModel)]="selectedJobStatus"
+                           (ngModelChange)="changeStatusFilterValue($event)"
+                           [multiple]="true"
+                           style="width: 20rem"
+                           [virtualScroll]="true">
+                  <ng-template let-clear="clear" let-items="items" ng-multi-label-tmp>
+                    <div *ngFor="let item of items | slice:0:1" class="ng-value">
+                      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon left">×</span>
+                      <span class="ng-value-label">
+                    {{item}}
+                  </span>
+                    </div>
+                    <div *ngIf="items.length > 1" class="ng-value">
+                      <span class="ng-value-label">+{{items.length - 1}}</span>
+                    </div>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input [ngModel]="item$.selected" id="item-option-job-status-{{index}}" type="checkbox"/> {{item}}
+                  </ng-template>
+                </ng-select>
+              </div>
+              <div class="col-auto mb-3">
+                <label>
+                  Role in the hiring team
+                </label>
+                <ng-select [items]="hiringRoles"
+                           [selectOnTab]="true"
+                           [(ngModel)]="selectedRoles"
+                           (ngModelChange)="changeHiringRoleFilterValue($event)"
+                           [multiple]="true"
+                           bindValue="identifier"
+                           bindLabel="account"
+                           groupBy="memberRoles"
+                           [selectableGroupAsModel]="false"
+                           [selectableGroup]="true"
+                           [closeOnSelect]="false"
+                           [searchFn]="searchHiringTeam"
+                           style="width: 20rem"
+                           [virtualScroll]="true">
+                  <ng-template let-clear="clear" let-items="items" ng-multi-label-tmp>
+                    <div *ngFor="let item of items | slice:0:1" class="ng-value">
+                      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon left">×</span>
+                      <span  class="ng-value-label">{{item.fullName}} - {{item.role}}</span>
+                    </div>
+                    <div *ngIf="items.length > 1" class="ng-value">
+                      <span class="ng-value-label">+{{items.length - 1}}</span>
+                    </div>
+                  </ng-template>
+                  <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input [ngModel]="item$.selected" id="item-group-hiring-member-{{index}}" type="checkbox"/> {{item.fullName}}
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input [ngModel]="item$.selected" id="item-option-hiring-member-{{index}}" type="checkbox"/> {{item.role.replace('_', ' ') | titlecase}}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+          </header>
+
+          <hr>
+
+          <div class="container-fluid" style="overflow-x: auto">
+            <div class="row" >
+              <div class="col-3" *ngFor="let column of boardColumnsDisplayed">
+                <div>
+                  <h1>
+                    {{column.columnName}} ({{countCandidate(column.statuses)}})
+                  </h1>
+                  <hr>
+                </div>
+                <div>
+                  <div *ngFor="let candidate of prepareDisplayedCandidate(displayedCandidates, column.statuses); let i=index">
+                    <div *ngIf="i<numberElementDisplayed" class="card mb-4">
+                      <div class="card-header">
+                        <a target="_blank" href="https://www.smartrecruiters.com/app/people/applications/{{candidate.candidateId}}">
+                          <h5 class="card-title">
+                            {{candidate.firstName}} {{candidate.lastName}}
+                          </h5>
+                        </a>
+                      </div>
+                      <div class="card-body">
+                        <strong>{{candidate.status}} <ng-container *ngIf="candidate.subStatus"> - {{candidate.subStatus}}</ng-container></strong><br>
+                        Created on {{displayDate(candidate.createdOn)}}<br>
+                        Updated on {{displayDate(candidate.updatedOn)}}<br>
+                      </div>
+                      <div class="card-footer">
+                        <a target="_blank" href="https://www.smartrecruiters.com/app/jobs/details/{{candidate.jobId}}/people">
+                          {{candidate.jobTitle}}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tab Configuration -->
+      <div *ngIf="currentTab === 'Configuration'" aria-labelledby="configuration-tab" class="tab-pane fade card "
+               id="configuration"
+               role="tabpanel">
+        <div class="card-body">
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">
+                Column name
+              </th>
+              <th scope="col">
+                Status
+              </th>
+              <th scope="col">
+                <div class="text-right">
+                  <button class="btn btn-primary" (click)="addColumn()">
+                    Add
+                  </button>
+                </div>
+              </th>
+            </tr>
+            </thead>
+            <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+            <tr *ngFor="let column of boardColumns; let indexOfElement = index" cdkDrag>
+              <td>
+                <input class="form-control" type="text" maxlength="255" [(ngModel)]="column.columnName"
+                       [value]="column.columnName" placeholder="Enter a column name">
+              </td>
+              <td>
+                <ng-select [items]="allStatus"
+                           [selectOnTab]="true"
+                           [(ngModel)]="column.statuses"
+                           (ngModelChange)="changeStatusForColumn($event, indexOfElement)"
+                           [multiple]="true"
+                           bindValue="id"
+                           bindLabel="status"
+                           groupBy="parentStatus"
+                           [selectableGroupAsModel]="false"
+                           [selectableGroup]="true"
+                           [closeOnSelect]="false"
+                           [virtualScroll]="true">
+                  <ng-template let-clear="clear" let-items="items" ng-multi-label-tmp>
+                    <div *ngFor="let item of items | slice:0:3" class="ng-value">
+                      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon left">×</span>
+                      <span  class="ng-value-label">{{item['status']}} - {{item['hiringProcess']}}</span>
+                    </div>
+                    <div *ngIf="items.length > 3" class="ng-value">
+                      <span class="ng-value-label">+{{items.length - 3}}</span>
+                    </div>
+                  </ng-template>
+                  <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input [ngModel]="item$.selected" id="item-group-status-{{index}}" type="checkbox"/> {{item.parentStatus}}
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <input [ngModel]="item$.selected" id="item-option-status-{{index}}" type="checkbox"/> {{item['status']}} - {{item['hiringProcess']}}
+                  </ng-template>
+                </ng-select>
+              </td>
+              <td>
+                <div class="text-right">
+                  <button class="btn btn-sm btn-danger" (click)="deleteColumn(column, indexOfElement)">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>

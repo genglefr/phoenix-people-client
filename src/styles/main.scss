@@ -1,0 +1,281 @@
+@charset "utf-8";
+
+@import "arhs-zeus";
+@import "utilities/variables";
+
+// custom layout
+@import "layout/header";
+@import "layout/main";
+@import "layout/navigation";
+
+// custom components
+@import "components/badge";
+@import "components/button";
+@import "components/card";
+@import "components/checkbox";
+@import "components/drag";
+@import "components/dropdown";
+@import "components/input";
+@import "components/list-group";
+@import "components/multiselect";
+@import "components/pill";
+@import "components/table";
+@import "components/tabs";
+
+// custom utilities
+@import "utilities/custom";
+@import "utilities/typography";
+
+//@import url("https://design.arhs-group.com/themes/arhs-zeus/v0.0.1-snapshot/arhs-zeus.min.css");
+
+
+// new color class
+.bg-gray-30 { background-color: $gray-30; }
+
+// fix height
+.height-40vh { height: 40vh; }
+
+// badge-pill : overide properties
+.badge-pill { font-style: normal; }
+
+// badge : custom default properties
+.badge 		{
+  border-radius: 1.5rem;
+  background-color: $gray-20;
+  padding-left: .625rem;
+  padding-right: .625rem;
+}
+
+// badge md
+.badge-md 	{
+  font-size: .875rem;
+  padding: .40625rem .625rem;
+}
+
+// badge lg
+.badge-lg 	{
+  font-size: .9375rem;
+  padding: .59375rem .9375rem;
+}
+
+// badge xl
+.badge-xl 	{
+  font-size: 1rem;
+  padding: .84375rem 1.25em;
+}
+
+
+.required-small {
+  color: red !important;
+}
+
+.my-pagination /deep/ .ngx-pagination .current{
+  background: white;
+  color: black;
+}
+
+.dropdown-header{
+  color: black;
+}
+
+//Quickfix from us, need to be done be design team
+.dropdown-menu{
+  min-width: 20rem;
+}
+
+.btn-custom{
+  margin: 0.125em;
+}
+
+.loading {
+  pointer-events: none !important;
+}
+
+.warning-text {
+  font-size: 100%;
+  display: block;
+  margin-top: .25rem;
+  color: #c79500;
+}
+
+.multiselect-dropdown {
+  font-size: .84rem !important;
+  text-overflow: ellipsis;
+}
+
+.multiselect-dropdown .dropdown-btn {
+  display: block !important;
+  width: 100% !important;
+  height: 2.25rem !important;
+  padding: 0.5rem 0.625rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  color: #202326 !important;
+  background-color: #fff !important;
+  background-clip: padding-box !important;
+  border: 0.0625rem solid #c1c5c8 !important;
+  border-radius: 0.1875rem !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+  :last-child {
+    margin-left: 0.5em !important;
+  }
+}
+
+.multiselect-dropdown .dropdown-btn .selected-item {
+  background: #1106a0 !important;
+  border: 1px solid #0a046a !important;
+  font-size: 0.65rem !important;
+}
+
+.multiselect-dropdown .dropdown-btn .dropdown-down {
+  border-top: 5px #000000 solid !important;
+  border-left: 5px solid transparent!important;
+  border-right: 5px solid transparent !important;
+}
+
+.multiselect-dropdown .dropdown-btn .dropdown-up {
+  border-bottom: 5px #000000 solid !important;
+  border-left: 5px solid transparent!important;
+  border-right: 5px solid transparent !important;
+}
+.multiselect-item-checkbox input[type=checkbox]:checked + div:before {
+  border: 2px solid #0a046a !important;
+  background: #1106a0 !important;
+}
+
+.multiselect-item-checkbox input[type=checkbox] + div:before {
+  border: 2px solid #0a046a !important;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.status {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  top: 8vh;
+  right: 11.5vh;
+}
+
+
+// responsive
+@media screen and (max-width: 768px) {
+
+    // default properties
+    body,
+    .custom-select {
+        font-size: 1rem;
+    }
+
+    // label
+    .label-sm {
+        font-size: .875rem;
+    }
+
+    /* component box */
+    .box {
+        padding: .9375rem;
+    }
+
+    /* main content */
+    .main-content {
+      margin-left: .9375rem;
+      margin-right: .9375rem;
+    }
+}
+
+// Dropdowns
+.dropdown-more-filters {
+  min-width: 15.625rem;
+  padding: 1.25rem;
+}
+
+// Size details modal
+.myDetailsModal {
+  & > .modal-dialog {
+    width: 85em !important;
+    max-width: 85em !important;
+  }
+}
+
+//File attachments modal
+.attachments-list-add {
+  cursor: pointer;
+}
+
+.attachments-list-add:hover {
+  text-decoration: underline;
+}
+
+.attachments-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.attachments-list-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding-bottom: .5rem;
+}
+
+.attachments-list-item + .attachments-list-item {
+  margin-top: .5rem;
+}
+
+.attachments-list-item .fa-paperclip {
+  color: #adb2b5;
+  padding-right: .25rem;
+}
+
+.attachments-list-name {
+  overflow: hidden;
+  display: inline-block;
+  width: calc(100% - 2rem);
+  text-overflow: ellipsis;
+  font-size: .825rem;
+}
+
+.attachments-list-add {
+  cursor: pointer;
+}
+
+.attachments-list-add:hover {
+  text-decoration: underline;
+}
+
+.availability-pill {
+  position: absolute;
+  bottom: 2px;
+  right: -11px;
+  border: 3px solid white;
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: .375rem;
+  margin-top: -2px;
+}
+
+.badge-success.availability-pill {
+  background-color: #1c8237;
+}
+
+.badge-danger.availability-pill {
+  background-color: #b02331;
+}
+
+.invalid-feedback {
+  display: block;
+}

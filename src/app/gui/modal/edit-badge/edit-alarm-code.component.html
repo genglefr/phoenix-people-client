@@ -1,0 +1,99 @@
+
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-title-new" *ngIf="isCreation">New alarm code</h5>
+        <h5 class="modal-title" id="modal-title-edit" *ngIf="!isCreation">Edit alarm code</h5>
+        <button aria-label="Close" class="close" data-dismiss="modal"
+                (click)="closeModal()"
+                type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="alarmCodeForm">
+          <div class="form-group col-12">
+            <div class="row mt-1" >
+
+              <div class="col-6">
+                <label for="floor">Floor <small class="text-muted">(required)</small></label>
+                <input class="form-control" formControlName="floor" id="floor"
+                       placeholder="Floor"
+                       type="text"/>
+                <div *ngIf="floor.invalid"
+                     class="invalid-feedback d-block">
+                  <div *ngIf="floor.errors?.required">
+                    The floor is required
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <label for="code">Code</label>
+                <input class="form-control" formControlName="code" id="code"
+                       placeholder="Code"
+                       type="text"/>
+                <div *ngIf="code.invalid"
+                     class="invalid-feedback d-block">
+                  <div *ngIf="code.errors?.required">
+                    The code is required
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 mt-1">
+                <label for="owner">Owner</label>
+                <ng-select [items]="resources"
+                           [selectOnTab]="true"
+                           formControlName="owner"
+                           placeholder="Select owner"
+                           id="owner"
+                           [searchFn]="checkResourceIncludesOwnerName"
+                           [clearOnBackspace]="false"
+                           [clearable]="true"
+                           [multiple]="true"
+                           [closeOnSelect]="false"
+                           [virtualScroll]="true">
+                  <ng-template let-clear="clear" let-items="items" ng-multi-label-tmp>
+                    <div *ngFor="let item of items | slice:0:2" class="ng-value">
+                      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon left">×</span>
+                      <span class="ng-value-label">  {{item.lastName + ' ' + item.firstName | limitTo:12}}</span>
+                    </div>
+                    <div *ngIf="items.length > 2" class="ng-value">
+                      <span class="ng-value-label">+{{items.length - 2}}</span>
+                    </div>
+                  </ng-template>
+                  <ng-template let-index="index" let-item="item" let-item$="item$" ng-option-tmp>
+                    <input [ngModel]="item$.selected"  [ngModelOptions]="{standalone: true}" id="item-{{index}}" type="checkbox"/>   {{item.lastName + ' ' + item.firstName}}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="row mt-1">
+              <div class="col-12">
+                <label for="comment">Comment</label>
+                <textarea class="form-control edit-comment"
+                          formControlName="comment" id="comment"
+                          maxlength="4001"
+                          placeholder="Comment"
+                          style="resize: none !important;"
+                          rows="4">
+                </textarea>
+                <div *ngIf="comment.invalid" class="invalid-feedback d-block">
+                  <div *ngIf="comment.errors?.maxlength">
+                    The comment cannot be longer than 4000 characters.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-basic" (click)="closeModal()" type="button">Cancel</button>
+        <button class="btn btn-primary" [disabled]="alarmCodeForm?.invalid"
+                (click)="saveChanges()"
+                type="button">Save
+        </button>
+      </div>

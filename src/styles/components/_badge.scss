@@ -1,0 +1,66 @@
+/* ====================
+  BADGE
+==================== */
+
+.badge-custom, .badge-fill-success, .badge-fill-danger, .badge-fill-black, .badge-fill-info {
+  padding: 5px 10px;
+  margin: 0 0.75rem 0.375rem 0;
+  border: none;
+  text-align: left;
+  border-radius: 35px;
+  font-weight: unset;
+}
+
+.badge-custom {
+  background: $primary-extra-light;
+  color: $primary-dark;
+}
+.badge-fill-danger, .badge-fill-black, .badge-fill-info {
+  color: $white;
+}
+.badge-fill-success {
+  color: $success-text;
+  background-color:$success-background!important;
+}
+.badge-fill-info {
+  color: $info-text;
+  background-color:$info-background;
+}
+.badge-fill-danger, .badge-danger, .badge-danger.availability-pill {
+  color: $danger-text;
+  background-color:$danger-background!important;
+}
+.badge-fill-black {
+  color: $white;
+  background-color:$black;
+}
+
+.badge-del-custom {
+  padding-left: 7px;
+  color: $primary-dark;
+}
+
+.badge-success, .badge-success.availability-pill {
+    background-color:$success!important;
+}
+
+.badge-danger, .badge-danger.availability-pill {
+  background-color:$danger!important;
+}
+
+/*-------------------- ADDED / REMOVED --------------------*/
+
+.added, .removed {
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+}
+
+.added {
+  color: $success-text;
+  background-color:$success-background;
+}
+
+.removed {
+  color: $danger-text;
+  background-color:$danger-background;
+}

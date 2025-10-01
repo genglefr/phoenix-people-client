@@ -1,0 +1,235 @@
+/* ====================
+  BUTTONS
+==================== */
+
+.btn {
+  color: $black-light;
+  fill: $black-light;
+  border: none;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*-------------------- PRIMARY --------------------*/
+
+.btn-primary {
+  color: $white!important;
+  fill: $white;
+  background: $primary;
+  border-color: $primary;
+}
+.btn-primary:hover {
+  color: $white;
+  fill: $white;
+  background: $primary-dark;
+  border-color: $primary-dark;
+}
+.btn-primary.focus,
+.btn-primary:focus {
+  background: $primary-dark;
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+}
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+  color: $white;
+  fill: $white;
+  background: $primary-dark;
+  border-color: $primary-dark;
+}
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+}
+
+/*-------------------- SECONDARY / BASIC --------------------*/
+
+.btn-secondary, .btn-basic {
+  color: $primary;
+  fill: $primary;
+  background: $white;
+  border: 1px solid $primary;
+}
+.btn-secondary:hover, .btn-basic:hover {
+  color: $primary;
+  fill: $primary;
+  background: $primary-extra-light;
+  border: 1px solid $primary;
+}
+.btn-secondary.focus,
+.btn-secondary:focus,
+.btn-basic.focus,
+.btn-basic:focus {
+  background: $primary-extra-light;
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(188, 1, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(188, 1, 255, 0.5);
+}
+.btn-secondary:not(:disabled):not(.disabled).active,
+.btn-secondary:not(:disabled):not(.disabled):active,
+.btn-basic:not(:disabled):not(.disabled).active,
+.btn-basic:not(:disabled):not(.disabled):active
+.show > .btn-secondary.dropdown-toggle {
+  color: $white;
+  fill: $white;
+  background: $primary-extra-light!important;
+  border-color: $black-light;
+}
+.btn-secondary:not(:disabled):not(.disabled).active:focus,
+.btn-secondary:not(:disabled):not(.disabled):active:focus,
+.btn-basic:not(:disabled):not(.disabled).active:focus,
+.btn-basic:not(:disabled):not(.disabled):active:focus
+.show > .btn-secondary.dropdown-toggle:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(188, 1, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(188, 1, 255, 0.5);
+}
+
+.btn-basic:not(:disabled):not(.disabled).active, .btn-basic:not(:disabled):not(.disabled):active {
+  background: $primary-extra-light!important;
+}
+
+/*-------------------- GHOST --------------------*/
+
+.btn-ghost {
+  color: $primary!important;
+  fill: $primary;
+  padding: .75rem .5rem!important;
+  text-decoration: underline;
+  background: $white;
+}
+.btn-ghost:hover {
+  color: $primary-dark;
+  fill: $primary-dark;
+  background: $white;
+}
+.btn-ghost.focus,
+.btn-ghost:focus {
+  background: $white;
+}
+.btn-ghost:not(:disabled):not(.disabled).active,
+.btn-ghost:not(:disabled):not(.disabled):active {
+  background: $white;
+}
+
+/*-------------------- DANGER --------------------*/
+
+.btn-danger {
+  color: $white;
+  fill: $white;
+  background: $danger;
+  border-color: $danger;
+}
+.btn-danger:hover {
+  color: $white;
+  fill: $white;
+  background: $danger-dark;
+  border-color: $danger-dark;
+}
+.btn-danger.focus,
+.btn-danger:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(128, 23, 35, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(128, 3, 35, 0.5);
+}
+.btn-danger:not(:disabled):not(.disabled).active,
+.btn-danger:not(:disabled):not(.disabled):active,
+.show > .btn-danger.dropdown-toggle {
+  color: $white;
+  background: $danger-dark;
+  border-color: $danger-dark;
+}
+.btn-danger:not(:disabled):not(.disabled).active:focus,
+.btn-danger:not(:disabled):not(.disabled):active:focus,
+.show > .btn-danger.dropdown-toggle:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(128, 23, 35, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(128, 23, 35, 0.5);
+}
+
+/*-------------------- OUTLINE --------------------*/
+
+.btn-outline {
+  color: $black;
+  background: $white;
+  border: 1px solid $grey-dark;
+}
+.btn-outline:hover, .btn-outline.active {
+  color: $white;
+  background: $primary-dark;
+  border-color: $primary-dark;
+}
+.btn-outline.focus,
+.btn-outline:focus {
+  background: $primary-dark;
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+}
+.btn-outline:not(:disabled):not(.disabled).active,
+.btn-outline:not(:disabled):not(.disabled):active,
+.show > .btn-outline.dropdown-toggle {
+  color: $white;
+  fill: $white;
+  background-color: $primary;
+  border-color: $primary;
+}
+.btn-outline:not(:disabled):not(.disabled).active:focus,
+.btn-outline:not(:disabled):not(.disabled):active:focus,
+.show > .btn-outline.dropdown-toggle:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(166, 0, 255, 0.5);
+}
+
+/*-------------------- BTN GROUP --------------------*/
+
+.btn-group {
+  border: 1px solid $primary;
+  border-radius: 0.1875rem;
+
+  .btn {
+    border: none;
+  }
+}
+
+.btn-group-toggle {
+  border: 1px solid $grey-dark;
+}
+
+/*-------------------- LINKS --------------------*/
+
+a, .link {
+  color: $primary!important;
+  text-decoration: none!important;
+  cursor: pointer;
+
+  &.disabled {
+    color: $primary-extra-light;
+    pointer-events: none;
+  }
+
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline!important;
+
+    & h1,h2,h3,h4,h5,h6 {
+      color: $primary-dark!important;
+    }
+  }
+}
+
+/*-------------------- CUSTOM --------------------*/
+
+.left-btn {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.right-btn {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.close:focus {
+  outline: none;
+}
+

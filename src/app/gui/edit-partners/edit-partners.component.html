@@ -1,0 +1,238 @@
+<!-- Title + actions -->
+<header class="main-header mb-0">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-0">
+      <div class="col-auto mb-3">
+        <h1 class="main-title">{{onEdit==='new' ? 'Create partner' : partner?.legalName}}</h1>
+      </div>
+      <div class="col-auto mb-3">
+        <a class="btn btn-basic mr-2" routerLink=".."> Cancel </a>
+          <button (click)="savePartner()" class="btn btn-primary" type="submit" [disabled]="partnerForm.invalid">
+            {{onEdit === 'edit' ? 'Save' : 'Create'}}
+          </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="main-content">
+  <form class="box mx-0 pt-4" [formGroup]="partnerForm">
+    <div class="row">
+      <!-- Identification -->
+      <div class="col-12 col-sm-6 pt-4 border-bottom border-right">
+        <header>
+          <h2 class="mb-3">Identification</h2>
+        </header>
+        <div class="p-3">
+          <div class="row">
+            <!-- Legal name -->
+            <div class="form-group col-6">
+              <label for="legalName">Legal name <small class="text-muted">(required)</small></label>
+              <input formControlName="legalName" id="legalName" type="text" class="form-control" placeholder="Legal name">
+              <div *ngIf="legalName.invalid && (legalName.dirty || legalName.touched)" class="invalid-feedback">
+                <div *ngIf="legalName.errors?.required">
+                  The legal name is required.
+                </div>
+                <div *ngIf="legalName.errors?.maxlength ">
+                  The legal name cannot be longer than 250 characters.
+                </div>
+              </div>
+            </div>
+            <!-- Type -->
+            <div class="form-group col-6">
+              <label for="type">Type <i class="fa fa-question-circle"
+                                        title="Accenture definition :&#10;Is considered as a freelancer, the company construct respecting the following principles :
+                                                        &#10;&bull; Sole proprietorship&#10;&bull; or legal entity with one and only one shareholder&#10;&bull; In both cases, without employees
+                                                        &#10;Is considered as company, all other types of company constructs" ></i></label>
+              <ng-select formControlName="type" id="type" [items]="TYPES" placeholder="Select a type">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 pt-4 border-bottom">
+        <header>
+          <h2 class="mb-3">Geography</h2>
+        </header>
+        <div class="p-3">
+          <div class="row">
+            <!-- Country of execution -->
+            <div class="form-group col-6">
+              <label for="countriesOfExecution">Country of execution <i class="fa fa-question-circle"
+                                                                        title="Select all countries where the activities for ARHS will be carried out"></i></label>
+              <app-multi-select
+                [filter]="countriesOfExecution.value"
+                [items]="countries"
+                (changeEventEmitter)="loadCountriesOfExecution($event)"
+                [maxTagsDisplayed]="3"
+                [sortBySelect]="true"
+                id="countriesOfExecution"
+                placeholder="Select countries of execution">
+              </app-multi-select>
+            </div>
+            <!-- Country of establishment -->
+            <div class="form-group col-6">
+              <label for="countryOfEstablishment">Country of establishment</label>
+              <ng-select id="countryOfEstablishment" formControlName="countryOfEstablishment"
+                         [items]="countriesOfExecution.value" placeholder="Select countries of establishment">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 pt-4 border-bottom border-right">
+        <header>
+          <h2 class="mb-3">Intermediary contact details</h2>
+        </header>
+        <div class="p-3">
+          <div class="row">
+            <!-- Name -->
+            <div class="form-group col-6">
+              <label for="intermediaryName">Name <i class="fa fa-question-circle"
+                                                                         title="For freelancers, provide the contact details of the freelancer itself with a personal email address (not ARHS).&#10;For companies, provide the contact details of the person in charge of ARHS account (e.g. sales representative, managing director, etc.)" ></i></label>
+              <input formControlName="intermediaryName" id="intermediaryName" type="text" class="form-control" placeholder="Intermediary contact name">
+              <div *ngIf="intermediaryName.invalid" class="invalid-feedback">
+                <div *ngIf="intermediaryName.errors?.maxlength ">
+                  The name cannot be longer than 250 characters.
+                </div>
+              </div>
+            </div>
+            <!-- First name -->
+            <div class="form-group col-6">
+              <label for="intermediaryFirstName">First name</label>
+              <input formControlName="intermediaryFirstName" id="intermediaryFirstName" type="text" class="form-control" placeholder="Intermediary contact name">
+              <div *ngIf="intermediaryFirstName.invalid" class="invalid-feedback">
+                <div *ngIf="intermediaryFirstName.errors?.maxlength ">
+                  The first name cannot be longer than 250 characters.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- Business title -->
+            <div class="form-group col-6">
+              <label for="intermediaryTitle">Business title</label>
+              <input formControlName="intermediaryTitle" id="intermediaryTitle" type="text" class="form-control" placeholder="Business title">
+              <div *ngIf="intermediaryTitle.invalid" class="invalid-feedback">
+                <div *ngIf="intermediaryTitle.errors?.maxlength ">
+                  The business title cannot be longer than 400 characters.
+                </div>
+              </div>
+            </div>
+            <!-- Email -->
+            <div class="form-group col-6">
+              <label for="intermediaryEmail">Email</label>
+              <input formControlName="intermediaryEmail" id="intermediaryEmail" type="email" class="form-control" placeholder="Email">
+              <div *ngIf="intermediaryEmail.invalid && (intermediaryEmail.dirty || intermediaryEmail.touched)" class="invalid-feedback">
+                <div *ngIf="intermediaryEmail.errors?.email">
+                  The email must be valid.
+                </div>
+                <div *ngIf="intermediaryEmail.errors?.maxlength">
+                  The email cannot be longer than 400 characters.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 pt-4 border-bottom">
+        <header>
+          <h2 class="mb-3">Annual compensation</h2>
+        </header>
+        <div class="p-3">
+          <div class="row">
+            <!-- Annual compensation -->
+            <div class="form-group col-6">
+              <label for="annualCompensation">Annual compensation <i class="fa fa-question-circle"
+                                                                     title="For companies, please consider all resources that are provided by that partner."></i></label>
+              <ng-select formControlName="annualCompensation" id="annualCompensation"
+                         placeholder="Select annual compensation" [items]="ANNUAL_COMPENSATION_VALUES">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 pt-4 border-bottom border-right">
+        <header>
+          <h2 class="mb-3">Anti-corruption process</h2>
+        </header>
+        <div class="p-3">
+          <div class="row">
+            <!-- Anti-corruption process -->
+            <div class="form-group col-6">
+              <label>Anti-corruption process <i class="fa fa-question-circle"
+                                                title="BI tool: link : http://ethicscompliancehub-bip.accenture.com&#10;BIAL link: https://ts.accenture.com/sites/LegalTechnology/Site%20Pages/BI%20Express%20Lane%20Home%20Page.aspx&#10;You can click on the button to reach the above mentioned URLs."></i></label>
+              <div class="input-group">
+                <input type="text" class="form-control" formControlName="antiCorruptionProcess" id="antiCorruptionProcess" placeholder="Anti-corruption process">
+                <a class="btn btn-basic fa-solid fa-link" [href]="goToAntiCorruptionLink()" target="_blank" [class.disabled]="antiCorruptionProcess.value === null"></a>
+              </div>
+            </div>
+            <!-- Anti-corruption status -->
+            <div class="form-group col-6">
+              <label for="status">Anti-corruption status</label>
+              <ng-select formControlName="antiCorruptionStatus" id="status" placeholder="Select anti-corruption status" [items]="ANTI_CORRUPTION_STATUS"></ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 pt-4 border-bottom">
+        <header>
+          <h2 class="mb-3">Contracting</h2>
+        </header>
+        <div class="p-3">
+          <div class="row">
+            <!-- Contracted through staffing agency -->
+            <div class="form-group col-6">
+              <label>Partner is contracted through a staffing agency</label>
+              <div class="mt-1 pt-1">
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input (change)="handleChangeContractType($event)" class="custom-control-input"
+                         formControlName="contractedThroughAgency" id="yes" mdbInput
+                         name="contractedThroughAgency" type="radio" value="yes">
+                  <label class="custom-control-label" for="yes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input (change)="handleChangeContractType($event)" class="custom-control-input"
+                         formControlName="contractedThroughAgency" id="no" mdbInput
+                         name="contractedThroughAgency" type="radio" value="no">
+                  <label class="custom-control-label" for="no">No</label>
+                </div>
+              </div>
+            </div>
+            <!-- Name of staffing agency -->
+            <div class="form-group col-6">
+              <label for="staffingAgencyName">Name of the staffing agency</label>
+              <input formControlName="staffingAgencyName" id="staffingAgencyName" type="text" class="form-control"
+                     [disabled]="partnerForm.get('contractedThroughAgency').value !== 'yes'" placeholder="Name of staffing agency">
+              <div *ngIf="staffingAgencyName.invalid" class="invalid-feedback">
+                <div *ngIf="staffingAgencyName.errors?.maxlength ">
+                  The staffing agency name cannot be longer than 250 characters.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 pt-4 border-right">
+        <header>
+          <h2 class="mb-3">Other</h2>
+        </header>
+        <div class="p-3">
+          <div class="row">
+            <!-- remarks -->
+            <div class="form-group col-12">
+              <label for="remarks">Remarks</label>
+              <textarea formControlName="remarks" id="remarks" class="form-control" rows="5" placeholder="Remarks">
+                      </textarea>
+              <div *ngIf="remarks.invalid" class="invalid-feedback">
+                <div *ngIf="remarks.errors?.maxlength ">
+                  The remarks cannot be longer than 1000 characters.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

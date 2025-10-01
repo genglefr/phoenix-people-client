@@ -1,0 +1,10 @@
+<nav *ngIf="!router.url.includes('error')" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">People</a></li>
+    <li *ngFor="let bc of breadcrumbsAndUrls;let last = last" [ngClass]="{'active':last}" aria-current="page"
+        class="breadcrumb-item">
+      <a *ngIf="!last" routerLink="{{bc.url}}">{{bc.breadcrumb}}</a>
+      <a *ngIf="last">{{bc.breadcrumb}}</a>
+    </li>
+  </ol>
+</nav>

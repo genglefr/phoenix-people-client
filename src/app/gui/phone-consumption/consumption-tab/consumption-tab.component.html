@@ -1,0 +1,260 @@
+<div class="card-group">
+
+  <div class="card">
+
+    <div class="card-body">
+      <header class="main-actions px-0">
+        <div class="row align-items-end"
+            appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+          <div class="col">
+            <div class="row align-items-end">
+              <div class="col-auto mb-3">
+                <label class="label-sm">Period</label>
+                <app-multi-select (changeEventEmitter)="changePeriod($event)"
+                                  [filter]="phoneConsumptionFilter.periods"
+                                  [items]="phoneConsumptionPeriodList"
+                                  [placeholder]="'Select periods'"
+                                  width="13rem">
+                </app-multi-select>
+              </div>
+              <div class="col-auto mb-3">
+                <label class="label-sm">Resource name</label>
+                <input
+                  [maxLength]="50"
+                  [(ngModel)]="phoneConsumptionFilter.resourceName"
+                  class="form-control"
+                  id="search-resource-name-engine" maxlength="50" type="text"
+                >
+              </div>
+              <div class="col-auto mb-3">
+                <label class="label-sm">Phone number</label>
+                <input
+                  [maxLength]="20"
+                  [(ngModel)]="phoneConsumptionFilter.phoneNumber"
+                  class="form-control"
+                  id="search-phone-number-engine" maxlength="20" type="text"
+                >
+              </div>
+              <div class="col-auto mb-3">
+                <label class="label-sm">Subscriber name</label>
+                <input
+                  [maxLength]="200"
+                  [(ngModel)]="phoneConsumptionFilter.subscriberName"
+                  class="form-control"
+                  id="search-subscriber-name-engine" maxlength="200" type="text"
+                >
+              </div>
+              <div class="col-auto mb-3">
+                <label class="label-sm">Invoice date</label>
+                <input [(ngModel)]="phoneConsumptionFilter.invoiceDate"
+                       class="form-control"
+                       id="search-invoice-date-engine"
+                       maxlength="50" placeholder="DD/MM/YYYY" type="text">
+              </div>
+              <div class="col-auto mb-3">
+                <label class="label-sm">Company</label>
+                <app-multi-select (changeEventEmitter)="changeEntity($event)"
+                                  [filter]="phoneConsumptionFilter.companies"
+                                  [items]="resourceCompanyList"
+                                  [placeholder]="'Select companies'"
+                                  idValue="company"
+                                  label="company"
+                                  width="15rem">
+                </app-multi-select>
+              </div>
+              <div class="col-auto mb-3">
+                <label class="label-sm">Min. amount (excl. VAT)</label>
+                <input [(ngModel)]="phoneConsumptionFilter.amountExclVat"
+                       class="form-control"
+                       id="search-amount-excl-vat-engine"
+                       maxlength="50" type="text">
+              </div>
+              <div class="col-auto mb-3">
+                <label class="label-sm">Min. amount (incl. VAT)</label>
+                <input [(ngModel)]="phoneConsumptionFilter.amountInclVat"
+                       class="form-control"
+                       id="search-amount-incl-vat-engine"
+                       maxlength="50" type="text">
+              </div>
+
+              <div class="col col-auto mb-3">
+                <label class="label-sm">Status</label>
+                <div [(ngModel)]="phoneConsumptionFilter.phoneConsumptionStatus"
+                     (ngModelChange)="changeActivity($event)"
+                     aria-label="Activity"
+                     class="btn-group btn-group-toggle d-block" name="radiogroup" ngbRadioGroup>
+                  <label class="btn btn-outline" ngbButtonLabel>
+                    <input class="btn btn-outline-light" ngbButton type="radio" [value]="null">All
+                  </label>
+
+                  <label class="btn btn-outline" ngbButtonLabel *ngFor="let status of phoneConsumptionStatusList">
+                    <input class="btn btn-outline-light" ngbButton type="radio"
+                           [value]="status"> {{status | titlecase}}
+                  </label>
+                </div>
+              </div>
+
+              <div class="col col-auto mb-3">
+                <button (click)="refreshCosts()" class="btn btn-basic text-nowrap"
+                        [disabled]="!this.phoneConsumptionFilter.periods || !this.phoneConsumptionFilter.periods.length">
+                  <i class="fa fa-refresh"></i>
+                  Refresh
+                </button>
+                <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap ml-3">
+                  <i class="fa fa-search"></i>
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="table-responsive" style="overflow-x: initial;">
+        <table class="table table-full">
+          <thead>
+          <tr>
+            <th scope="col"><span (click)="changeSort('phoneConsumptionViewId.period')" class="sort-column"> Period  <i
+              class="fas {{
+          phoneConsumptionFilter.sortingRow==='phoneConsumptionViewId.period'?!phoneConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('fullName')" class="sort-column"> Resource name  <i
+              class="fas {{
+          phoneConsumptionFilter.sortingRow==='fullName'?!phoneConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('phoneConsumptionViewId.phoneNumber')" class="sort-column"> Phone number <i
+              class="fas {{ phoneConsumptionFilter.sortingRow==='phoneConsumptionViewId.phoneNumber'?!phoneConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('subscriberName')" class="sort-column"> Subscriber name <i
+              class="fas {{ phoneConsumptionFilter.sortingRow==='subscriberName'?!phoneConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('phoneConsumptionViewId.invoiceDate')" class="sort-column"> Invoice date  <i
+              class="fas {{ phoneConsumptionFilter.sortingRow==='phoneConsumptionViewId.invoiceDate'?!phoneConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('amountVATExcluded')" class="sort-column"> Amount (excl. VAT) <i
+              class="fas {{ phoneConsumptionFilter.sortingRow==='amountVATExcluded'?!phoneConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('amountVATIncluded')" class="sort-column"> Amount (incl. VAT)  <i
+              class="fas {{ phoneConsumptionFilter.sortingRow==='amountVATIncluded'?!phoneConsumptionFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th class="limit-col" scope="col"> Products description</th>
+            <th class="text-right" scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let phoneConsumption of phoneConsumptionPage.content">
+            <td>{{phoneConsumption.period}}</td>
+            <td>
+              <ng-container *ngIf="phoneConsumption.resourceAccount; else ifNoMapping">
+                <a [routerLink]="['../..', 'resources', phoneConsumption.resourceAccount]">
+                  {{phoneConsumption.resourceName}}
+                </a>
+              </ng-container>
+              <ng-template #ifNoMapping>
+                {{phoneConsumption.resourceName}}
+              </ng-template>
+            </td>
+            <td>{{phoneConsumption.phoneNumber}}</td>
+            <td>{{phoneConsumption.subscriberName}}</td>
+            <td>{{phoneConsumption.invoiceDate}}</td>
+            <td>{{phoneConsumption.amountVATExcluded | currencyFormatter}}</td>
+            <td>{{phoneConsumption.amountVATIncluded | currencyFormatter}}</td>
+            <td class="product-description-col">
+              {{phoneConsumption.description}}
+            </td>
+            <td class="text-right pl-0">
+              <a class="btn btn-sm btn-basic"
+                 href="mailto:{{phoneConsumption.resourceMail}}"><i class="fa fa-envelope"></i></a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="phoneConsumptionPage.content.length>0" class="d-flex justify-content-end px-4 pt-4">
+
+        <select (change)="changePageSize()" [(ngModel)]="pageSize" class="form-control input-sm "
+                style="max-width: 5vw;display: inline;margin-right: auto;">
+          <option selected value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+
+        <nav aria-label="Page navigation">
+          <ul *ngIf="phoneConsumptionPage.first&&!phoneConsumptionPage.last" class="pagination">
+            <li class="page-item">
+              <button aria-label="Previous" class="page-link">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            <li class="page-item active">
+              <button class="page-link">{{phoneConsumptionPage.number + 1}}<span class="sr-only">(current)</span>
+              </button>
+            </li>
+            <li *ngIf="phoneConsumptionPage.totalPages>=phoneConsumptionPage.number+2" class="page-item">
+              <button (click)="changePage(phoneConsumptionPage.number +1)"
+                      class="page-link">{{phoneConsumptionPage.number + 2}}</button>
+            </li>
+            <li *ngIf="phoneConsumptionPage.totalPages>=phoneConsumptionPage.number+3" class="page-item">
+              <button (click)="changePage(phoneConsumptionPage.number+2)"
+                      class="page-link">{{phoneConsumptionPage.number + 3}}</button>
+            </li>
+            <li class="page-item">
+              <button (click)="changePage(phoneConsumptionPage.number+1)" aria-label="Next" class="page-link">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+          <ul *ngIf="!phoneConsumptionPage.first&&!phoneConsumptionPage.last" class="pagination">
+            <li class="page-item">
+              <button (click)="changePage(phoneConsumptionPage.number-1)" aria-label="Previous" class="page-link">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            <li class="page-item ">
+              <button (click)="changePage(phoneConsumptionPage.number-1)"
+                      class="page-link">{{phoneConsumptionPage.number}}</button>
+            </li>
+            <li class="page-item active">
+              <button class="page-link">{{phoneConsumptionPage.number + 1}}<span class="sr-only">(current)</span>
+              </button>
+            </li>
+            <li class="page-item">
+              <button (click)="changePage(phoneConsumptionPage.number+1)"
+                      class="page-link">{{phoneConsumptionPage.number + 2}}</button>
+            </li>
+            <li class="page-item">
+              <button (click)="changePage(phoneConsumptionPage.number+1)" aria-label="Next" class="page-link">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+          <ul *ngIf="phoneConsumptionPage.last" class="pagination">
+            <li class="page-item">
+              <button (click)="changePage(phoneConsumptionPage.number-1>0?phoneConsumptionPage.number-1:0)"
+                      aria-label="Previous"
+                      class="page-link">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            <li *ngIf="phoneConsumptionPage.number-1>0">
+              <button (click)="changePage(phoneConsumptionPage.number-2)"
+                      class="page-link">{{phoneConsumptionPage.number - 1}}</button>
+            </li>
+            <li *ngIf="phoneConsumptionPage.number>0">
+              <button (click)="changePage(phoneConsumptionPage.number-1)"
+                      class="page-link">{{phoneConsumptionPage.number}}</button>
+            </li>
+            <li class="page-item active">
+              <button class="page-link ">{{phoneConsumptionPage.number + 1}}<span class="sr-only">(current)</span>
+              </button>
+            </li>
+            <li class="page-item">
+              <button aria-label="Next" class="page-link">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

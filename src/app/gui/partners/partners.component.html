@@ -1,0 +1,218 @@
+<header class="main-header mb-2">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-3" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+      <div class="col-auto">
+        <h1 class="main-title">Manage partners</h1>
+      </div>
+      <div class="col col-auto">
+        <button class="btn btn-primary ml-3" routerLink="/administration/partners/new">Create partner</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content box">
+
+  <header class="px-4">
+    <div class="row align-items-end mb-4">
+      <div class="col">
+        <div class="row align-items-end" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+          <!-- Legal name -->
+          <div class="col pr-2">
+            <label class="label-sm">Legal name</label>
+            <input
+              [maxLength]="250"
+              [(ngModel)]="partnerFilter.legalName"
+              class="form-control"
+              id="search-legalName-engine" maxlength="250" type="text"
+            >
+          </div>
+          <!-- Type -->
+          <div class="col px-2">
+            <label class="label-sm">Type</label>
+            <ng-select
+              [(ngModel)]="partnerFilter.type"
+              [items]="types"
+              placeholder="Select a type">
+            </ng-select>
+          </div>
+          <!-- Account -->
+          <div class="col px-2">
+            <label class="label-sm">Account</label>
+            <input
+              [maxLength]="50"
+              [(ngModel)]="partnerFilter.account"
+              class="form-control"
+              id="search-account-engine" maxlength="50" type="text"
+            >
+          </div>
+          <!-- Resource name -->
+          <div class="col px-2">
+            <label class="label-sm">Resource name</label>
+            <input
+              [maxLength]="100"
+              [(ngModel)]="partnerFilter.resourceName"
+              class="form-control"
+              id="search-resourceName-engine" maxlength="100" type="text"
+            >
+          </div>
+          <!-- Active -->
+          <div class="col col-auto">
+            <label class="label-sm">Active</label>
+            <div [(ngModel)]="partnerFilter.active"
+                 (ngModelChange)="changePage(0)"
+                 aria-label="Activity"
+                 class="btn-group btn-group-toggle d-block"
+                 name="radiogroup"
+                 ngbRadioGroup>
+
+              <label class="btn btn-outline" ngbButtonLabel>
+                <input class="btn btn-outline-light" ngbButton type="radio" [value]="null">All
+              </label>
+
+              <label class="btn btn-outline" ngbButtonLabel>
+                <input class="btn btn-outline-light" ngbButton type="radio" [value]="true">Active
+              </label>
+
+              <label class="btn btn-outline" ngbButtonLabel>
+                <input class="btn btn-outline-light" ngbButton type="radio" [value]="false">Inactive
+              </label>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col col-auto">
+        <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+          <i class="fa fa-search"></i>
+          Search
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="table-responsive" style="overflow-x: initial;">
+    <table class="table table-full">
+      <thead>
+      <tr>
+        <th scope="col"><span (click)="changeSort('legalName')" class="sort-column">Legal name  <i
+          class="fas {{
+          partnerFilter.sortingRow==='legalName'?!partnerFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('type')" class="sort-column">Type <i
+          class="fas {{ partnerFilter.sortingRow==='type'?!partnerFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span>Resource name (account)</span></th>
+        <th scope="col"><span>Active</span></th>
+        <th class="text-right" scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let partner of partners?.content">
+        <td>{{partner.legalName}}</td>
+        <td>{{partner.type}}</td>
+        <td>
+          <ng-container *ngIf="partner.resources?.length > 1; else singleResource">
+            <a href="javascript: void(0);" (click)="openResourceModal(partner.resources)">
+              {{ partner.resources.length }} resources
+            </a>
+          </ng-container>
+          <ng-template #singleResource>
+            <ng-container *ngIf="partner.resources?.length === 1; else noResource">
+              <span [innerHTML]="partner.resources[0].fullName + ' (<b>' + partner.resources[0].account + '</b>)'"></span>
+            </ng-container>
+            <ng-template #noResource>
+              No resource
+            </ng-template>
+          </ng-template>
+        </td>
+        <td>{{isPartnerActive(partner) ? 'Active' : 'Inactive'}}</td>
+        <td class="text-right pl-0">
+          <a class="btn btn-basic" [routerLink]="['/administration/partners/', partner.partnerId]">Edit</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="partners.content?.length>0" class="d-flex justify-content-end pt-4 px-4">
+
+    <select (change)="changePageSize(pageSize)" [(ngModel)]="pageSize" class="form-control input-sm "
+            style="max-width: 5vw;display: inline;margin-right: auto;">
+      <option selected value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+
+    <nav aria-label="Page navigation">
+      <ul *ngIf="partners.first && !partners.last" class="pagination">
+        <li class="page-item">
+          <button aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{partners.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li *ngIf="partners.totalPages>=partners.number+2" class="page-item">
+          <button (click)="changePage(partners.number +1)"
+                  class="page-link">{{partners.number + 2}}</button>
+        </li>
+        <li *ngIf="partners.totalPages>=partners.number+3" class="page-item">
+          <button (click)="changePage(partners.number+2)" class="page-link">{{partners.number + 3}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(partners.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="!partners.first&&!partners.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(partners.number-1)" aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item ">
+          <button (click)="changePage(partners.number-1)"
+                  class="page-link">{{partners.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{partners.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(partners.number+1)"
+                  class="page-link">{{partners.number + 2}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(partners.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="partners.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(partners.number-1>0?partners.number-1:0)"
+                  aria-label="Previous"
+                  class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li *ngIf="partners.number-1>0">
+          <button (click)="changePage(partners.number-2)"
+                  class="page-link">{{partners.number - 1}}</button>
+        </li>
+        <li *ngIf="partners.number>0">
+          <button (click)="changePage(partners.number-1)" class="page-link">{{partners.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link ">{{partners.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

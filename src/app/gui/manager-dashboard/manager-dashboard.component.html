@@ -1,0 +1,211 @@
+<header class="main-header mb-2">
+  <div class="main-content pb-0">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Manager dashboard</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content box">
+
+  <header class="px-4">
+    <div class="row align-items-end mb-4" appKeyListener [enterKeyFunction]="searchWithFilter.bind(this)">
+
+      <div class="col-auto">
+        <label class="label-sm" for="search-engine">Consultant</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><i class="fas fa-search"></i></div>
+          </div>
+          <input type="text" class="form-control"
+                 id="search-engine" style="width: 15rem;"
+                 [(ngModel)]="resourceFilter.search">
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="label-sm">Resource type</label>
+        <app-multi-select (changeEventEmitter)="changeType($event)"
+                          [filter]="resourceFilter.resourceTypes"
+                          [items]="resourceTypeList"
+                          [placeholder]="'Select types'"
+                          idValue="description"
+                          label="jobType"
+                          width="15rem">
+        </app-multi-select>
+      </div>
+      <div class="col-auto">
+       <label class="label-sm">Status</label>
+        <div  [(ngModel)]="resourceFilter.status" (ngModelChange)="changeStatus()"
+              aria-label="Activity"
+              class="btn-group btn-group-toggle d-block" name="radiogroup" ngbRadioGroup>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="ALL">All
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="ACTIVE">Active
+          </label>
+          <label class="btn btn-outline" ngbButtonLabel>
+            <input class="btn btn-outline-light" ngbButton type="radio" value="NOT_STARTED">Not started
+          </label>
+        </div>
+      </div>
+      <div class="col-auto">
+        <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+          <i class="fa fa-search"></i>
+          Search
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="table-responsive" style="overflow-x: initial;">
+    <table class="table table-full">
+      <thead>
+      <tr>
+        <th scope="col"><span (click)="changeSort('fullName')" class="sort-column"> Consultant <i
+          class="fas {{
+          resourceFilter.sortingRow==='fullName'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('company')" class="sort-column"> Company  <i
+          class="fas {{
+          resourceFilter.sortingRow==='company'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('startDate')" class="sort-column"> Start date / End date <i
+          class="fas {{ resourceFilter.sortingRow==='startDate'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('typeResource')" class="sort-column"> Resource type <i
+          class="fas {{ resourceFilter.sortingRow==='typeResource'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col"><span (click)="changeSort('jobPosition')" class="sort-column"> Job position / Job title <i
+          class="fas {{ resourceFilter.sortingRow==='jobPosition'?!resourceFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+        ></i></span></th>
+        <th scope="col">Status</th>
+        <th class="text-right" scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let resource of resources.content">
+        <td>{{resource.fullName}}</td>
+        <td>{{resource.company}}</td>
+        <td>{{resource.startDate}} <ng-container *ngIf="resource.endDate">- {{resource.endDate}}</ng-container></td>
+        <td>{{resource.resourceType}}</td>
+        <td>{{resource.jobPosition}} <ng-container *ngIf="resource.jobTitle">/ {{resource.jobTitle}}</ng-container></td>
+        <td>
+          <div class="d-flex align-items-center" *ngIf="resource.status === started;else elseBlock">
+            <span class="pill mt-1 pill-success"></span>
+            <span>{{resource.status}}</span>
+          </div>
+
+          <ng-template #elseBlock>
+          <div class="d-flex align-items-center">
+            <span class="pill mt-1 pill-warning"></span>
+            <span>{{resource.status}}</span>
+          </div>
+          </ng-template>
+        </td>
+        <td class="text-right">
+          <div class="btn-group mb-2">
+            <a type="button" class="btn btn-sm btn-basic text-center dropdown-toggle dropdown-toggle-split " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Go to </a>
+            <div class="dropdown-menu" style="min-width: 9.5rem;">
+              <a class="dropdown-item" *ngIf="!resource.isCandidate && (isUserAdministrator || hasReadRole)"
+                 [href]="usourceURL + 'administration/resources/' + resource.account" target="_blank">U-Source</a>
+              <a class="dropdown-item" *ngIf="resource.isCandidate && (isUserAdministrator || hasReadRole)"
+                 [href]="usourceURL + 'administration/candidates/' + resource.account" target="_blank">U-Source</a>
+              <a class="dropdown-item" (click)="redirectToSR(resource.srCandidateId)">SmartRecruiters</a>
+              <a class="dropdown-item" target="_blank">Infrastructure</a>
+            </div>
+          </div>
+          <a class="btn btn-sm btn-basic ml-3 mb-2" title="Details" routerLink="/onboarding/manager-dashboard/{{resource.account}}">
+            Details
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="resources.content.length>0" class="d-flex justify-content-end pt-4 px-4">
+
+    <select (change)="changePageSize()" [(ngModel)]="pageSize" class="form-control input-sm "
+            style="max-width: 5vw;display: inline;margin-right: auto;">
+      <option selected value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+
+    <nav aria-label="Page navigation">
+      <ul *ngIf="resources.first&&!resources.last" class="pagination">
+        <li class="page-item">
+          <button aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li *ngIf="resources.totalPages>=resources.number+2" class="page-item">
+          <button (click)="changePage(resources.number +1)"
+                  class="page-link">{{resources.number + 2}}</button>
+        </li>
+        <li *ngIf="resources.totalPages>=resources.number+3" class="page-item">
+          <button (click)="changePage(resources.number+2)" class="page-link">{{resources.number + 3}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(resources.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="!resources.first&&!resources.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(resources.number-1)" aria-label="Previous" class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item ">
+          <button (click)="changePage(resources.number-1)"
+                  class="page-link">{{resources.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(resources.number+1)"
+                  class="page-link">{{resources.number + 2}}</button>
+        </li>
+        <li class="page-item">
+          <button (click)="changePage(resources.number+1)" aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+      <ul *ngIf="resources.last" class="pagination">
+        <li class="page-item">
+          <button (click)="changePage(resources.number-1>0?resources.number-1:0)"
+                  aria-label="Previous"
+                  class="page-link">
+            <span aria-hidden="true">&laquo;</span>
+          </button>
+        </li>
+        <li *ngIf="resources.number-1>0">
+          <button (click)="changePage(resources.number-2)"
+                  class="page-link">{{resources.number - 1}}</button>
+        </li>
+        <li *ngIf="resources.number>0">
+          <button (click)="changePage(resources.number-1)" class="page-link">{{resources.number}}</button>
+        </li>
+        <li class="page-item active">
+          <button class="page-link ">{{resources.number + 1}}<span class="sr-only">(current)</span></button>
+        </li>
+        <li class="page-item">
+          <button aria-label="Next" class="page-link">
+            <span aria-hidden="true">&raquo;</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+

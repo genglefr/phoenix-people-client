@@ -1,0 +1,37 @@
+/* ====================
+  CARDS
+==================== */
+
+
+/*-------------------- CARD / BOX --------------------*/
+
+.card, .box {
+  border: none;
+  -webkit-box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.08);
+  -moz-box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.08);
+  box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.08);
+}
+
+card-subtitle {
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  margin-right: 10px;
+}
+
+.box .card {
+  box-shadow: none;
+}
+
+.card-header {
+  border-bottom: none;
+}
+
+.card-header-custom {
+  height: 65px;
+  background: $primary-extra-light;
+}
+
+.card-header-custom h2 {
+  margin-top: 10px
+}

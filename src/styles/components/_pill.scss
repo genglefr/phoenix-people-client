@@ -1,0 +1,23 @@
+/* ====================
+  PILL
+==================== */
+
+.pill {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  width: .5rem;
+  height: .5rem;
+  border-radius: 50%;
+  margin-right: .375rem;
+  margin-top: -2px;
+}
+
+.pill-success {
+  background-color: $success;
+}
+
+.pill-warning {
+  background-color: $warning;
+}
+

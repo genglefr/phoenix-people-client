@@ -1,0 +1,10 @@
+<section class="layout">
+  <app-header *ngIf="router.url!='/error'" [showDetailsBtn]="showDetailsBtn"></app-header>
+  <div *ngIf="router.url!='/error'">
+    <app-menu *showItDevice="['desktop','tablet']"></app-menu>
+  </div>
+  <app-main></app-main>
+</section>
+<div class="loading d-flex align-content-center justify-content-center flex-wrap" id="loading">
+  <img alt="loading" src="./assets/images/Spinner-1s-200px.svg">
+</div>

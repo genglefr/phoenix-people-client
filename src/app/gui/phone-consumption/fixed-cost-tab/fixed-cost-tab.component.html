@@ -1,0 +1,162 @@
+<div class="card-group">
+
+  <div class="card">
+
+    <div class="card-body">
+      <header class="main-actions px-0">
+        <div class="d-flex justify-content-between align-items-end w-100"
+             appKeyListener
+             [enterKeyFunction]="searchWithFilter.bind(this)">
+          <div class="d-flex align-items-end flex-wrap">
+            <div class="mr-4">
+              <label class="label-sm">Period</label>
+              <app-multi-select (changeEventEmitter)="changePeriod($event)"
+                                [filter]="phoneFixedCostFilter.periods"
+                                [items]="phoneFixedCostPeriodList"
+                                [placeholder]="'Select periods'"
+                                width="13rem">
+              </app-multi-select>
+            </div>
+            <div class="mr-4">
+              <label class="label-sm">Company</label>
+              <app-multi-select (changeEventEmitter)="changeEntity($event)"
+                                [filter]="phoneFixedCostFilter.companies"
+                                [items]="resourceCompanyList"
+                                [placeholder]="'Select companies'"
+                                idValue="company"
+                                label="company"
+                                width="15rem">
+              </app-multi-select>
+            </div>
+            <div class="mr-4">
+              <button (click)="searchWithFilter()" class="btn btn-primary text-nowrap">
+                <i class="fa fa-search"></i> Search
+              </button>
+            </div>
+          </div>
+          <div>
+            <button (click)="openAddCostModal()" class="btn btn-primary text-nowrap">
+              Add
+            </button>
+          </div>
+        </div>
+      </header>
+      <div class="table-responsive" style="overflow-x: initial;">
+        <table class="table table-full">
+          <thead>
+          <tr>
+            <th scope="col"><span (click)="changeSort('period')" class="sort-column"> Period  <i
+              class="fas {{
+          phoneFixedCostFilter.sortingRow==='period'?!phoneFixedCostFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('company')" class="sort-column"> Company <i
+              class="fas {{ phoneFixedCostFilter.sortingRow==='company'?!phoneFixedCostFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th scope="col"><span (click)="changeSort('fixedCost')" class="sort-column"> Cost  <i
+              class="fas {{ phoneFixedCostFilter.sortingRow==='fixedCost'?!phoneFixedCostFilter.ascending?'fa-sort-up':'fa-sort-down':'fa-sort'}}"
+            ></i></span></th>
+            <th class="text-right" scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let phoneFixedCost of phoneFixedCostPage.content">
+            <td>{{phoneFixedCost.period}}</td>
+            <td>{{phoneFixedCost.companyDto.company}}</td>
+            <td>{{phoneFixedCost.fixedCost | currencyFormatter}}</td>
+            <td class="text-right pl-0">
+              <button class="btn btn-sm btn-basic mb-2" (click)="openAddCostModal(phoneFixedCost)"><i class="fa fa-edit"></i></button>
+              <button class="btn btn-sm btn-danger ml-3 mb-2" (click)="openDeleteModal(phoneFixedCost)"><i class="fa fa-trash"></i></button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="phoneFixedCostPage.content.length>0" class="d-flex justify-content-end px-4 pt-4">
+
+        <select (change)="changePageSize()" [(ngModel)]="pageSize" class="form-control input-sm "
+                style="max-width: 5vw;display: inline;margin-right: auto;">
+          <option selected value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+
+        <nav aria-label="Page navigation">
+          <ul *ngIf="phoneFixedCostPage.first&&!phoneFixedCostPage.last" class="pagination">
+            <li class="page-item">
+              <button aria-label="Previous" class="page-link">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            <li class="page-item active">
+              <button class="page-link">{{phoneFixedCostPage.number + 1}}<span class="sr-only">(current)</span>
+              </button>
+            </li>
+            <li *ngIf="phoneFixedCostPage.totalPages>=phoneFixedCostPage.number+2" class="page-item">
+              <button (click)="changePage(phoneFixedCostPage.number +1)"
+                      class="page-link">{{phoneFixedCostPage.number + 2}}</button>
+            </li>
+            <li *ngIf="phoneFixedCostPage.totalPages>=phoneFixedCostPage.number+3" class="page-item">
+              <button (click)="changePage(phoneFixedCostPage.number+2)"
+                      class="page-link">{{phoneFixedCostPage.number + 3}}</button>
+            </li>
+            <li class="page-item">
+              <button (click)="changePage(phoneFixedCostPage.number+1)" aria-label="Next" class="page-link">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+          <ul *ngIf="!phoneFixedCostPage.first&&!phoneFixedCostPage.last" class="pagination">
+            <li class="page-item">
+              <button (click)="changePage(phoneFixedCostPage.number-1)" aria-label="Previous" class="page-link">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            <li class="page-item ">
+              <button (click)="changePage(phoneFixedCostPage.number-1)"
+                      class="page-link">{{phoneFixedCostPage.number}}</button>
+            </li>
+            <li class="page-item active">
+              <button class="page-link">{{phoneFixedCostPage.number + 1}}<span class="sr-only">(current)</span>
+              </button>
+            </li>
+            <li class="page-item">
+              <button (click)="changePage(phoneFixedCostPage.number+1)"
+                      class="page-link">{{phoneFixedCostPage.number + 2}}</button>
+            </li>
+            <li class="page-item">
+              <button (click)="changePage(phoneFixedCostPage.number+1)" aria-label="Next" class="page-link">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+          <ul *ngIf="phoneFixedCostPage.last" class="pagination">
+            <li class="page-item">
+              <button (click)="changePage(phoneFixedCostPage.number-1>0?phoneFixedCostPage.number-1:0)"
+                      aria-label="Previous"
+                      class="page-link">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            <li *ngIf="phoneFixedCostPage.number-1>0">
+              <button (click)="changePage(phoneFixedCostPage.number-2)"
+                      class="page-link">{{phoneFixedCostPage.number - 1}}</button>
+            </li>
+            <li *ngIf="phoneFixedCostPage.number>0">
+              <button (click)="changePage(phoneFixedCostPage.number-1)"
+                      class="page-link">{{phoneFixedCostPage.number}}</button>
+            </li>
+            <li class="page-item active">
+              <button class="page-link ">{{phoneFixedCostPage.number + 1}}<span class="sr-only">(current)</span>
+              </button>
+            </li>
+            <li class="page-item">
+              <button aria-label="Next" class="page-link">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

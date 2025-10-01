@@ -1,0 +1,103 @@
+<form [formGroup]="permitForm" action="#">
+  <div class="form-group row">
+    <div *ngIf="isCandidate && !isResidencePermit" class="form-group col-sm-12 col-lg-12">
+      <div class="form-check">
+        <input class="form-check-input" id="workPermitNecessary" name="workPermitNecessary"
+               formControlName="workPermitNecessary" type="checkbox"/>
+        <label for="workPermitNecessary">{{this.permitType}} permit necessary</label>
+      </div>
+    </div>
+
+    <div class="form-group col-sm-12 col-lg-6">
+      <label for="permitID">{{this.permitType}} permit ID
+        <small class="text-muted" *ngIf="required && !workPermitIdNotRequired"> (required)</small>
+      </label>
+      <input class="form-control" formControlName="permitID" id="permitID" placeholder="{{this.permitType}} permit ID"
+             maxlength="255" type="text">
+      <div *ngIf="permitID.invalid && (permitID.dirty || permitID.touched)"
+           class="invalid-feedback">
+        <div *ngIf="permitID.errors?.maxlength">
+          {{this.permitType}} permit ID size must not exceed 255 characters
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group col-sm-12 col-lg-6">
+      <label class="label-ro" for="issueDate">{{this.permitType}} permit issue date
+        <small class="text-muted" *ngIf="required"> (required)</small></label>
+      <div class="input-group">
+        <input #issueD="ngbDatepicker" [footerTemplate]="footerTemplate1" class="form-control"
+               formControlName="issueDate" id="issueDate" maxlength="20"
+               [minDate]="{year: 2000, month: 1, day: 1}"
+               ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+        <div *ngIf="this.isAdminOfCandidate" class="input-group-append">
+          <button (click)="issueD.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                  type="button"></button>
+        </div>
+      </div>
+      <ng-template #footerTemplate1>
+        <hr class="my-0">
+        <button (click)="issueDate.setValue(today); issueD.close()"
+                class="btn btn-primary btn-sm m-2 float-left">Today
+        </button>
+        <button (click)="issueD.close()" class="btn btn-secondary btn-sm m-2 float-right">Close
+        </button>
+      </ng-template>
+      <div *ngIf="issueDate.invalid && (issueDate.dirty||issueDate.touched)" class="invalid-feedback">
+        <div *ngIf="issueDate.errors.ngbDate?.invalid">
+          {{this.permitType}} permit issue date must be correct and in the following format : DD/MM/YYYY
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-sm-12 col-lg-6">
+      <label class="label-ro">
+        Document type
+        <small class="text-muted" *ngIf="required"> (required)</small>
+      </label>
+      <ng-select
+        [formControl]="documentType"
+        [items]="documentTypeList"
+        [clearOnBackspace]="false"
+        [placeholder]="'Select a document type'"
+        [selectOnTab]="true"
+        [virtualScroll]="true"
+      ></ng-select>
+      <div *ngIf="endOfPermitDate.invalid && (endOfPermitDate.dirty||endOfPermitDate.touched)"
+           class="invalid-feedback">
+        <div *ngIf="endOfPermitDate.errors.ngbDate?.invalid">
+          End of {{this.permitType.toLowerCase()}} permit date must be correct and in the following format : DD/MM/YYYY
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-sm-12 col-lg-6">
+      <label class="label-ro" for="eoPermitDate">
+        End of {{this.permitType.toLowerCase()}} permit date
+        <small class="text-muted" *ngIf="required"> (required)</small>
+      </label>
+      <div class="input-group">
+        <input #deow="ngbDatepicker" [footerTemplate]="footerTemplate2" class="form-control"
+               formControlName="eoPermitDate" id="eoPermitDate" maxlength="20"
+               [minDate]="{year: 2000, month: 1, day: 1}"
+               ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+        <div *ngIf="this.isAdminOfCandidate" class="input-group-append">
+          <button (click)="deow.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                  type="button"></button>
+        </div>
+      </div>
+      <ng-template #footerTemplate2>
+        <hr class="my-0">
+        <button (click)="endOfPermitDate.setValue(today); deow.close()"
+                class="btn btn-primary btn-sm m-2 float-left">Today
+        </button>
+        <button (click)="deow.close()" class="btn btn-secondary btn-sm m-2 float-right">Close
+        </button>
+      </ng-template>
+      <div *ngIf="endOfPermitDate.invalid && (endOfPermitDate.dirty||endOfPermitDate.touched)"
+        class="invalid-feedback">
+        <div *ngIf="endOfPermitDate.errors.ngbDate?.invalid">
+          End of {{this.permitType.toLowerCase()}} permit date must be correct and in the following format : DD/MM/YYYY
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

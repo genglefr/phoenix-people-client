@@ -1,0 +1,74 @@
+<header class="main-header mb-2">
+  <div class="main-content">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Hardware request</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main-content box">
+  <form [formGroup]="resourceForm" action="#">
+    <div class="row m-0">
+      <div class="form-group col-sm-6 col-md-3 col-lg-2">
+        <label>Resource</label>
+        <ng-select (change)="changeResource($event)"
+                   [clearOnBackspace]="false"
+                   [items]="resources"
+                   [placeholder]="'Select a resource'"
+                   [selectOnTab]="true"
+                   [virtualScroll]="true"
+                   bindLabel="name">
+        </ng-select>
+
+      </div>
+      <div class="form-group col-sm-6 col-md-3 col-lg-2">
+        <label for="deadlineDate">Deadline date</label>
+        <div class="input-group" style="max-width:10rem;">
+          <input #deadlineDateDatePicker="ngbDatepicker" [footerTemplate]="deadlineDateFooter" class="form-control"
+                 formControlName="deadlineDate" id="deadlineDate" maxlength="20"
+                 [minDate]="{year: 2000, month: 1, day: 1}"
+                 ngbDatepicker placeholder="DD/MM/YYYY" type="text"/>
+          <div class="input-group-append">
+            <button (click)="deadlineDateDatePicker.toggle()" class="btn btn-basic btn-icon fa fa-calendar"
+                    type="button"></button>
+          </div>
+        </div>
+        <ng-template #deadlineDateFooter>
+          <hr class="my-0">
+          <button (click)="deadlineDate.setValue(today); deadlineDateDatePicker.close()"
+                  class="btn btn-primary btn-sm m-2 float-left">Today
+          </button>
+          <button (click)="deadlineDateDatePicker.close()" class="btn btn-secondary btn-sm m-2 float-right">Close</button>
+        </ng-template>
+        <div *ngIf="deadlineDate.invalid && (deadlineDate.dirty||deadlineDate.touched)" class="invalid-feedback">
+          <div *ngIf="deadlineDate.value && deadlineDate.value !== '' && (deadlineDate.errors.ngbDate)">
+            Deadline date must be correct and in the following format : DD/MM/YYYY
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+    <h2 class="col-12 card-title">Laptop Information</h2>
+
+      <div class="form-group col-12">
+        <app-laptop-form [form]="laptopForm"
+                         [laptopModelList]="laptopModelList"
+                         [keyboardModels]="formData.keyboardModels"
+                         [operatingSystems]="formData.operatingSystems"
+                         (changeHardware)="updateHardwareForm()">
+        </app-laptop-form>
+      </div>
+
+      <h2 class="col-12 card-title">HARDWARE</h2>
+      <div class="form-group col-sm-12 col-md-6">
+        <app-hardware-form [form]="hardwareForm"
+                           [assets]="assets"
+                           [disabled]="!isHardwareRequired">
+        </app-hardware-form>
+      </div>
+
+    <button [disabled]="!selectedResource || this.resourceForm.invalid || this.laptopForm.invalid || this.hardwareForm.invalid" class="ml-3 btn btn-primary" (click)="sendHardwareRequestClick()">Request hardware</button>
+</div>

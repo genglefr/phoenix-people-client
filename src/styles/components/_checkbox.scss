@@ -1,0 +1,49 @@
+/* ====================
+  CHECKBOX
+==================== */
+
+
+/*-------------------- CHECKBOXES --------------------*/
+
+
+.form-check input[type="checkbox"] + label {
+  padding-left: 0;
+}
+
+.form-check input[type=checkbox] {
+  & + label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 0.0625rem solid $grey-dark;
+    border-radius: 0.1875rem;
+    background: $white;
+  }
+
+  &:checked + label::before {
+    background: $primary;
+    border-color: $primary;
+  }
+}
+
+.form-check [type=checkbox]:checked + label::after {
+  font-family: "Font Awesome 6 Pro";
+  content: "";
+  font-weight: 800;
+  position: absolute;
+  left: 0.175rem;
+  top: 3px;
+  font-size: 0.875rem;
+  color: $white;
+}
+
+/*-------------------- CUSTOM --------------------*/
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: $white;
+  border-color: $primary;
+  background-color: $primary;
+}

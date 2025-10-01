@@ -1,0 +1,211 @@
+<header class="main-header mb-2">
+  <div class="main-content">
+    <div class="row align-items-end justify-content-between mb-3">
+      <div class="col-auto">
+        <h1 class="main-title">Manage phones</h1>
+      </div>
+      <div class="col col-auto">
+        <button (click)="export()" class="btn btn-basic"> Export result</button>
+        <button
+          class="btn btn-primary ml-3"
+          type="button"
+          data-target="#createOrUpdatePhone"
+          data-toggle="modal"
+          (click)="editOrCreatePhone(null)"
+        >
+          New phone
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="main-content box">
+  <header class="px-4 mb-3">
+    <div class="row align-items-end"
+      appKeyListener
+      [enterKeyFunction]="resetAndFetchPagePhone.bind(this)"
+    >
+          <div class="col-auto mb-3">
+            <label class="label-sm">Phone number</label>
+            <input
+              [maxLength]="50"
+              [(ngModel)]="phoneFilter.phoneNumber"
+              class="form-control"
+              id="search-phone-engine"
+              maxlength="50"
+              type="text"
+            />
+          </div>
+          <div class="col-auto mb-3">
+            <label class="label-sm">Owner</label>
+            <input
+              [maxLength]="150"
+              [(ngModel)]="phoneFilter.name"
+              class="form-control"
+              id="search-lastName-engine"
+              maxlength="150"
+              type="text"
+            />
+          </div>
+          <div class="col-auto mb-3">
+            <label class="label-sm">Phone IMEI</label>
+            <input
+              [maxLength]="50"
+              [(ngModel)]="phoneFilter.phoneImei"
+              class="form-control"
+              id="phone-imei"
+              maxlength="50"
+              type="text"
+            />
+          </div>
+          <div class="col-auto mb-3">
+            <label class="label-sm">Serial number</label>
+            <input
+              [maxLength]="50"
+              [(ngModel)]="phoneFilter.serialNumber"
+              class="form-control"
+              id="serial-number"
+              maxlength="50"
+              type="text"
+            />
+          </div>
+          <div class="col-auto mb-3">
+            <label class="label-sm">Model</label>
+            <input
+              [maxLength]="50"
+              [(ngModel)]="phoneFilter.phoneModel"
+              class="form-control"
+              id="search-model-engine"
+              maxlength="50"
+              type="text"
+            />
+          </div>
+          <div class="col-auto mb-3">
+            <label class="label-sm">Reception date</label>
+            <input
+              [(ngModel)]="phoneFilter.receptionDate"
+              class="form-control"
+              id="search-startDate-engine"
+              maxlength="50"
+              placeholder="DD/MM/YYYY"
+              type="text"
+            />
+          </div>
+          <div class="col-auto mb-3">
+            <label class="label-sm">Reception date</label>
+            <input
+              [(ngModel)]="phoneFilter.receptionDate"
+              class="form-control"
+              id="search-startDate-engine"
+              maxlength="50"
+              placeholder="DD/MM/YYYY"
+              type="text"
+            />
+          </div>
+          <div class="col-auto mb-3">
+            <button
+              (click)="resetAndFetchPagePhone()"
+              class="btn btn-primary text-nowrap"
+            >
+              <i class="fa fa-search"></i>
+              Search
+            </button>
+          </div>
+
+    </div>
+  </header>
+
+  <div class="table-responsive" style="overflow-x: initial">
+    <table class="table table-full">
+      <thead>
+        <tr>
+          <th scope="col">
+            <app-data-table-sort (changeSort)="changeSort($event)"
+                                 [filter]="this.phoneFilter"
+                                 label="Phone number"
+                                 sortingRow="phoneNumber">
+            </app-data-table-sort>
+          </th>
+          <th scope="col">
+            <app-data-table-sort (changeSort)="changeSort($event)"
+                                 [filter]="this.phoneFilter"
+                                 label="Owner"
+                                 sortingRow="name">
+            </app-data-table-sort>
+          </th>
+          <th scope="col">
+            <app-data-table-sort (changeSort)="changeSort($event)"
+                                 [filter]="this.phoneFilter"
+                                 label="Phone IMEI"
+                                 sortingRow="phoneImei">
+            </app-data-table-sort>
+          </th>
+          <th scope="col">
+            <app-data-table-sort (changeSort)="changeSort($event)"
+                                 [filter]="this.phoneFilter"
+                                 label="Serial number"
+                                 sortingRow="serialNumber">
+            </app-data-table-sort>
+          </th>
+          <th scope="col">
+            <app-data-table-sort (changeSort)="changeSort($event)"
+                                 [filter]="this.phoneFilter"
+                                 label="Model"
+                                 sortingRow="phoneModel">
+            </app-data-table-sort>
+          </th>
+          <th scope="col">
+            <app-data-table-sort (changeSort)="changeSort($event)"
+                                 [filter]="this.phoneFilter"
+                                 label="Reception date"
+                                 sortingRow="receptionDate">
+            </app-data-table-sort>
+          </th>
+          <th scope="col"><span> Comment </span></th>
+          <th class="text-right" scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let phone of phones?.content">
+          <td>{{ phone.resourcePhoneDto.phoneNumber }}</td>
+          <td>
+            <a routerLink="/administration/resources/{{ phone.owner.account }}" target="_blank">
+              {{ phone.owner.fullName }}
+            </a>
+          </td>
+          <td>
+            {{ phone.resourcePhoneDto.phone.phoneImei }}
+          </td>
+          <td>
+            {{ phone.resourcePhoneDto.phone.serialNumber }}
+          </td>
+          <td>
+            {{ phone.resourcePhoneDto.phone.phoneModel }}
+          </td>
+          <td>{{ phone.resourcePhoneDto.receptionDate }}</td>
+          <td [innerText]="phone.resourcePhoneDto.comment"></td>
+          <td class="text-right pl-0">
+            <a
+              class="btn btn-sm btn-basic mb-2"
+              type="button"
+              (click)="editOrCreatePhone(phone)"
+            >
+              <i class="fa fa-pencil"></i>
+            </a>
+            <button
+              class="btn btn-sm btn-danger ml-3 mb-2"
+              type="button"
+              (click)="deletePhone(phone)"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-data-table-pagination (changeEventEmitter)="changePagination($event)" [pageDto]="phones"
+                             [pagination]="pagination">
+  </app-data-table-pagination>
+</div>

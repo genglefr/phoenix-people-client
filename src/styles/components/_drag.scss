@@ -1,0 +1,41 @@
+/* ====================
+  DRAG & DROP
+==================== */
+
+
+/*-------------------- DRAG & DROP IMPORT --------------------*/
+
+.attachments-container {
+  height: 150px;
+  background-color: white;
+  border: 1px solid $grey-dark;
+  border-radius: 5px;
+}
+
+.drop-files-container {
+  height: 150px;
+  border: 2px dashed $primary;
+  border-radius: 20px;
+  display: flex;
+  text-align: center;
+  background-color: $white;
+}
+
+.drop-files-container:hover {
+  cursor: pointer;
+}
+
+.dragover-container.dragover .drop-files-container {
+  background-color: $primary-extra-light;
+}
+
+.attachments-link {
+  color: $primary !important;
+  cursor: pointer;
+}
+
+.attachments-link:hover {
+  color: $primary-dark !important;
+  text-decoration: underline !important;
+}
+
